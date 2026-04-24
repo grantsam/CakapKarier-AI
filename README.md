@@ -19,7 +19,6 @@ CakapKarier-AI/
 |  `- frontend-react/   # Frontend UI
 |- infrastructure/      # Deployment and database
 |- docs/                # One place for team guidance
-`- .github/             # CODEOWNERS and workflow files
 ```
 
 ## Ownership dan Governance
