@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "name": "webapplication",
+  "workspaces": [
+    "backend-express",
+    "frontend-react"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace frontend-react",
+    "dev:backend": "npm run dev --workspace backend-express",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
