@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/landing/Footer';
 import { 
@@ -8,9 +9,49 @@ import {
   IconChevronRight 
 } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const ProfilPage = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          navigate('/signin');
+          return;
+        }
+
+        const response = await axios.get('http://localhost:3000/api/user/profile', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        setUserData(response.data.data);
+      } catch (error) {
+        console.error("Gagal mengambil data profil:", error);
+        if (error.response?.status === 401) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('isLoggedIn');
+          navigate('/signin');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center font-poppins">
+        <div className="text-[#004A7C] font-medium">Memuat profil...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 font-poppins flex flex-col">
@@ -27,8 +68,8 @@ const ProfilPage = () => {
                 <IconUserCircle size={80} className="text-[#004A7C]" stroke={1.5} />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-[#004A7C]">Nama User</h2>
-                <p className="text-slate-500 font-medium">user@email.com</p>
+                <h2 className="text-xl font-bold text-[#004A7C]">{userData?.nama || 'User'}</h2>
+                <p className="text-slate-500 font-medium">{userData?.email || 'email@domain.com'}</p>
               </div>
             </div>
 
@@ -36,7 +77,6 @@ const ProfilPage = () => {
             <div className="p-8 space-y-8">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-bold text-slate-800">Informasi Pribadi</h3>
-                {/* HUBUNGKAN KE HALAMAN EDIT PROFIL */}
                 <button 
                   onClick={() => navigate('/profil/edit')}
                   className="flex items-center gap-2 px-5 py-2 bg-[#004A7C] text-white rounded-full text-xs font-medium hover:bg-[#00365d] transition-all shadow-md"
@@ -48,19 +88,19 @@ const ProfilPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
                 <div className="space-y-1">
                   <label className="text-[14px] font-medium text-slate-400 uppercase tracking-wider">Nama Lengkap</label>
-                  <p className="font-regular text-slate-800">Nama Lengkap User</p>
+                  <p className="font-regular text-slate-800">{userData?.nama || '-'}</p>
                 </div>
                 <div className="space-y-1">
                   <label className="text-[14px] font-medium text-slate-400 uppercase tracking-wider">Email</label>
-                  <p className="font-regular text-slate-800">user@email.com</p>
+                  <p className="font-regular text-slate-800">{userData?.email || '-'}</p>
                 </div>
                 <div className="space-y-1">
                   <label className="text-[14px] font-medium text-slate-400 uppercase tracking-wider">Nomor Telepon</label>
-                  <p className="font-regular text-slate-800">628123456789</p>
+                  <p className="font-regular text-slate-800">{userData?.nomor_telepon || '-'}</p>
                 </div>
                 <div className="space-y-1">
                   <label className="text-[14px] font-medium text-slate-400 uppercase tracking-wider">Bio</label>
-                  <p className="font-regular text-slate-800">Mahasiswa yang minat dalam bidang AI Engineer</p>
+                  <p className="font-regular text-slate-800">{userData?.bio || '-'}</p>
                 </div>
               </div>
             </div>
@@ -70,7 +110,6 @@ const ProfilPage = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-[#004A7C]">Akses Menu</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Card Mulai Analisis - HUBUNGKAN KE HALAMAN ANALISIS */}
               <button 
                 onClick={() => navigate('/analisis')}
                 className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-[#004A7C] transition-all group text-left"
@@ -85,7 +124,6 @@ const ProfilPage = () => {
                 <IconChevronRight size={18} className="text-slate-300 group-hover:text-[#004A7C]" />
               </button>
 
-              {/* Card Lihat Riwayat - HUBUNGKAN KE HALAMAN RIWAYAT */}
               <button 
                 onClick={() => navigate('/riwayat')}
                 className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-[#004A7C] transition-all group text-left"

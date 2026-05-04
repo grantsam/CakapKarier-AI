@@ -29,8 +29,12 @@ const SignUp = () => {
   const validateForm = () => {
     let newErrors = {};
 
-    // Validasi nama kosong
-    if (!formData.username.trim()) newErrors.username = "Nama lengkap wajib diisi";
+    // Validasi nama kosong dan minimal 3 karakter
+    if (!formData.username.trim()) {
+      newErrors.username = "Nama lengkap wajib diisi";
+    } else if (formData.username.trim().length < 3) {
+      newErrors.username = "Nama minimal harus 3 karakter";
+    }
 
     // Validasi format email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -67,8 +71,13 @@ const SignUp = () => {
         password: formData.password
       });
 
-      alert("Akun berhasil dibuat! Silakan masuk.");
-      navigate('/signin');
+      if (response.data.data && response.data.data.token) {
+        localStorage.setItem('token', response.data.data.token);
+        localStorage.setItem('isLoggedIn', 'true');
+      }
+
+      alert("Akun berhasil dibuat! Selamat datang.");
+      navigate('/');
     } catch (error) {
       const serverMessage = error.response?.data?.message || "Gagal mendaftar, silakan coba lagi.";
       alert(serverMessage);

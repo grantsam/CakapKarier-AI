@@ -7,8 +7,13 @@
   ],
   "scripts": {
     "dev:frontend": "npm run dev --workspace WebApplication/frontend-react",
+    "dev:backend": "npm run dev --workspace WebApplication/backend-express",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "build:frontend": "npm run build --workspace WebApplication/frontend-react",
     "lint:frontend": "npm run lint --workspace WebApplication/frontend-react",
     "migrate": "node infrastructure/database/migrate.js"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
   }
 }

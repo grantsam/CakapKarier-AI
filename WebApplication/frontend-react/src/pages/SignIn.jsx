@@ -59,8 +59,8 @@ const SignIn = () => {
       });
 
       localStorage.setItem('isLoggedIn', 'true');
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
+      if (response.data.data && response.data.data.token) {
+        localStorage.setItem('token', response.data.data.token);
       }
       alert("Selamat datang kembali!");
       navigate('/');

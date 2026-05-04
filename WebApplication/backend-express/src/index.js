@@ -3,6 +3,7 @@ import express from 'express';
 import { config } from './config/index.js';
 import db from './database/db.js';
 import authRoutes from './routes/auth.routes.js';
+import userRoutes from './routes/user.routes.js';
 import globalErrorHandler from './middleware/error.js';
 import AppError from './utils/AppError.js';
 
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
 
 // Health Check
 app.get('/health', async (req, res, next) => {

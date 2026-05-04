@@ -1,11 +1,13 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { config } from '../config/index.js';
 import * as authRepository from '../repositories/auth.repository.js';
+import * as profileRepository from '../repositories/profile.repository.js';
 import AppError from '../utils/AppError.js';
 
 const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+  return jwt.sign({ id }, config.jwt.secret, {
+    expiresIn: config.jwt.expiresIn,
   });
 };
 
@@ -24,7 +26,10 @@ export const register = async (userData) => {
   // 3. Simpan ke database
   const newUser = await authRepository.createUser(nama, email, hashedPassword);
 
-  // 4. Generate token
+  // 4. Create empty profile for the new user
+  await profileRepository.createProfile(newUser.id);
+
+  // 5. Generate token
   const token = signToken(newUser.id);
 
   return {
