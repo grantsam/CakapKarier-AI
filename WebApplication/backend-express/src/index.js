@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import { config } from './config/index.js';
 import db from './database/db.js';
@@ -6,6 +7,8 @@ import globalErrorHandler from './middleware/error.js';
 import AppError from './utils/AppError.js';
 
 const app = express();
+
+app.use(cors());
 
 // Middleware
 app.use(express.json());
