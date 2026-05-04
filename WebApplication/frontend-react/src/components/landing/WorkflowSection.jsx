@@ -27,7 +27,7 @@ const WorkflowSection = () => {
       <div className="max-w-6xl mx-auto px-6">
         
         {/* Header Workflow */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" data-aos="fade-down" data-aos-delay="100">
           <h2 className="text-3xl font-bold text-[#004A7C] mb-4">Bagaimana CakapKarier AI Bekerja?</h2>
           <p className="text-slate-600">Proses sederhana dalam 3 langkah untuk mendapatkan analisis karier yang komprehensif</p>
         </div>
@@ -35,7 +35,9 @@ const WorkflowSection = () => {
         {/* Grid Steps */}
         <div className="grid md:grid-cols-3 gap-8 mb-24">
           {steps.map((step, index) => (
-            <div key={index} 
+            <div key={index}
+              data-aos="fade-up"
+              data-aos-delay={index * 200} 
               className="p-8 rounded-[2rem] border border-white/40 shadow-sm relative overflow-hidden flex flex-col h-full"
               style={{
                 background: 'linear-gradient(180deg, rgba(79, 209, 197, 0.25) 0%, rgba(0, 74, 124, 0.25) 70%)',
@@ -62,6 +64,7 @@ const WorkflowSection = () => {
 
         {/* CTA Section */}
         <div 
+          data-aos="zoom-in"
           className="p-12 rounded-[2.5rem] border border-white/40 text-center shadow-xl overflow-hidden relative"
           style={{
             background: 'linear-gradient(135deg, rgba(79, 209, 197, 0.2) 0%, rgba(0, 74, 124, 0.2) 100%)',
