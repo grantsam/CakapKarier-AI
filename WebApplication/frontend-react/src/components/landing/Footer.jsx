@@ -8,8 +8,6 @@ const Footer = () => {
           
           {/* Kolom 1: Logo & Deskripsi */}
           <div className="space-y-4">
-            
-            {/* 2. Ganti div teks 'C' dengan img logo */}
             <div className="flex items-center gap-2.5">
               <img 
                 src={logoImage} 
@@ -27,9 +25,9 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-bold text-[#004A7C] text-lg">Produk</h4>
             <ul className="space-y-2 text-slate-700 text-sm font-medium">
-              <li className="hover:text-[#004A7C] cursor-pointer transition-colors">Analisis Kesiapan Karier</li>
-              <li className="hover:text-[#004A7C] cursor-pointer transition-colors">Tes Potensi Diri</li>
-              <li className="hover:text-[#004A7C] cursor-pointer transition-colors">Roadmap Karier</li>
+              <li className="hover:text-[#004A7C] cursor-default transition-colors">Analisis Kesiapan Karier</li>
+              <li className="hover:text-[#004A7C] cursor-default transition-colors">Tes Potensi Diri</li>
+              <li className="hover:text-[#004A7C] cursor-default transition-colors">Roadmap Karier</li>
             </ul>
           </div>
 
@@ -37,9 +35,8 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-bold text-[#004A7C] text-lg">Perusahaan</h4>
             <ul className="space-y-2 text-slate-700 text-sm font-medium">
-              <li className="hover:text-[#004A7C] cursor-pointer transition-colors">Tentang Kami</li>
-              <li className="hover:text-[#004A7C] cursor-pointer transition-colors">Kontak</li>
-              <li className="hover:text-[#004A7C] cursor-pointer transition-colors">FAQ</li>
+              <li className="hover:text-[#004A7C] cursor-default transition-colors">Email: info@cakapkarier.ai</li>
+              <li className="hover:text-[#004A7C] cursor-default transition-colors">Surabaya, Jawa Timur</li>
             </ul>
           </div>
         </div>
