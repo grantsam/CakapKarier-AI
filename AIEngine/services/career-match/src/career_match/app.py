@@ -1,0 +1,47 @@
+from __future__ import annotations
+
+from fastapi import FastAPI, HTTPException
+
+from .genai import generate_summary
+from .inference import CareerMatchService
+from .schemas import CandidateProfile, HealthResponse, PredictionResponse
+
+app = FastAPI(title="CakapKarier AI Career Match API", version="1.0.0")
+_service: CareerMatchService | None = None
+
+
+def get_service() -> CareerMatchService:
+    global _service
+    if _service is None:
+        _service = CareerMatchService()
+    return _service
+
+
+@app.get("/health", response_model=HealthResponse)
+def health() -> HealthResponse:
+    try:
+        service = get_service()
+    except FileNotFoundError:
+        return HealthResponse(status="model_not_found", model_loaded=False, catalog_size=0)
+    return HealthResponse(status="ok", model_loaded=True, catalog_size=len(service.jobs))
+
+
+@app.post("/predict", response_model=PredictionResponse)
+def predict(profile: CandidateProfile) -> PredictionResponse:
+    try:
+        service = get_service()
+        prediction = service.predict(
+            skills=profile.skills,
+            experience_years=profile.experience_years,
+            education_level=profile.education_level,
+            certifications=profile.certifications,
+            preferred_location=profile.preferred_location,
+            top_k=profile.top_k,
+        )
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+    if profile.use_genai:
+        prediction["ai_summary"] = generate_summary(profile.model_dump(), prediction)
+
+    return PredictionResponse(**prediction)

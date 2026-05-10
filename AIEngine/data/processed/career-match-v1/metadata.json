@@ -1,0 +1,37 @@
+{
+  "raw_path": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\data\\raw\\glints_jobs.csv",
+  "output_dir": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\data\\processed\\career-match-v1",
+  "seed": 42,
+  "source_rows": 990,
+  "pair_counts": {
+    "train": 2076,
+    "val": 447,
+    "test": 447
+  },
+  "role_family_distribution": {
+    "it-support-network": 232,
+    "qa-security": 161,
+    "software-engineering": 140,
+    "other-it": 131,
+    "data-ai": 115,
+    "sales-account": 107,
+    "product-project-business": 51,
+    "admin-operations": 40,
+    "design-content": 13
+  },
+  "work_mode_distribution": {
+    "unknown": 866,
+    "onsite": 57,
+    "remote": 49,
+    "hybrid": 18
+  },
+  "numeric_features": [
+    "skill_overlap",
+    "experience_ratio",
+    "education_match",
+    "skill_count_ratio",
+    "missing_skill_ratio",
+    "seniority_gap"
+  ],
+  "target": "binary career match score: 1=relevant candidate profile, 0=not ready/not relevant"
+}

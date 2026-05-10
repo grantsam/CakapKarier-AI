@@ -1,0 +1,45 @@
+{
+  "model_name": "cakapkarier_career_matcher",
+  "version": "v1",
+  "framework": "TensorFlow/Keras",
+  "architecture": "Functional API dual text encoder plus numeric readiness features",
+  "custom_components": [
+    "CosineSimilarityLayer",
+    "CareerMatchLoss",
+    "QualityThresholdCallback",
+    "tf.GradientTape custom training loop"
+  ],
+  "numeric_features": [
+    "skill_overlap",
+    "experience_ratio",
+    "education_match",
+    "skill_count_ratio",
+    "missing_skill_ratio",
+    "seniority_gap"
+  ],
+  "model_path": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\career_match_model.keras",
+  "saved_model_dir": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\saved_model",
+  "tensorboard_dir": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\tensorboard",
+  "metrics": {
+    "train": {
+      "loss": 0.002785485005006194,
+      "binary_accuracy": 0.9995182752609253,
+      "mae": 0.008209777064621449
+    },
+    "validation": {
+      "loss": 0.005897413939237595,
+      "binary_accuracy": 0.9932885766029358,
+      "mae": 0.015900176018476486
+    },
+    "test": {
+      "loss": 0.006696563214063644,
+      "binary_accuracy": 0.9955257177352905,
+      "mae": 0.015574230812489986
+    },
+    "thresholds": {
+      "min_accuracy": 0.85,
+      "max_mae": 0.02
+    },
+    "threshold_callback_reached_epoch": 12
+  }
+}
