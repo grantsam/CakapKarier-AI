@@ -1,5 +1,45 @@
+# =========================
+# Dependencies
+# =========================
+node_modules/
+**/node_modules/
+
+
+# =========================
+# Environment Variables
+# =========================
+.env
+**/.env
+
+
+# =========================
+# Build Output
+# =========================
+dist/
+build/
+
+
+# =========================
+# Python Cache
+# =========================
 __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
-.env
+
+
+# =========================
+# Logs
+# =========================
 AIEngine/services/*/uvicorn*.log
+
+
+# =========================
+# OS / System Files
+# =========================
+.DS_Store
+
+
+# =========================
+# AI / Local Instruction Files
+# =========================
+GEMINI.md

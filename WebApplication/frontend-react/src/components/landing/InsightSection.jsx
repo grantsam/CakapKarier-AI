@@ -1,8 +1,10 @@
 import { IconChartBar, IconBolt, IconMap } from '@tabler/icons-react';
 
-const InsightCard = ({ icon, title, desc }) => {
+const InsightCard = ({ icon, title, desc, index }) => {
   return (
     <div 
+      data-aos="zoom-in-up" 
+      data-aos-delay={index * 150}
       className="p-8 rounded-[2rem] border border-white/40 shadow-sm transition-all duration-500 flex flex-col items-start text-left group cursor-pointer hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-900/10"
       style={{
         background: 'linear-gradient(180deg, rgba(79, 209, 197, 0.25) 0%, rgba(0, 74, 124, 0.25) 70%)',
@@ -51,7 +53,10 @@ const InsightSection = () => {
     <section className="py-24 bg-transparent font-poppins relative">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#004A7C] tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#004A7C] tracking-tight"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
             Dapatkan Insight Karier yang Jelas dan Terarah
           </h2>
         </div>

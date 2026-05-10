@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import authBg from '../assets/signup-in.jpg'; 
 import logoImage from '../assets/logo_cakapkarierai.png';
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   // State untuk menyimpan data input
   const [formData, setFormData] = useState({
@@ -18,8 +20,6 @@ const SignIn = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    
-    // Hapus pesan error saat user mulai mengetik kembali
     if (errors[name]) {
       setErrors({ ...errors, [name]: '' });
     }
@@ -28,7 +28,7 @@ const SignIn = () => {
   const validateForm = () => {
     let newErrors = {};
 
-    // Validasi Format Email
+    // Validasi format email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email) {
       newErrors.email = "Email wajib diisi";
@@ -47,14 +47,28 @@ const SignIn = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
     
-    if (validateForm()) {
-      // Simpan status login di local storage agar Navbar berubah jadi "Keluar"
+    if (!validateForm()) return;
+    setLoading(true);
+    try {
+      const response = await axios.post('http://localhost:3000/api/auth/login', {
+        email: formData.email,
+        password: formData.password
+      });
+
       localStorage.setItem('isLoggedIn', 'true');
-      // Arahkan user ke halaman Beranda setelah berhasil masuk
+      if (response.data.data && response.data.data.token) {
+        localStorage.setItem('token', response.data.data.token);
+      }
+      alert("Selamat datang kembali!");
       navigate('/');
+    } catch (error) {
+      const serverMessage = error.response?.data?.message || "Email atau kata sandi salah";
+      alert(serverMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -112,9 +126,10 @@ const SignIn = () => {
 
             <button 
               type="submit"
-              className="w-full bg-[#004A7C] text-white py-3.5 rounded-full font-medium text-md mt-2 hover:bg-[#00365d] transition-all shadow-md active:scale-95"
+              disabled={loading}
+              className={`w-full ${loading ? 'bg-slate-400' : 'bg-[#004A7C]'} text-white py-3.5 rounded-full font-medium text-md mt-2 hover:bg-[#00365d] transition-all shadow-md active:scale-95`}
             >
-              Masuk
+              {loading ? 'Menghubungkan...' : 'Masuk'}
             </button>
           </form>
 

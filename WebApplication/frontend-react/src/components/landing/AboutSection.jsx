@@ -24,7 +24,7 @@ const AboutSection = () => {
       <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
         
         {/* Kolom Kiri: Teks Deskripsi */}
-        <div className="space-y-6">
+        <div className="space-y-6" data-aos="fade-right" data-aos-delay="100">
           <h2 className="text-3xl md:text-4xl font-bold text-[#004A7C] tracking-tight">
             Apa itu CakapKarier AI?
           </h2>
@@ -46,6 +46,8 @@ const AboutSection = () => {
 
         {/* Kolom Kanan: Card Fitur */}
         <div 
+          data-aos="fade-left"
+          data-aos-delay="200"
           className="p-10 rounded-[2.5rem] border border-white/40 shadow-sm"
           style={{
             background: 'linear-gradient(135deg, rgba(79, 209, 197, 0.3) 0%, rgba(0, 74, 124, 0.3) 100%)',
