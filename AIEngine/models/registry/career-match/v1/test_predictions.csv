@@ -1,0 +1,997 @@
+job_id,job_title,source,role_family,label,predicted_label,match_probability
+glints-1776677572-318,Admin Gudang,glints,admin-operations,0.0,0,0.051532656
+glints-1778508514-457,Data Analyst,glints,data-ai,0.0,0,0.0016213221
+glints-1776676814-123,"Senior Devops Engineer - Banking Industry, Prefer Asap",glints,software-engineering,1.0,1,0.9900636
+glints-1778508161-332,Finance Intern (Ar Focused) - Glints Future Leaders Programme,glints,admin-operations,0.0,0,0.0017184941
+glints-1776676895-144,Head Of Project,glints,product-project-business,0.0,0,0.00018885058
+glints-1778509082-637,It Sales Executive,glints,it-support-network,1.0,1,0.99038774
+glints-1778509575-763,It Marketing,glints,data-ai,1.0,1,0.98131245
+linkedin-linkedin-2020,"Account Solution Engineer, Informatica - Indonesia",linkedin,other-it,0.0,0,0.0007906318
+glints-1778509405-716,Account Executive (It),glints,sales-account,0.0,0,0.00080106844
+glints-1776678620-585,It Account Manager,glints,sales-account,1.0,1,0.9919005
+glints-1776679853-895,Internship It,glints,other-it,0.0,0,0.00052286533
+glints-1776677669-344,Chief Operating Officer,glints,other-it,1.0,1,0.9865862
+glints-1778509232-675,Sales It Training Specialist,glints,sales-account,0.0,0,0.0034518694
+glints-1776679223-740,It Presales Consultant,glints,qa-security,1.0,1,0.98793423
+glints-1778508512-456,Business Development Executive - It Solution,glints,sales-account,0.0,0,0.0006673215
+linkedin-linkedin-2077,Mobile Game Developer,linkedin,other-it,0.0,0,0.00034974402
+glints-1776676799-119,Tentor Privat (Tik),glints,other-it,0.0,0,0.0047900546
+glints-1776677509-302,Technical Support,glints,it-support-network,0.0,0,0.0018641055
+glints-1776679184-730,It Mandarin Speaker,glints,it-support-network,1.0,1,0.98348373
+glints-1776676807-121,Quality Assurance Intern,glints,qa-security,0.0,0,0.0015285355
+glints-1778507682-170,Administrator Network Service,glints,it-support-network,0.0,0,0.0010819997
+glints-1776678486-552,"Erp System Analyst (Dynamics 365) Wfo Jakarta/Yogyakarta, Asap",glints,qa-security,0.0,0,0.0033267853
+glints-1776676440-29,Exim,glints,other-it,0.0,0,0.009878046
+glints-1776678256-493,Dosen Teknik Informatika,glints,other-it,1.0,1,0.98558927
+glints-1778507284-36,Engineer On Site,glints,it-support-network,0.0,0,0.0009953001
+glints-1776676825-126,Sales Promotor,glints,sales-account,0.0,0,0.0007384321
+glints-1778509442-729,It Bootcamp Software Developer Jakarta,glints,software-engineering,1.0,1,0.982109
+linkedin-linkedin-2054,"Staff, Integration Engineer (Backend)",linkedin,software-engineering,0.0,0,9.270297e-05
+glints-1778508870-585,Guru Informatika/Tik,glints,other-it,1.0,1,0.9948027
+glints-1776677819-383,Admin Online Shop,glints,admin-operations,1.0,1,0.9890355
+glints-1776677547-311,Admin,glints,admin-operations,1.0,1,0.9779745
+glints-1776678532-564,Junior It Quality Assurance - Can Join Immediately,glints,qa-security,0.0,0,0.008086368
+glints-1776676962-161,"Project Manager (Erp, Ticketing & Assessment)",glints,product-project-business,0.0,0,0.008916766
+glints-1778509534-756,It Technical Writer,glints,software-engineering,0.0,0,0.0011168703
+glints-1778509157-650,Staff It R&D (Research & Development) Engineer,glints,other-it,1.0,1,0.9395654
+glints-1776678620-585,It Account Manager,glints,sales-account,0.0,0,0.0039321915
+glints-1778509214-669,It Quality Assurance,glints,qa-security,0.0,0,0.00341993
+glints-1776676465-36,Network Security Engineer,glints,it-support-network,0.0,0,7.354399e-05
+linkedin-linkedin-2014,"Staff Data Engineer Display Marketing Team (Bangkok Based, Relocation Provided)",linkedin,data-ai,0.0,0,0.005139746
+glints-1778508829-570,Account Manager - It Solutions,glints,sales-account,0.0,0,0.013083351
+glints-1778508135-322,Engineer On-Site Bali (Outsourcing),glints,it-support-network,1.0,1,0.9318212
+glints-1778509575-763,It Marketing,glints,data-ai,0.0,0,0.005808318
+glints-1776679584-836,It Support,glints,qa-security,0.0,0,0.00048657972
+linkedin-linkedin-2051,Bash/Powershell Engineer,linkedin,other-it,0.0,0,0.0001626632
+linkedin-linkedin-2014,"Staff Data Engineer Display Marketing Team (Bangkok Based, Relocation Provided)",linkedin,data-ai,1.0,1,0.9940265
+glints-1776678284-500,Guru Informatika - Pontianak,glints,other-it,0.0,0,0.0026243366
+glints-1778508783-553,Junior It Quality Assurance - Can Join Immediately,glints,qa-security,0.0,0,0.0008165909
+glints-1776679165-725,It Product Manager,glints,qa-security,0.0,0,0.00027041676
+glints-1776678567-572,It Digital Sales Specialist,glints,it-support-network,1.0,1,0.99075615
+glints-1776679846-893,It Internship,glints,software-engineering,1.0,1,0.95785576
+glints-1778509389-712,It Business Process Analyst,glints,other-it,0.0,0,0.0036881333
+glints-1778510083-921,Helpdesk It,glints,software-engineering,0.0,0,0.0034560382
+glints-1776679241-745,It Support & Development,glints,it-support-network,1.0,1,0.9625054
+glints-1776678299-504,Senior Data Analyst,glints,data-ai,1.0,1,0.98687094
+glints-1776679790-881,It Web,glints,it-support-network,0.0,0,0.00039582865
+glints-1776679191-732,Senior It Support & Graphic Design,glints,it-support-network,1.0,1,0.9858025
+glints-1776678361-520,Erp Programmer Supervisor,glints,software-engineering,0.0,0,0.0015988672
+glints-1778508998-621,Freelance It Support - Install Device 2Jam/Hari - P.Kalimantan,glints,it-support-network,0.0,0,0.0011337547
+glints-1776679131-716,It Qa Automation,glints,qa-security,0.0,0,0.013176089
+glints-1778507502-113,Technical Writer Internship,glints,product-project-business,0.0,0,0.0012545874
+glints-1776677076-192,Software Developer Engineer C And C++,glints,software-engineering,1.0,1,0.98041916
+linkedin-linkedin-2120,Data Management Engineer,linkedin,other-it,0.0,0,0.0053588217
+glints-1778508976-613,Senior It Grc Consultant,glints,qa-security,0.0,0,0.003231154
+glints-1778508826-569,Pengajar Kursus Dan Ekskul It,glints,design-content,1.0,1,0.9854966
+glints-1778507539-125,Middleware Developer - Telecommunication,glints,other-it,1.0,1,0.9749351
+linkedin-linkedin-2077,Mobile Game Developer,linkedin,other-it,1.0,1,0.98818254
+glints-1776677684-348,Admin Project,glints,it-support-network,0.0,0,0.0010509293
+glints-1778509479-736,It & Administrasi (Fulltime Jakarta),glints,sales-account,1.0,1,0.9702775
+glints-1778509407-717,It Support Engineer Wajib Bisa Laravel & Flutter,glints,it-support-network,0.0,0,0.0007996921
+glints-1776679191-732,Senior It Support & Graphic Design,glints,it-support-network,0.0,0,0.0010859413
+glints-1778508935-606,Sales Executive (It),glints,sales-account,1.0,1,0.98670197
+glints-1778508498-451,Data Manager & Analyst,glints,data-ai,0.0,0,0.0051157973
+glints-1778509442-729,It Bootcamp Software Developer Jakarta,glints,software-engineering,0.0,0,0.001191722
+glints-1776679842-892,It Ecommerce,glints,it-support-network,0.0,0,0.0071221166
+glints-1778510031-903,It Support,glints,it-support-network,1.0,1,0.9681767
+glints-1776676638-81,Technical Support,glints,qa-security,1.0,1,0.96210164
+glints-1776678965-671,It Support & Qa Internship,glints,qa-security,1.0,1,0.97999096
+glints-1776676833-128,Quality Assurance Analyst,glints,software-engineering,1.0,1,0.9845396
+glints-1778508963-608,It Helpdesk Microsoft 365 - English Speaker,glints,it-support-network,0.0,0,0.0002975094
+glints-1778508137-323,Business Operations Intern - Glints Future Leaders Programme,glints,data-ai,0.0,0,0.00020581459
+glints-1776679013-684,It Support - Internet Service Provider,glints,it-support-network,1.0,1,0.97844243
+glints-1778508161-332,Finance Intern (Ar Focused) - Glints Future Leaders Programme,glints,admin-operations,0.0,0,0.0006668111
+glints-1776677532-307,Technical Writer,glints,design-content,0.0,0,0.0006251093
+glints-1776679184-730,It Mandarin Speaker,glints,it-support-network,0.0,0,0.0004423797
+glints-1776677462-289,Network Engineer (Ccna/Ccnp),glints,it-support-network,0.0,0,0.0005154924
+glints-1776679435-796,Functional Analyst,glints,other-it,1.0,1,0.9846633
+glints-1776677195-222,Software Development,glints,other-it,1.0,1,0.96998596
+glints-1778509641-786,It Support (Internship),glints,it-support-network,1.0,1,0.97230685
+glints-1778508835-572,Supervisor Sistem Erp Dan It Inventory,glints,admin-operations,1.0,1,0.98849374
+glints-1778508820-567,Intern It Project Manager,glints,product-project-business,0.0,0,0.0062809666
+glints-1778509146-646,It Functional Analyst,glints,data-ai,0.0,0,0.0005344974
+glints-1776676462-35,Junior Software Engineer,glints,software-engineering,0.0,0,0.0010962803
+glints-1778510214-970,It Programmer,glints,software-engineering,0.0,0,0.004158321
+glints-1776677532-307,Technical Writer,glints,design-content,1.0,1,0.9840093
+glints-1778508577-480,Data Analis Intern,glints,other-it,1.0,1,0.9863453
+glints-1778507869-239,Qa Cs Trainer,glints,qa-security,0.0,0,0.004426396
+glints-1778508820-567,Intern It Project Manager,glints,product-project-business,1.0,1,0.98634523
+glints-1778507717-183,Backend Developer (Nodejs Expressjs),glints,software-engineering,0.0,0,0.022490457
+linkedin-linkedin-2068,Fullstack Engineer - Kredimall (Sde 2),linkedin,software-engineering,0.0,0,0.001536294
+linkedin-linkedin-2050,Rest Api Programmer,linkedin,software-engineering,0.0,0,0.0008025583
+glints-1778507869-239,Qa Cs Trainer,glints,qa-security,0.0,0,0.00034569632
+glints-1778508300-382,Sales Executive Area Banjarmasin (Aksesoris It / Audio),glints,sales-account,0.0,0,0.0015454805
+linkedin-linkedin-2105,Wordpress Developer,linkedin,other-it,1.0,1,0.98643833
+linkedin-linkedin-2128,"Software Engineer, Ios Core Product - Surabaya, Indonesia",linkedin,software-engineering,1.0,1,0.9797698
+glints-1776676487-42,Kabag Operasional,glints,other-it,1.0,1,0.9547839
+linkedin-linkedin-2208,Frontend Developer,linkedin,software-engineering,0.0,0,0.00071468804
+glints-1776678497-555,Coding Teacher,glints,other-it,0.0,0,0.0023188065
+linkedin-linkedin-2005,Odoo Developer,linkedin,other-it,1.0,1,0.9893405
+glints-1776676638-81,Technical Support,glints,qa-security,0.0,0,0.004715018
+glints-1776679013-684,It Support - Internet Service Provider,glints,it-support-network,0.0,0,0.0010901182
+linkedin-linkedin-2054,"Staff, Integration Engineer (Backend)",linkedin,software-engineering,0.0,0,0.003480909
+glints-1776679846-893,It Internship,glints,software-engineering,0.0,0,0.0012566552
+glints-1776679241-745,It Support & Development,glints,it-support-network,0.0,0,0.002758232
+glints-1778509346-696,Ai & It Support Specialist,glints,it-support-network,1.0,1,0.9816403
+glints-1778508158-331,Account Management Associate,glints,it-support-network,0.0,0,0.20137325
+linkedin-linkedin-2208,Frontend Developer,linkedin,software-engineering,1.0,1,0.98438853
+glints-1778508465-439,Senior Sourcing Analyst (It/ Talent),glints,other-it,0.0,0,0.0024571586
+glints-1778507598-147,Manager Finance,glints,admin-operations,0.0,0,0.004381448
+glints-1776679435-796,Functional Analyst,glints,other-it,0.0,0,0.0017478389
+glints-1778508582-482,Staff Data Analyst,glints,data-ai,0.0,0,0.0016408789
+linkedin-linkedin-2183,Technology Lead (Indonesia),linkedin,data-ai,0.0,0,0.0018010905
+glints-1778507447-95,Backend Developer,glints,software-engineering,0.0,0,0.007496384
+glints-1776678478-550,System Implementator (Sim Rs),glints,software-engineering,0.0,0,0.010960956
+glints-1778507717-183,Backend Developer (Nodejs Expressjs),glints,software-engineering,1.0,1,0.98239595
+glints-1776677061-188,Software Engineer,glints,software-engineering,1.0,1,0.984441
+glints-1778508629-498,Data Analyst,glints,data-ai,1.0,1,0.9473816
+glints-1778508078-303,Customer Service,glints,sales-account,1.0,1,0.9902263
+glints-1778507730-188,Production Support Downstream - Banking Syariah,glints,data-ai,0.0,0,0.0015097974
+glints-1776676405-20,Golang Developer,glints,software-engineering,0.0,0,0.0051896223
+glints-1776677354-261,Sales Engineer (Pt Aleph Teknologi Indonesia),glints,it-support-network,0.0,0,0.002489935
+glints-1778509472-733,Trainer It,glints,other-it,1.0,1,0.9831616
+glints-1778509300-680,Digital & It Operations Assistant,glints,it-support-network,0.0,0,0.006203341
+glints-1776677604-327,Devops Engineer,glints,software-engineering,1.0,1,0.9778875
+glints-1778508135-322,Engineer On-Site Bali (Outsourcing),glints,it-support-network,0.0,0,0.0013175935
+linkedin-linkedin-2046,Etl Testing & Etl Automation Engineer,linkedin,data-ai,0.0,0,0.00418811
+glints-1776679057-696,Project Leader (It),glints,other-it,0.0,0,0.0010629613
+glints-1778510264-987,It Software & Hardware,glints,it-support-network,0.0,0,0.007996819
+glints-1778508976-613,Senior It Grc Consultant,glints,qa-security,1.0,1,0.9852962
+glints-1778509229-674,Presales - It Server And Cloud,glints,sales-account,1.0,1,0.95146316
+glints-1778507704-178,Admin & Sales Conter Cctv Mart,glints,sales-account,0.0,0,0.0011200508
+glints-1776679933-916,It Helpdesk,glints,it-support-network,1.0,1,0.9802849
+linkedin-linkedin-2011,Coding Specialist (Fluent In German) - Freelance Ai Trainer Project,linkedin,other-it,0.0,0,0.00055296987
+glints-1778507198-24,L1 & L2 Security Operation Center (Soc) Siem,glints,qa-security,1.0,1,0.9914787
+glints-1778509656-791,Admin Tender (It Company),glints,sales-account,1.0,1,0.9951137
+linkedin-linkedin-2124,Full Stack Developer,linkedin,software-engineering,0.0,0,0.00069126504
+glints-1778507704-178,Admin & Sales Conter Cctv Mart,glints,sales-account,1.0,1,0.9853523
+glints-1776679165-725,It Product Manager,glints,qa-security,1.0,1,0.9708753
+linkedin-linkedin-2006,Application Developer Malang (.Net),linkedin,other-it,0.0,0,0.0028892101
+glints-1776678054-441,System Analyst Jakarta/Malang,glints,software-engineering,0.0,0,0.011498705
+glints-1778508887-591,Guru Informatika - Malang,glints,other-it,0.0,0,0.0018304767
+glints-1776678062-443,Online Sales Specialist (Ed-Tech),glints,sales-account,1.0,1,0.9780667
+glints-1778509743-823,It Solutions Engineer,glints,sales-account,0.0,0,0.0035897426
+glints-1778507982-269,Specialist Datacenter,glints,it-support-network,1.0,1,0.9797592
+glints-1778508596-487,Guru Informatika - Palu,glints,other-it,0.0,0,0.011601594
+glints-1778507207-27,Product Sales Executive,glints,qa-security,0.0,0,0.033347957
+glints-1778507628-158,Digital Marketing,glints,sales-account,0.0,0,0.0036660295
+glints-1778508184-341,Technical Writer,glints,it-support-network,1.0,1,0.97036934
+glints-1778507539-125,Middleware Developer - Telecommunication,glints,other-it,0.0,0,0.00043594476
+glints-1778507778-206,Data Engineer (Etl Microsoft Fabric) - Asap,glints,data-ai,0.0,0,0.021639593
+glints-1778509693-804,System Analyst,glints,software-engineering,0.0,0,0.0013122921
+glints-1778510214-970,It Programmer,glints,software-engineering,0.0,0,0.00021125595
+glints-1778508887-591,Guru Informatika - Malang,glints,other-it,1.0,1,0.9881033
+glints-1778507609-151,"Software Engineer (Php, Javascript)",glints,software-engineering,1.0,1,0.98060274
+glints-1776677384-269,Hrd Supervisor,glints,admin-operations,1.0,1,0.97916424
+glints-1776676825-126,Sales Promotor,glints,sales-account,0.0,0,0.0051658857
+glints-1778508759-544,Pengembang Aplikasi Dan Sistem It,glints,software-engineering,0.0,0,0.00215735
+glints-1776676703-98,Senior Software Engineer,glints,software-engineering,0.0,0,0.0031444663
+glints-1776678753-617,Kepala Sales ((It Retail),glints,sales-account,0.0,0,0.00090955937
+glints-1776678858-644,(Female) It Project Manager,glints,product-project-business,0.0,0,0.00946543
+glints-1776676646-83,Programer,glints,software-engineering,0.0,0,0.0020997308
+glints-1778508629-498,Data Analyst,glints,data-ai,0.0,0,0.00071830355
+glints-1778510194-963,It Business Analyst,glints,product-project-business,1.0,1,0.9828934
+glints-1778508998-621,Freelance It Support - Install Device 2Jam/Hari - P.Kalimantan,glints,it-support-network,0.0,0,0.0017499917
+glints-1778508355-401,Data Analis,glints,other-it,1.0,1,0.9855728
+glints-1778508498-451,Data Manager & Analyst,glints,data-ai,0.0,0,0.0004428257
+glints-1778508572-478,Senior System Analyst (Financial Industry) - Asap,glints,qa-security,0.0,0,0.020552555
+glints-1778508292-379,Business Intelligence,glints,data-ai,0.0,0,0.0057387347
+glints-1776677241-234,Project Manager,glints,product-project-business,0.0,0,0.00032135905
+glints-1778509214-669,It Quality Assurance,glints,qa-security,1.0,1,0.984761
+glints-1778508303-383,System Analyst,glints,software-engineering,1.0,1,0.9671448
+glints-1778509882-853,It Support,glints,it-support-network,0.0,0,0.0021414896
+linkedin-linkedin-2078,Senior Qa Engineer (Enterprise Efficiency) - Sea Labs,linkedin,qa-security,0.0,0,8.591491e-05
+glints-1776677112-201,Technical Writer,glints,qa-security,0.0,0,0.00571591
+glints-1778509407-717,It Support Engineer Wajib Bisa Laravel & Flutter,glints,it-support-network,1.0,1,0.98265636
+glints-1778510010-895,It Business Analyst,glints,qa-security,0.0,0,0.0030946562
+glints-1778507373-69,Quality Assurance Customer Service,glints,qa-security,0.0,0,0.0010272532
+glints-1778507590-144,Internal Audit (Perbankan),glints,other-it,1.0,1,0.9669771
+glints-1778508835-572,Supervisor Sistem Erp Dan It Inventory,glints,admin-operations,0.0,0,0.003471022
+glints-1778509389-712,It Business Process Analyst,glints,other-it,0.0,0,0.00081391085
+glints-1776678746-615,It Service Engineer (Ev Battery) - Chinese Speaker (#483),glints,qa-security,1.0,1,0.9585783
+glints-1776677565-316,Host Live Tik Tok,glints,other-it,0.0,0,0.10248174
+glints-1778508577-480,Data Analis Intern,glints,other-it,0.0,0,0.0014393384
+glints-1778508596-487,Guru Informatika - Palu,glints,other-it,0.0,0,0.0026243355
+glints-1778508772-549,It Software Project Coordinator (Korean Speaker),glints,admin-operations,0.0,0,0.00012488013
+glints-1776680083-952,It Infrastructure Staff,glints,it-support-network,0.0,0,0.005832892
+glints-1776679958-923,Bootcamp It,glints,qa-security,1.0,1,0.96739703
+glints-1778507805-216,Support Engineer (Observability),glints,it-support-network,0.0,0,0.00016295505
+glints-1776676364-9,Back End Programer & Mobile Program,glints,software-engineering,0.0,0,0.067341626
+glints-1778508357-402,Account Representative,glints,sales-account,1.0,1,0.9681166
+glints-1776676962-161,"Project Manager (Erp, Ticketing & Assessment)",glints,product-project-business,0.0,0,0.0027812303
+glints-1776677322-252,Production Support Downstream - Banking Syariah,glints,data-ai,0.0,0,0.00031741377
+glints-1776676833-128,Quality Assurance Analyst,glints,software-engineering,0.0,0,0.0004079245
+linkedin-linkedin-2179,"Lead Software Engineer, Javascript/Typescript (Remote)",linkedin,software-engineering,0.0,0,0.0034285951
+glints-1776678438-539,It Coding Teacher - Kemayoran,glints,other-it,0.0,0,0.0001607284
+glints-1778509442-729,It Bootcamp Software Developer Jakarta,glints,software-engineering,0.0,0,0.00032811068
+glints-1776678753-617,Kepala Sales ((It Retail),glints,sales-account,1.0,1,0.9815195
+linkedin-linkedin-2122,Site Reliability Engineer,linkedin,it-support-network,0.0,0,0.028948141
+glints-1778509211-668,System Analyst,glints,product-project-business,1.0,1,0.990654
+glints-1776676726-104,Project Coordinator,glints,other-it,0.0,0,0.00036704037
+glints-1776678253-492,Implementor,glints,other-it,0.0,0,0.00019209979
+glints-1778508078-303,Customer Service,glints,sales-account,0.0,0,0.0032937352
+glints-1778508807-562,Guru Informatika,glints,other-it,1.0,1,0.9425336
+glints-1778509289-678,Sales Marketing It B2B,glints,it-support-network,0.0,0,0.0035979692
+glints-1778510008-894,Spesialis It Support,glints,it-support-network,1.0,1,0.9502345
+linkedin-linkedin-2198,Lead Data Engineer,linkedin,data-ai,1.0,1,0.9934702
+glints-1778509348-697,It Business Process Analyst,glints,product-project-business,1.0,1,0.9940067
+linkedin-linkedin-2168,Web Developer (Ui/Ux + Seo Focus),linkedin,software-engineering,0.0,0,0.0006937148
+glints-1778507580-140,Hr Tech Support,glints,admin-operations,0.0,0,0.00087400404
+glints-1776679554-828,It Network Supervisor,glints,it-support-network,1.0,1,0.9601629
+glints-1776676405-20,Golang Developer,glints,software-engineering,0.0,0,0.0031898117
+glints-1776676448-31,Exim,glints,other-it,0.0,0,0.00064085587
+glints-1776678798-629,"It Monitoring Support (Banking, Wfo Jakarta Selatan) - Shifting",glints,it-support-network,0.0,0,0.0067111854
+glints-1776679872-900,Staf It,glints,it-support-network,1.0,1,0.95489955
+glints-1778510037-905,It Support,glints,it-support-network,0.0,0,0.0014213889
+glints-1778508137-323,Business Operations Intern - Glints Future Leaders Programme,glints,data-ai,1.0,1,0.9822191
+glints-1776679135-717,It Full Stack Developer,glints,software-engineering,1.0,1,0.9816774
+glints-1778507531-122,Guru Ict Sd,glints,other-it,1.0,1,0.9709417
+glints-1776680067-948,It Consultant Manager,glints,qa-security,1.0,1,0.9935471
+glints-1778508219-354,"Video Engineer Broadcasting (Wfo Tangerang, Prefer Asap)",glints,it-support-network,0.0,0,0.003636194
+glints-1776677505-301,Administrasi Finance,glints,admin-operations,0.0,0,0.0021379283
+glints-1776677354-261,Sales Engineer (Pt Aleph Teknologi Indonesia),glints,it-support-network,1.0,1,0.9904629
+glints-1776677629-333,Presales Cum Project Executive (Python),glints,data-ai,1.0,1,0.97359544
+glints-1778507730-188,Production Support Downstream - Banking Syariah,glints,data-ai,1.0,1,0.98759043
+glints-1776679969-926,It Security,glints,other-it,0.0,0,0.0018682015
+glints-1778509580-765,It Support Staff,glints,software-engineering,0.0,0,0.01107369
+glints-1778507663-163,Noc Helpdesk,glints,it-support-network,1.0,1,0.97509676
+glints-1776678284-500,Guru Informatika - Pontianak,glints,other-it,0.0,0,0.025593586
+glints-1778507552-130,Api Management Support L2 Engineer,glints,it-support-network,0.0,0,0.0069371527
+glints-1778509160-651,System Analyst (Lark),glints,software-engineering,0.0,0,0.00021252026
+glints-1778507853-234,Admin Import,glints,admin-operations,1.0,1,0.97420835
+glints-1776680083-952,It Infrastructure Staff,glints,it-support-network,0.0,0,0.016189309
+glints-1778509165-653,Information Technology Governance & Sevice Management,glints,qa-security,0.0,0,0.001312634
+glints-1776679482-809,It Admin Staff,glints,it-support-network,0.0,0,0.00045476435
+glints-1776678903-656,Co Engineer Ai It,glints,data-ai,0.0,0,0.00020924905
+glints-1778508893-593,Data Implementor (Project Based),glints,data-ai,0.0,0,0.0019476197
+glints-1776677004-173,Sales Executive,glints,sales-account,0.0,0,0.00028239432
+glints-1778508974-612,System Analyst (Pt Sinar Sakti Internasional),glints,software-engineering,1.0,1,0.9895744
+glints-1776678438-539,It Coding Teacher - Kemayoran,glints,other-it,1.0,1,0.98550963
+glints-1778507447-95,Backend Developer,glints,software-engineering,1.0,1,0.98410743
+glints-1776678995-679,It Operations / Production Support (L1+),glints,it-support-network,1.0,1,0.9761739
+glints-1776677241-234,Project Manager,glints,product-project-business,1.0,1,0.98667145
+glints-1776676695-96,Technical Writer,glints,design-content,1.0,1,0.9892365
+glints-1778510214-970,It Programmer,glints,software-engineering,1.0,1,0.97910404
+glints-1776678567-572,It Digital Sales Specialist,glints,it-support-network,0.0,0,0.010900908
+glints-1776678489-553,Etl Developer,glints,data-ai,1.0,1,0.9860172
+glints-1778508200-347,Devops Engineer,glints,software-engineering,0.0,0,0.0007326905
+linkedin-linkedin-2206,Site Reliability Engineer,linkedin,software-engineering,1.0,1,0.991375
+glints-1778508826-569,Pengajar Kursus Dan Ekskul It,glints,design-content,0.0,0,0.0063674552
+glints-1776679013-684,It Support - Internet Service Provider,glints,it-support-network,0.0,0,0.017465208
+glints-1776679656-855,It Support,glints,it-support-network,0.0,0,0.0028840734
+glints-1776679307-762,It Officer,glints,it-support-network,0.0,0,0.0015608105
+glints-1776679554-828,It Network Supervisor,glints,it-support-network,0.0,0,0.0019791394
+glints-1778510031-903,It Support,glints,it-support-network,0.0,0,0.00076002727
+glints-1778507709-180,Technical Writer,glints,design-content,0.0,0,0.00059801835
+glints-1776678903-656,Co Engineer Ai It,glints,data-ai,0.0,0,0.001913438
+glints-1776677076-192,Software Developer Engineer C And C++,glints,software-engineering,0.0,0,0.00028884123
+glints-1778508512-456,Business Development Executive - It Solution,glints,sales-account,0.0,0,0.0042400346
+glints-1776678950-667,It Business Process Analyst,glints,data-ai,1.0,1,0.9585488
+glints-1776678489-553,Etl Developer,glints,data-ai,0.0,0,0.0004142067
+glints-1778509146-646,It Functional Analyst,glints,data-ai,1.0,1,0.98183763
+linkedin-linkedin-2020,"Account Solution Engineer, Informatica - Indonesia",linkedin,other-it,1.0,1,0.99716675
+glints-1778507319-49,Frontend Developer For Banking Industry,glints,software-engineering,0.0,0,0.0006112681
+glints-1776678950-667,It Business Process Analyst,glints,data-ai,0.0,0,0.0002461634
+glints-1776678387-526,It Quality Assurance (Manual/Automation) - Asap Wfo Jakarta,glints,qa-security,1.0,1,0.9769696
+glints-1776678299-504,Senior Data Analyst,glints,data-ai,0.0,0,0.000114929
+glints-1776678950-667,It Business Process Analyst,glints,data-ai,0.0,0,0.0012237588
+glints-1776676646-83,Programer,glints,software-engineering,1.0,1,0.9795991
+glints-1776676864-136,Backend Developer,glints,software-engineering,0.0,0,0.0001302783
+glints-1778509211-668,System Analyst,glints,product-project-business,0.0,0,0.0010621434
+glints-1778508637-501,Data Analis,glints,other-it,1.0,1,0.9946224
+glints-1776676966-162,Sales Team Leader,glints,sales-account,1.0,1,0.9814778
+glints-1776676799-119,Tentor Privat (Tik),glints,other-it,1.0,1,0.9754158
+glints-1776677669-344,Chief Operating Officer,glints,other-it,0.0,0,0.0004510025
+glints-1778508935-606,Sales Executive (It),glints,sales-account,0.0,0,0.0021517794
+glints-1776677384-269,Hrd Supervisor,glints,admin-operations,0.0,0,0.0036589357
+linkedin-linkedin-2005,Odoo Developer,linkedin,other-it,0.0,0,0.00022771543
+glints-1778508893-593,Data Implementor (Project Based),glints,data-ai,0.0,0,0.00058354676
+glints-1778509652-790,It Dan Admin Klinik,glints,it-support-network,0.0,0,0.0007084251
+glints-1776680028-937,It Business Analyst,glints,qa-security,1.0,1,0.98146117
+glints-1778510083-921,Helpdesk It,glints,software-engineering,0.0,0,0.0013464998
+glints-1778507799-214,National Cybersecurity Expert,glints,qa-security,1.0,1,0.973502
+glints-1778509346-696,Ai & It Support Specialist,glints,it-support-network,0.0,0,0.0007161314
+linkedin-linkedin-2179,"Lead Software Engineer, Javascript/Typescript (Remote)",linkedin,software-engineering,1.0,1,0.98070776
+glints-1776678489-553,Etl Developer,glints,data-ai,0.0,0,0.0066687665
+glints-1776676864-136,Backend Developer,glints,software-engineering,1.0,1,0.98410743
+glints-1778509598-772,It Security Analyst (Banking Industry),glints,qa-security,1.0,1,0.98388416
+glints-1776676332-1,Technical Support Intern,glints,it-support-network,1.0,1,0.95679104
+glints-1776677427-280,Desktop Support Lead,glints,it-support-network,0.0,0,0.00073139713
+glints-1778508759-544,Pengembang Aplikasi Dan Sistem It,glints,software-engineering,0.0,0,0.0047500306
+glints-1778508783-553,Junior It Quality Assurance - Can Join Immediately,glints,qa-security,0.0,0,0.0022545978
+glints-1776677505-301,Administrasi Finance,glints,admin-operations,0.0,0,0.0018357928
+glints-1776677333-255,Qa Cs Trainer,glints,qa-security,1.0,1,0.9874587
+glints-1776679135-717,It Full Stack Developer,glints,software-engineering,0.0,0,0.001405703
+glints-1776677509-302,Technical Support,glints,it-support-network,0.0,0,0.0053265314
+linkedin-linkedin-2046,Etl Testing & Etl Automation Engineer,linkedin,data-ai,1.0,1,0.9929346
+glints-1778508161-332,Finance Intern (Ar Focused) - Glints Future Leaders Programme,glints,admin-operations,1.0,1,0.97418183
+glints-1776677457-288,Pengajar Informatika,glints,other-it,0.0,0,0.01028104
+glints-1776677819-383,Admin Online Shop,glints,admin-operations,0.0,0,0.030946618
+glints-1776679584-836,It Support,glints,qa-security,0.0,0,0.0007302571
+glints-1778508582-482,Staff Data Analyst,glints,data-ai,0.0,0,0.0027262592
+glints-1778508102-310,Data Engineer,glints,data-ai,0.0,0,0.002558188
+glints-1776677209-226,Software Developer - Banking Industry,glints,software-engineering,1.0,1,0.97785735
+glints-1778508849-577,It Product Owner For Banking Industry,glints,qa-security,1.0,1,0.991635
+glints-1776678510-558,Business Development Manager (Non-It),glints,sales-account,1.0,1,0.9891553
+glints-1778508102-310,Data Engineer,glints,data-ai,1.0,1,0.9437918
+linkedin-linkedin-2115,"Game Engine Developer (Cocos2D-X, C++)",linkedin,other-it,1.0,1,0.99458265
+glints-1778509082-637,It Sales Executive,glints,it-support-network,0.0,0,0.0064863698
+glints-1776679248-747,It & Operation Helpdesk,glints,it-support-network,0.0,0,0.0001945716
+glints-1778508448-433,System Analyst Jakarta/Malang,glints,software-engineering,0.0,0,0.0006611041
+glints-1776677708-354,Social Media Intern,glints,sales-account,0.0,0,0.002636319
+glints-1776676807-121,Quality Assurance Intern,glints,qa-security,0.0,0,0.00045908027
+linkedin-linkedin-2068,Fullstack Engineer - Kredimall (Sde 2),linkedin,software-engineering,0.0,0,0.002148536
+linkedin-linkedin-2047,Software Engineer (Multi-Language),linkedin,software-engineering,0.0,0,2.0602587e-05
+glints-1778508292-379,Business Intelligence,glints,data-ai,1.0,1,0.97183937
+glints-1778507210-28,Database Administrator,glints,it-support-network,0.0,0,0.0008121003
+glints-1778509391-713,It Sales Executive,glints,it-support-network,0.0,0,0.00015887343
+glints-1778507552-130,Api Management Support L2 Engineer,glints,it-support-network,0.0,0,0.0008416749
+glints-1778509973-885,It Invetory,glints,it-support-network,1.0,1,0.98062
+glints-1778508520-459,"It Project Manager (Pmp Certified) - Banking Industry, Asap",glints,product-project-business,0.0,0,0.009801498
+glints-1776676726-104,Project Coordinator,glints,other-it,1.0,1,0.98963
+glints-1778509761-825,It Team Leader,glints,data-ai,1.0,1,0.9755394
+glints-1778507853-234,Admin Import,glints,admin-operations,0.0,0,0.00070632756
+glints-1778508826-569,Pengajar Kursus Dan Ekskul It,glints,design-content,0.0,0,0.00027068917
+glints-1778510165-952,It Consultant,glints,other-it,0.0,0,0.010716998
+glints-1778508870-585,Guru Informatika/Tik,glints,other-it,0.0,0,0.000680202
+glints-1778508313-387,Eos (Engineer Onsite),glints,it-support-network,0.0,0,0.00034332063
+glints-1776678062-443,Online Sales Specialist (Ed-Tech),glints,sales-account,0.0,0,0.0017215039
+linkedin-linkedin-2206,Site Reliability Engineer,linkedin,software-engineering,0.0,0,0.0005437344
+glints-1776677590-323,Internship Teknisi Software & Hardware,glints,it-support-network,0.0,0,0.015036901
+linkedin-linkedin-2011,Coding Specialist (Fluent In German) - Freelance Ai Trainer Project,linkedin,other-it,0.0,0,0.0009347093
+glints-1776677590-323,Internship Teknisi Software & Hardware,glints,it-support-network,0.0,0,0.0024747518
+glints-1778508995-620,Head Of It Security (Cybersecurity Services) (#584),glints,qa-security,1.0,1,0.98876077
+glints-1776676825-126,Sales Promotor,glints,sales-account,1.0,1,0.9816024
+glints-1778508629-498,Data Analyst,glints,data-ai,0.0,0,0.0046447064
+glints-1776677000-172,Cloud Engineer,glints,software-engineering,0.0,0,0.0011361077
+glints-1778510037-905,It Support,glints,it-support-network,1.0,1,0.98074543
+glints-1778509580-765,It Support Staff,glints,software-engineering,0.0,0,0.0018216374
+glints-1776679345-772,It Business Analyst - Asap (Wfo Jakarta Area),glints,qa-security,0.0,0,0.0034078276
+linkedin-linkedin-2091,Senior Software Engineer,linkedin,software-engineering,0.0,0,0.008313357
+glints-1776678815-633,Unpaid - Internship Magang Perusahaan Teknologi Informasi,glints,software-engineering,0.0,0,0.0006202922
+glints-1778509175-657,Junior It Project Manager,glints,qa-security,0.0,0,0.0024193828
+glints-1778509348-697,It Business Process Analyst,glints,product-project-business,0.0,0,0.0014962617
+glints-1776679842-892,It Ecommerce,glints,it-support-network,0.0,0,0.0017674774
+glints-1778508448-433,System Analyst Jakarta/Malang,glints,software-engineering,1.0,1,0.97359467
+glints-1778508701-523,It Account Executive Intern,glints,sales-account,0.0,0,0.0023234831
+linkedin-linkedin-2124,Full Stack Developer,linkedin,software-engineering,1.0,1,0.98584384
+glints-1778509611-776,Quality Assurance (It),glints,qa-security,0.0,0,0.00036683344
+glints-1778507539-125,Middleware Developer - Telecommunication,glints,other-it,0.0,0,0.0002701727
+linkedin-linkedin-2105,Wordpress Developer,linkedin,other-it,0.0,0,0.0001579516
+glints-1778508303-383,System Analyst,glints,software-engineering,0.0,0,0.0145197
+glints-1776679212-737,It Support & Helpdesk,glints,it-support-network,1.0,1,0.9916547
+glints-1776679495-812,Project Admin It,glints,qa-security,0.0,0,0.0017072764
+glints-1776678907-657,It Portfolio & Asset Management Staff,glints,it-support-network,0.0,0,0.000119197815
+glints-1776679248-747,It & Operation Helpdesk,glints,it-support-network,1.0,1,0.9835061
+glints-1776676803-120,"Smart Assistant (Remote, Part-Time)",glints,sales-account,0.0,0,0.025816262
+glints-1778510031-903,It Support,glints,it-support-network,0.0,0,0.0038085808
+glints-1776677183-219,Software Quality Assurance,glints,qa-security,0.0,0,0.0008431768
+glints-1778507580-140,Hr Tech Support,glints,admin-operations,1.0,1,0.9801527
+linkedin-linkedin-2050,Rest Api Programmer,linkedin,software-engineering,0.0,0,0.0001027678
+glints-1776677565-316,Host Live Tik Tok,glints,other-it,0.0,0,0.016009485
+glints-1776677760-367,Data Engineer,glints,data-ai,0.0,0,0.003928029
+glints-1778508412-420,"Teknisi Mep, Lift, Ess It, Ess Hardware, Tata Udara",glints,it-support-network,0.0,0,0.0016840155
+linkedin-linkedin-2047,Software Engineer (Multi-Language),linkedin,software-engineering,1.0,1,0.98735416
+glints-1776679212-737,It Support & Helpdesk,glints,it-support-network,0.0,0,0.0005750056
+glints-1776676440-29,Exim,glints,other-it,1.0,1,0.9824432
+linkedin-linkedin-2078,Senior Qa Engineer (Enterprise Efficiency) - Sea Labs,linkedin,qa-security,1.0,1,0.9853264
+glints-1776679790-881,It Web,glints,it-support-network,0.0,0,0.002332529
+glints-1776678532-564,Junior It Quality Assurance - Can Join Immediately,glints,qa-security,0.0,0,0.0008165909
+glints-1778507717-183,Backend Developer (Nodejs Expressjs),glints,software-engineering,0.0,0,0.0003577096
+linkedin-linkedin-2010,Software Engineer,linkedin,software-engineering,0.0,0,0.0007069448
+glints-1778508279-374,Junior Cloud Infrastructure - Telecommunication Industry,glints,it-support-network,1.0,1,0.98856074
+glints-1776679138-718,Spesialis It Support,glints,data-ai,1.0,1,0.95096433
+glints-1776678062-443,Online Sales Specialist (Ed-Tech),glints,sales-account,0.0,0,0.00076989766
+glints-1776676465-36,Network Security Engineer,glints,it-support-network,0.0,0,0.00097054185
+glints-1776678253-492,Implementor,glints,other-it,0.0,0,0.043498352
+glints-1778510008-894,Spesialis It Support,glints,it-support-network,0.0,0,0.0021449
+glints-1776676730-105,Data Engineer,glints,data-ai,0.0,0,0.008309992
+glints-1776678567-572,It Digital Sales Specialist,glints,it-support-network,0.0,0,0.0006201283
+linkedin-linkedin-1999,Ai Engineer,linkedin,data-ai,0.0,0,0.24714354
+glints-1776677365-264,Junior Sap Abap Developer South Jakarta (Wfo),glints,other-it,1.0,1,0.98795944
+glints-1776680031-938,It System Analyst (Finance & Erp),glints,qa-security,0.0,0,0.007883044
+glints-1778508303-383,System Analyst,glints,software-engineering,0.0,0,0.00012099655
+glints-1778507989-271,Staff Qa/Qc,glints,qa-security,0.0,0,0.0012605627
+glints-1778508401-416,Data Analyst,glints,data-ai,1.0,1,0.98728967
+glints-1778510264-987,It Software & Hardware,glints,it-support-network,1.0,1,0.9771593
+glints-1778508118-316,Admin Gudang,glints,admin-operations,0.0,0,0.00013171804
+glints-1776677333-255,Qa Cs Trainer,glints,qa-security,0.0,0,0.0008530603
+glints-1778508790-556,Etl Developer,glints,data-ai,0.0,0,0.005661994
+glints-1776676368-10,Admin Marketplace & Media Sosial,glints,admin-operations,1.0,1,0.9907096
+glints-1778508148-327,Vault Engineer (Ibm / Secrets Management),glints,software-engineering,0.0,0,0.002088936
+glints-1776677365-264,Junior Sap Abap Developer South Jakarta (Wfo),glints,other-it,0.0,0,0.0074549327
+glints-1778509652-790,It Dan Admin Klinik,glints,it-support-network,0.0,0,0.00064291497
+glints-1778510023-900,It Supervisor,glints,data-ai,0.0,0,0.007296272
+glints-1776676730-105,Data Engineer,glints,data-ai,0.0,0,0.0017910645
+glints-1776679656-855,It Support,glints,it-support-network,1.0,1,0.98880565
+glints-1776677590-323,Internship Teknisi Software & Hardware,glints,it-support-network,1.0,1,0.97607166
+glints-1778509598-772,It Security Analyst (Banking Industry),glints,qa-security,0.0,0,0.0005316718
+glints-1776679371-779,Sales Staff It,glints,sales-account,1.0,1,0.9851201
+glints-1778509405-716,Account Executive (It),glints,sales-account,1.0,1,0.9864381
+glints-1776677462-289,Network Engineer (Ccna/Ccnp),glints,it-support-network,0.0,0,0.00034007803
+glints-1778509513-748,It Product Manager,glints,product-project-business,0.0,0,0.0056912503
+glints-1776676455-33,Programmer,glints,data-ai,0.0,0,0.000573913
+glints-1776677462-289,Network Engineer (Ccna/Ccnp),glints,it-support-network,1.0,1,0.9911333
+glints-1776679212-737,It Support & Helpdesk,glints,it-support-network,0.0,0,0.0002469483
+linkedin-linkedin-2124,Full Stack Developer,linkedin,software-engineering,0.0,0,0.00035882165
+glints-1778509389-712,It Business Process Analyst,glints,other-it,1.0,1,0.97717035
+glints-1778509479-736,It & Administrasi (Fulltime Jakarta),glints,sales-account,0.0,0,0.0011114139
+glints-1778507413-83,Integrated Campaign Specialist,glints,qa-security,0.0,0,0.0031922234
+glints-1776679502-814,It Developer,glints,other-it,0.0,0,0.0007467816
+glints-1778508118-316,Admin Gudang,glints,admin-operations,0.0,0,0.0015248234
+glints-1778509656-791,Admin Tender (It Company),glints,sales-account,0.0,0,0.0058939797
+linkedin-linkedin-2168,Web Developer (Ui/Ux + Seo Focus),linkedin,software-engineering,1.0,1,0.9890684
+glints-1776677322-252,Production Support Downstream - Banking Syariah,glints,data-ai,0.0,0,0.0017002415
+glints-1776679138-718,Spesialis It Support,glints,data-ai,0.0,0,0.009011123
+glints-1776678361-520,Erp Programmer Supervisor,glints,software-engineering,1.0,1,0.9819117
+linkedin-linkedin-2118,Ai Implementation Developer,linkedin,data-ai,0.0,0,0.00011085192
+glints-1778509229-674,Presales - It Server And Cloud,glints,sales-account,0.0,0,0.0016201778
+glints-1778508355-401,Data Analis,glints,other-it,0.0,0,0.0060582547
+glints-1776677572-318,Admin Gudang,glints,admin-operations,0.0,0,0.004103745
+glints-1776678861-645,Teknisi/It (Network Internet Service Provider),glints,it-support-network,0.0,0,0.0030352052
+glints-1778508465-439,Senior Sourcing Analyst (It/ Talent),glints,other-it,1.0,1,0.9860115
+glints-1778509348-697,It Business Process Analyst,glints,product-project-business,0.0,0,0.008230919
+glints-1778509580-765,It Support Staff,glints,software-engineering,1.0,1,0.94957143
+glints-1776677684-348,Admin Project,glints,it-support-network,1.0,1,0.9893847
+glints-1776679958-923,Bootcamp It,glints,qa-security,0.0,0,0.0026866153
+glints-1776677183-219,Software Quality Assurance,glints,qa-security,0.0,0,0.0039738985
+glints-1776677195-222,Software Development,glints,other-it,0.0,0,0.0060284603
+glints-1778508292-379,Business Intelligence,glints,data-ai,0.0,0,0.0007824252
+glints-1778510008-894,Spesialis It Support,glints,it-support-network,0.0,0,0.0014239625
+glints-1778509214-669,It Quality Assurance,glints,qa-security,0.0,0,0.00054200075
+glints-1778507712-181,Product Owner/Tech Pm,glints,product-project-business,1.0,1,0.992923
+glints-1778507869-239,Qa Cs Trainer,glints,qa-security,1.0,1,0.98673326
+glints-1776676638-81,Technical Support,glints,qa-security,0.0,0,0.18845613
+glints-1776676803-120,"Smart Assistant (Remote, Part-Time)",glints,sales-account,0.0,0,0.00025829143
+glints-1778507982-269,Specialist Datacenter,glints,it-support-network,0.0,0,0.0039044006
+glints-1778507989-271,Staff Qa/Qc,glints,qa-security,0.0,0,0.00083315955
+glints-1776676465-36,Network Security Engineer,glints,it-support-network,1.0,1,0.9827521
+glints-1778508772-549,It Software Project Coordinator (Korean Speaker),glints,admin-operations,0.0,0,0.00020977383
+linkedin-linkedin-2152,System Engineer,linkedin,other-it,0.0,0,0.0004948773
+glints-1778509652-790,It Dan Admin Klinik,glints,it-support-network,1.0,1,0.9841253
+glints-1776679138-718,Spesialis It Support,glints,data-ai,0.0,0,0.0031338925
+glints-1776677322-252,Production Support Downstream - Banking Syariah,glints,data-ai,1.0,1,0.98759043
+glints-1776678256-493,Dosen Teknik Informatika,glints,other-it,0.0,0,0.0037655463
+linkedin-linkedin-2183,Technology Lead (Indonesia),linkedin,data-ai,1.0,1,0.9855621
+glints-1778508887-591,Guru Informatika - Malang,glints,other-it,0.0,0,0.0053721834
+linkedin-linkedin-2152,System Engineer,linkedin,other-it,0.0,0,0.0017069041
+glints-1776677319-251,Admin Sales (Sales Support),glints,sales-account,0.0,0,0.0004309681
+glints-1778508893-593,Data Implementor (Project Based),glints,data-ai,1.0,1,0.9841771
+glints-1778508137-323,Business Operations Intern - Glints Future Leaders Programme,glints,data-ai,0.0,0,0.00088963873
+glints-1776679349-773,Data Migration Analyst,glints,other-it,1.0,1,0.9728638
+glints-1776679922-914,It Developer,glints,qa-security,0.0,0,0.0007311152
+glints-1778510264-987,It Software & Hardware,glints,it-support-network,0.0,0,0.001022968
+glints-1778507585-142,Network Engineer Intern (Jakarta),glints,it-support-network,1.0,1,0.99310666
+glints-1778507771-203,Quality Assurance Automation,glints,qa-security,0.0,0,0.00065659406
+glints-1776678054-441,System Analyst Jakarta/Malang,glints,software-engineering,0.0,0,0.001644022
+glints-1776677760-367,Data Engineer,glints,data-ai,1.0,1,0.9437918
+glints-1778509472-733,Trainer It,glints,other-it,0.0,0,0.0025865794
+glints-1776679677-861,It Developer,glints,software-engineering,0.0,0,0.0075979014
+glints-1776679677-861,It Developer,glints,software-engineering,0.0,0,0.00023691452
+glints-1778508572-478,Senior System Analyst (Financial Industry) - Asap,glints,qa-security,1.0,1,0.9895192
+glints-1776679502-814,It Developer,glints,other-it,0.0,0,0.0017334106
+glints-1776679533-822,It Officer,glints,it-support-network,0.0,0,0.0001560773
+glints-1776678025-434,System Analyst,glints,software-engineering,0.0,0,0.001972976
+glints-1778508995-620,Head Of It Security (Cybersecurity Services) (#584),glints,qa-security,0.0,0,0.0022493587
+glints-1776680067-948,It Consultant Manager,glints,qa-security,0.0,0,0.00046481015
+glints-1776679219-739,It Production Support,glints,it-support-network,0.0,0,0.0007123109
+glints-1776677862-394,Downstream Engineer - Banking Syariah,glints,data-ai,0.0,0,0.0011869406
+glints-1778508807-562,Guru Informatika,glints,other-it,0.0,0,6.598937e-05
+glints-1778507447-95,Backend Developer,glints,software-engineering,0.0,0,0.0001302783
+glints-1776679135-717,It Full Stack Developer,glints,software-engineering,0.0,0,0.0018542663
+glints-1776677004-173,Sales Executive,glints,sales-account,1.0,1,0.980756
+glints-1778508219-354,"Video Engineer Broadcasting (Wfo Tangerang, Prefer Asap)",glints,it-support-network,1.0,1,0.99499583
+glints-1776677862-394,Downstream Engineer - Banking Syariah,glints,data-ai,1.0,1,0.9802621
+glints-1776676387-15,Recruitment Internship,glints,admin-operations,1.0,1,0.97943217
+glints-1778509157-650,Staff It R&D (Research & Development) Engineer,glints,other-it,0.0,0,0.00022964855
+glints-1776679872-900,Staf It,glints,it-support-network,0.0,0,0.00024128315
+glints-1776679853-895,Internship It,glints,other-it,1.0,1,0.96711755
+glints-1778509232-675,Sales It Training Specialist,glints,sales-account,0.0,0,0.005146692
+glints-1778508184-341,Technical Writer,glints,it-support-network,0.0,0,0.006905499
+glints-1778508772-549,It Software Project Coordinator (Korean Speaker),glints,admin-operations,1.0,1,0.9909352
+glints-1776678823-635,It Project Manager,glints,product-project-business,0.0,0,0.00036885947
+glints-1778508815-565,Guru Rekayasa Perangkat Lunak,glints,other-it,1.0,1,0.9889705
+glints-1778509932-870,It Intern,glints,qa-security,0.0,0,0.0011176142
+linkedin-linkedin-2152,System Engineer,linkedin,other-it,1.0,1,0.9906175
+linkedin-linkedin-2105,Wordpress Developer,linkedin,other-it,0.0,0,0.000121973804
+glints-1776679510-816,Supervisor It,glints,it-support-network,0.0,0,0.004236179
+glints-1778509175-657,Junior It Project Manager,glints,qa-security,1.0,1,0.9886548
+glints-1776678497-555,Coding Teacher,glints,other-it,0.0,0,0.0010384618
+linkedin-linkedin-2201,Gameplay Engineer (Cocos2D-X),linkedin,other-it,0.0,0,0.0007584395
+glints-1778508412-420,"Teknisi Mep, Lift, Ess It, Ess Hardware, Tata Udara",glints,it-support-network,1.0,1,0.94774425
+glints-1778507704-178,Admin & Sales Conter Cctv Mart,glints,sales-account,0.0,0,0.0027432926
+linkedin-linkedin-2198,Lead Data Engineer,linkedin,data-ai,0.0,0,0.0031139823
+glints-1776677427-280,Desktop Support Lead,glints,it-support-network,1.0,1,0.9695811
+glints-1778508247-363,Sales Executive Area Makassar (Aksesoris It / Audio),glints,sales-account,0.0,0,0.0015449477
+glints-1778508158-331,Account Management Associate,glints,it-support-network,0.0,0,0.011144508
+glints-1778507485-107,Admin Gudang,glints,sales-account,0.0,0,0.0038653864
+glints-1776676448-31,Exim,glints,other-it,0.0,0,0.005708005
+linkedin-linkedin-2011,Coding Specialist (Fluent In German) - Freelance Ai Trainer Project,linkedin,other-it,1.0,1,0.98924977
+glints-1776678815-633,Unpaid - Internship Magang Perusahaan Teknologi Informasi,glints,software-engineering,0.0,0,0.004463381
+glints-1778509513-748,It Product Manager,glints,product-project-business,0.0,0,0.00032228965
+glints-1778507198-24,L1 & L2 Security Operation Center (Soc) Siem,glints,qa-security,0.0,0,5.989935e-05
+glints-1776676332-1,Technical Support Intern,glints,it-support-network,0.0,0,0.00034510196
+glints-1778507284-36,Engineer On Site,glints,it-support-network,0.0,0,0.0027917735
+glints-1776678965-671,It Support & Qa Internship,glints,qa-security,0.0,0,0.021568395
+glints-1778507413-83,Integrated Campaign Specialist,glints,qa-security,0.0,0,0.0056920517
+glints-1778509012-626,It Sales (Remote Jogja),glints,sales-account,0.0,0,0.0010135348
+glints-1778509289-678,Sales Marketing It B2B,glints,it-support-network,1.0,1,0.9799867
+linkedin-linkedin-2208,Frontend Developer,linkedin,software-engineering,0.0,0,4.1211653e-05
+linkedin-linkedin-2205,Senior Staff Engineer Test Technology And Solutions,linkedin,it-support-network,0.0,0,0.0023418888
+glints-1778507989-271,Staff Qa/Qc,glints,qa-security,1.0,1,0.9892965
+glints-1778507502-113,Technical Writer Internship,glints,product-project-business,1.0,1,0.9820113
+linkedin-linkedin-2077,Mobile Game Developer,linkedin,other-it,0.0,0,0.0004674751
+glints-1778508078-303,Customer Service,glints,sales-account,0.0,0,0.0049855527
+glints-1778508412-420,"Teknisi Mep, Lift, Ess It, Ess Hardware, Tata Udara",glints,it-support-network,0.0,0,0.0041271495
+glints-1778508514-457,Data Analyst,glints,data-ai,1.0,1,0.9751737
+glints-1776679656-855,It Support,glints,it-support-network,0.0,0,0.0010011431
+glints-1776677547-311,Admin,glints,admin-operations,0.0,0,0.0023132102
+glints-1776676646-83,Programer,glints,software-engineering,0.0,0,0.0060739117
+glints-1776678253-492,Implementor,glints,other-it,1.0,1,0.9661599
+glints-1776678478-550,System Implementator (Sim Rs),glints,software-engineering,0.0,0,0.00165291
+glints-1776679677-861,It Developer,glints,software-engineering,1.0,1,0.98639023
+glints-1778509160-651,System Analyst (Lark),glints,software-engineering,1.0,1,0.983108
+linkedin-linkedin-2120,Data Management Engineer,linkedin,other-it,0.0,0,5.489822e-05
+glints-1778508357-402,Account Representative,glints,sales-account,0.0,0,0.003807622
+linkedin-linkedin-2091,Senior Software Engineer,linkedin,software-engineering,1.0,1,0.9723601
+glints-1776679349-773,Data Migration Analyst,glints,other-it,0.0,0,0.00037275816
+glints-1776677354-261,Sales Engineer (Pt Aleph Teknologi Indonesia),glints,it-support-network,0.0,0,0.0077576796
+glints-1778509157-650,Staff It R&D (Research & Development) Engineer,glints,other-it,0.0,0,0.005678598
+glints-1776678103-454,Quality Assurance Engineer,glints,qa-security,1.0,1,0.9862446
+glints-1778507799-214,National Cybersecurity Expert,glints,qa-security,0.0,0,0.00034354063
+glints-1778507198-24,L1 & L2 Security Operation Center (Soc) Siem,glints,qa-security,0.0,0,0.006956894
+glints-1776677669-344,Chief Operating Officer,glints,other-it,0.0,0,0.002191227
+glints-1776677565-316,Host Live Tik Tok,glints,other-it,1.0,1,0.9759391
+glints-1778508514-457,Data Analyst,glints,data-ai,0.0,0,0.00029588488
+glints-1778508582-482,Staff Data Analyst,glints,data-ai,1.0,1,0.94708395
+glints-1776677494-298,Bootcamp Software Quality Assurance Automation & Ai Development,glints,qa-security,0.0,0,0.00037608572
+glints-1776677209-226,Software Developer - Banking Industry,glints,software-engineering,0.0,0,0.002489448
+glints-1776677457-288,Pengajar Informatika,glints,other-it,1.0,1,0.9979054
+linkedin-linkedin-2010,Software Engineer,linkedin,software-engineering,0.0,0,5.0193816e-05
+glints-1776676695-96,Technical Writer,glints,design-content,0.0,0,0.0020918048
+glints-1776676368-10,Admin Marketplace & Media Sosial,glints,admin-operations,0.0,0,0.005506769
+glints-1778508974-612,System Analyst (Pt Sinar Sakti Internasional),glints,software-engineering,0.0,0,0.0005175328
+glints-1776680031-938,It System Analyst (Finance & Erp),glints,qa-security,0.0,0,0.0003845358
+glints-1778509534-756,It Technical Writer,glints,software-engineering,0.0,0,0.00062359875
+glints-1776679872-900,Staf It,glints,it-support-network,0.0,0,0.033559214
+glints-1776677427-280,Desktop Support Lead,glints,it-support-network,0.0,0,0.0068432065
+glints-1778509743-823,It Solutions Engineer,glints,sales-account,1.0,1,0.945265
+linkedin-linkedin-2120,Data Management Engineer,linkedin,other-it,1.0,1,0.99362975
+linkedin-linkedin-2180,Fullstack Developer,linkedin,software-engineering,0.0,0,0.0007237098
+glints-1776677326-253,Noc Helpdesk,glints,it-support-network,0.0,0,0.01031082
+glints-1776677000-172,Cloud Engineer,glints,software-engineering,0.0,0,0.0026005798
+glints-1778510165-952,It Consultant,glints,other-it,0.0,0,0.00059011986
+glints-1776676966-162,Sales Team Leader,glints,sales-account,0.0,0,0.00588142
+linkedin-linkedin-2132,Machine Learning & Ai Engineer,linkedin,data-ai,1.0,1,0.986172
+glints-1778509413-719,Unpaid - Internship Magang Perusahaan Teknologi Informasi,glints,software-engineering,0.0,0,0.004463381
+glints-1776679922-914,It Developer,glints,qa-security,1.0,1,0.9863708
+glints-1778507502-113,Technical Writer Internship,glints,product-project-business,0.0,0,0.00022075407
+glints-1778508976-613,Senior It Grc Consultant,glints,qa-security,0.0,0,0.00022633011
+glints-1778507712-181,Product Owner/Tech Pm,glints,product-project-business,0.0,0,0.00020764576
+glints-1778509693-804,System Analyst,glints,software-engineering,0.0,0,0.00857189
+glints-1778508184-341,Technical Writer,glints,it-support-network,0.0,0,0.00031559094
+glints-1776678798-629,"It Monitoring Support (Banking, Wfo Jakarta Selatan) - Shifting",glints,it-support-network,0.0,0,0.004355811
+glints-1776676405-20,Golang Developer,glints,software-engineering,1.0,1,0.98409057
+glints-1776677457-288,Pengajar Informatika,glints,other-it,0.0,0,0.0017956619
+glints-1778508297-381,Network Infrastructure (Junior And Middle Level Asap),glints,it-support-network,1.0,1,0.97199655
+glints-1778508520-459,"It Project Manager (Pmp Certified) - Banking Industry, Asap",glints,product-project-business,1.0,1,0.97643787
+glints-1778509534-756,It Technical Writer,glints,software-engineering,1.0,1,0.9709032
+glints-1776677708-354,Social Media Intern,glints,sales-account,1.0,1,0.97712463
+glints-1776678510-558,Business Development Manager (Non-It),glints,sales-account,0.0,0,0.00023734615
+glints-1778510099-927,It Business Analyst,glints,qa-security,0.0,0,0.006896417
+glints-1776677629-333,Presales Cum Project Executive (Python),glints,data-ai,0.0,0,0.00011065021
+glints-1776679933-916,It Helpdesk,glints,it-support-network,0.0,0,0.020909686
+glints-1776676814-123,"Senior Devops Engineer - Banking Industry, Prefer Asap",glints,software-engineering,0.0,0,0.0054673245
+glints-1776679969-926,It Security,glints,other-it,1.0,1,0.9842786
+glints-1776677384-269,Hrd Supervisor,glints,admin-operations,0.0,0,0.0007979471
+glints-1776679969-926,It Security,glints,other-it,0.0,0,0.0069998065
+glints-1778508783-553,Junior It Quality Assurance - Can Join Immediately,glints,qa-security,1.0,1,0.9705475
+glints-1776677319-251,Admin Sales (Sales Support),glints,sales-account,1.0,1,0.9920892
+glints-1778507590-144,Internal Audit (Perbankan),glints,other-it,0.0,0,0.00096237165
+glints-1776676703-98,Senior Software Engineer,glints,software-engineering,1.0,1,0.9725993
+glints-1776678823-635,It Project Manager,glints,product-project-business,1.0,1,0.96745574
+glints-1778508401-416,Data Analyst,glints,data-ai,0.0,0,0.0031650132
+glints-1776680005-931,It Business Analyst,glints,product-project-business,1.0,1,0.95287025
+glints-1776678798-629,"It Monitoring Support (Banking, Wfo Jakarta Selatan) - Shifting",glints,it-support-network,1.0,1,0.99109334
+glints-1778507628-158,Digital Marketing,glints,sales-account,1.0,1,0.9868668
+glints-1778507585-142,Network Engineer Intern (Jakarta),glints,it-support-network,0.0,0,0.004632824
+glints-1776679278-755,Freelance Creative & It Support,glints,it-support-network,1.0,1,0.979351
+glints-1776678995-679,It Operations / Production Support (L1+),glints,it-support-network,0.0,0,0.00078072975
+glints-1776679816-887,It Programming,glints,software-engineering,1.0,1,0.9605836
+glints-1778509492-741,It Developement Executive,glints,other-it,0.0,0,0.0027614145
+glints-1776679467-805,It Helpdesk Manager,glints,it-support-network,0.0,0,0.0024425988
+glints-1776679131-716,It Qa Automation,glints,qa-security,1.0,1,0.9886407
+linkedin-linkedin-2180,Fullstack Developer,linkedin,software-engineering,0.0,0,0.0063914694
+glints-1776678404-530,Marketing Digital Produk It,glints,sales-account,0.0,0,0.010012115
+glints-1778510037-905,It Support,glints,it-support-network,0.0,0,0.008162214
+glints-1776679474-807,It Helpdesk,glints,it-support-network,0.0,0,0.029236713
+glints-1778507319-49,Frontend Developer For Banking Industry,glints,software-engineering,0.0,0,0.0013225772
+glints-1778510165-952,It Consultant,glints,other-it,1.0,1,0.97010034
+glints-1776679345-772,It Business Analyst - Asap (Wfo Jakarta Area),glints,qa-security,1.0,1,0.99515283
+glints-1776678284-500,Guru Informatika - Pontianak,glints,other-it,1.0,1,0.99152946
+linkedin-linkedin-2122,Site Reliability Engineer,linkedin,it-support-network,0.0,0,0.00011484125
+glints-1778507299-42,Ai Engineer Specialist,glints,data-ai,0.0,0,0.00056886615
+glints-1778509656-791,Admin Tender (It Company),glints,sales-account,0.0,0,0.0013413337
+glints-1776678620-585,It Account Manager,glints,sales-account,0.0,0,0.001069628
+glints-1776677061-188,Software Engineer,glints,software-engineering,0.0,0,0.0019747787
+glints-1778508815-565,Guru Rekayasa Perangkat Lunak,glints,other-it,0.0,0,0.0012340602
+glints-1776677509-302,Technical Support,glints,it-support-network,1.0,1,0.9906726
+glints-1776676703-98,Senior Software Engineer,glints,software-engineering,0.0,0,0.0017804615
+glints-1778508974-612,System Analyst (Pt Sinar Sakti Internasional),glints,software-engineering,0.0,0,0.008435091
+glints-1776678907-657,It Portfolio & Asset Management Staff,glints,it-support-network,0.0,0,0.024981681
+glints-1776679842-892,It Ecommerce,glints,it-support-network,1.0,1,0.9641469
+glints-1776679533-822,It Officer,glints,it-support-network,1.0,1,0.9056641
+glints-1778507805-216,Support Engineer (Observability),glints,it-support-network,1.0,1,0.97879124
+glints-1776676487-42,Kabag Operasional,glints,other-it,0.0,0,0.0064063002
+glints-1776679219-739,It Production Support,glints,it-support-network,1.0,1,0.9979178
+glints-1776680083-952,It Infrastructure Staff,glints,it-support-network,1.0,1,0.9688046
+glints-1778507709-180,Technical Writer,glints,design-content,0.0,0,0.0027106083
+glints-1776676966-162,Sales Team Leader,glints,sales-account,0.0,0,0.0040993197
+glints-1776679131-716,It Qa Automation,glints,qa-security,0.0,0,0.003417867
+glints-1778508701-523,It Account Executive Intern,glints,sales-account,1.0,1,0.9799485
+glints-1778508279-374,Junior Cloud Infrastructure - Telecommunication Industry,glints,it-support-network,0.0,0,0.0008592427
+glints-1778508596-487,Guru Informatika - Palu,glints,other-it,1.0,1,0.99152946
+glints-1776679584-836,It Support,glints,qa-security,1.0,1,0.9873612
+glints-1778508998-621,Freelance It Support - Install Device 2Jam/Hari - P.Kalimantan,glints,it-support-network,1.0,1,0.9937087
+glints-1776679790-881,It Web,glints,it-support-network,1.0,1,0.9825503
+glints-1776676332-1,Technical Support Intern,glints,it-support-network,0.0,0,0.012240658
+glints-1778509391-713,It Sales Executive,glints,it-support-network,1.0,1,0.98224324
+glints-1778507853-234,Admin Import,glints,admin-operations,0.0,0,0.013141575
+glints-1776677365-264,Junior Sap Abap Developer South Jakarta (Wfo),glints,other-it,0.0,0,0.0038657684
+glints-1776676807-121,Quality Assurance Intern,glints,qa-security,1.0,1,0.98126847
+glints-1778510099-927,It Business Analyst,glints,qa-security,1.0,1,0.9841201
+glints-1776678103-454,Quality Assurance Engineer,glints,qa-security,0.0,0,0.0028563032
+glints-1776677209-226,Software Developer - Banking Industry,glints,software-engineering,0.0,0,0.00042694813
+glints-1778507207-27,Product Sales Executive,glints,qa-security,1.0,1,0.99116695
+linkedin-linkedin-2047,Software Engineer (Multi-Language),linkedin,software-engineering,0.0,0,0.00031862105
+glints-1776679219-739,It Production Support,glints,it-support-network,0.0,0,0.0004084718
+glints-1778509492-741,It Developement Executive,glints,other-it,0.0,0,0.0043012314
+glints-1778508512-456,Business Development Executive - It Solution,glints,sales-account,1.0,1,0.98715794
+glints-1776677558-314,Technical Support,glints,it-support-network,0.0,0,0.0025200865
+glints-1776678361-520,Erp Programmer Supervisor,glints,software-engineering,0.0,0,0.026468303
+glints-1776676895-144,Head Of Project,glints,product-project-business,0.0,0,0.0024580425
+glints-1776677558-314,Technical Support,glints,it-support-network,0.0,0,0.0018242169
+glints-1778507709-180,Technical Writer,glints,design-content,1.0,1,0.9865186
+glints-1776677195-222,Software Development,glints,other-it,0.0,0,9.298212e-05
+glints-1778508300-382,Sales Executive Area Banjarmasin (Aksesoris It / Audio),glints,sales-account,1.0,1,0.96202165
+glints-1778507663-163,Noc Helpdesk,glints,it-support-network,0.0,0,0.085638314
+glints-1778507598-147,Manager Finance,glints,admin-operations,0.0,0,0.0005338798
+glints-1778508870-585,Guru Informatika/Tik,glints,other-it,0.0,0,0.00024466074
+glints-1778507730-188,Production Support Downstream - Banking Syariah,glints,data-ai,0.0,0,0.0017002415
+glints-1776679278-755,Freelance Creative & It Support,glints,it-support-network,0.0,0,0.013578822
+glints-1778507748-195,Security Engineer,glints,it-support-network,0.0,0,0.0016345535
+glints-1778508995-620,Head Of It Security (Cybersecurity Services) (#584),glints,qa-security,0.0,0,0.0024872704
+linkedin-linkedin-2206,Site Reliability Engineer,linkedin,software-engineering,0.0,0,0.0006049446
+glints-1776680005-931,It Business Analyst,glints,product-project-business,0.0,0,0.005757784
+glints-1778509012-626,It Sales (Remote Jogja),glints,sales-account,0.0,0,0.0021085176
+glints-1776679495-812,Project Admin It,glints,qa-security,1.0,1,0.97778493
+glints-1776679252-748,Operational Data & Tech,glints,it-support-network,0.0,0,0.0011082898
+glints-1778509677-799,Sales Staff It,glints,sales-account,0.0,0,0.016036564
+glints-1776678858-644,(Female) It Project Manager,glints,product-project-business,1.0,1,0.96974325
+glints-1778508790-556,Etl Developer,glints,data-ai,1.0,1,0.9860172
+glints-1776678299-504,Senior Data Analyst,glints,data-ai,0.0,0,0.0011625184
+linkedin-linkedin-2180,Fullstack Developer,linkedin,software-engineering,1.0,1,0.87635654
+glints-1778509472-733,Trainer It,glints,other-it,0.0,0,0.001112789
+glints-1776677532-307,Technical Writer,glints,design-content,0.0,0,0.0012854144
+glints-1776677862-394,Downstream Engineer - Banking Syariah,glints,data-ai,0.0,0,0.002567591
+glints-1778509973-885,It Invetory,glints,it-support-network,0.0,0,0.0058860644
+glints-1776678478-550,System Implementator (Sim Rs),glints,software-engineering,1.0,1,0.9953462
+glints-1776679853-895,Internship It,glints,other-it,0.0,0,0.000208947
+glints-1778507942-264,Technical Support,glints,it-support-network,0.0,0,0.00017390162
+glints-1776677494-298,Bootcamp Software Quality Assurance Automation & Ai Development,glints,qa-security,1.0,1,0.9600457
+glints-1778508820-567,Intern It Project Manager,glints,product-project-business,0.0,0,0.007579368
+glints-1778508279-374,Junior Cloud Infrastructure - Telecommunication Industry,glints,it-support-network,0.0,0,0.008627093
+glints-1776677708-354,Social Media Intern,glints,sales-account,0.0,0,0.0010942542
+glints-1776677326-253,Noc Helpdesk,glints,it-support-network,1.0,1,0.97509676
+linkedin-linkedin-2054,"Staff, Integration Engineer (Backend)",linkedin,software-engineering,1.0,1,0.9741294
+glints-1776679191-732,Senior It Support & Graphic Design,glints,it-support-network,0.0,0,0.06388095
+glints-1778508498-451,Data Manager & Analyst,glints,data-ai,1.0,1,0.960753
+linkedin-linkedin-2132,Machine Learning & Ai Engineer,linkedin,data-ai,0.0,0,0.0006933583
+glints-1776680199-979,It Intern,glints,it-support-network,0.0,0,0.0005330947
+glints-1778509492-741,It Developement Executive,glints,other-it,1.0,1,0.9841407
+glints-1778508401-416,Data Analyst,glints,data-ai,0.0,0,0.0058639846
+glints-1778507695-175,Security Awareness Training Engineer,glints,qa-security,0.0,0,0.031180419
+glints-1778508355-401,Data Analis,glints,other-it,0.0,0,0.005103265
+glints-1776676590-69,Pre-Sales Consultant,glints,product-project-business,1.0,1,0.9725382
+glints-1776676462-35,Junior Software Engineer,glints,software-engineering,0.0,0,0.00028009558
+glints-1776678640-589,It Sales Manager,glints,sales-account,1.0,1,0.992383
+glints-1778510023-900,It Supervisor,glints,data-ai,0.0,0,0.00013835126
+glints-1776678025-434,System Analyst,glints,software-engineering,0.0,0,0.002208687
+glints-1776676448-31,Exim,glints,other-it,1.0,1,0.9824432
+linkedin-linkedin-2046,Etl Testing & Etl Automation Engineer,linkedin,data-ai,0.0,0,0.0056612827
+glints-1778507695-175,Security Awareness Training Engineer,glints,qa-security,1.0,1,0.98685426
+glints-1778507580-140,Hr Tech Support,glints,admin-operations,0.0,0,0.003706531
+glints-1778509160-651,System Analyst (Lark),glints,software-engineering,0.0,0,0.007632608
+glints-1778507799-214,National Cybersecurity Expert,glints,qa-security,0.0,0,0.014777784
+glints-1778508577-480,Data Analis Intern,glints,other-it,0.0,0,0.016157806
+glints-1776676864-136,Backend Developer,glints,software-engineering,0.0,0,0.005158075
+glints-1776677819-383,Admin Online Shop,glints,admin-operations,0.0,0,0.0025617045
+glints-1778508572-478,Senior System Analyst (Financial Industry) - Asap,glints,qa-security,0.0,0,0.00039208028
+glints-1776679467-805,It Helpdesk Manager,glints,it-support-network,1.0,1,0.94214886
+linkedin-linkedin-2051,Bash/Powershell Engineer,linkedin,other-it,1.0,1,0.9697044
+glints-1778508935-606,Sales Executive (It),glints,sales-account,0.0,0,0.0010281316
+glints-1776677558-314,Technical Support,glints,it-support-network,1.0,1,0.9523596
+glints-1776678383-525,Business Data Analyst (Accounting Divison),glints,data-ai,1.0,1,0.98177725
+glints-1776677629-333,Presales Cum Project Executive (Python),glints,data-ai,0.0,0,0.0017236358
+glints-1776678907-657,It Portfolio & Asset Management Staff,glints,it-support-network,1.0,1,0.9682732
+glints-1778510010-895,It Business Analyst,glints,qa-security,0.0,0,0.00792611
+glints-1776676590-69,Pre-Sales Consultant,glints,product-project-business,0.0,0,0.0046189544
+glints-1776676462-35,Junior Software Engineer,glints,software-engineering,1.0,1,0.97459936
+glints-1776679223-740,It Presales Consultant,glints,qa-security,0.0,0,0.01577739
+glints-1778507778-206,Data Engineer (Etl Microsoft Fabric) - Asap,glints,data-ai,0.0,0,0.0013525872
+glints-1776679278-755,Freelance Creative & It Support,glints,it-support-network,0.0,0,0.0140135
+glints-1778509479-736,It & Administrasi (Fulltime Jakarta),glints,sales-account,0.0,0,0.000623561
+glints-1778507982-269,Specialist Datacenter,glints,it-support-network,0.0,0,0.00085922144
+glints-1776678815-633,Unpaid - Internship Magang Perusahaan Teknologi Informasi,glints,software-engineering,1.0,1,0.9850292
+glints-1778507552-130,Api Management Support L2 Engineer,glints,it-support-network,1.0,1,0.9558021
+glints-1778509165-653,Information Technology Governance & Sevice Management,glints,qa-security,1.0,1,0.97350734
+glints-1778507748-195,Security Engineer,glints,it-support-network,0.0,0,0.00013649852
+glints-1776678704-605,It Support & Admin Support Sales,glints,it-support-network,0.0,0,0.0011811407
+linkedin-linkedin-2051,Bash/Powershell Engineer,linkedin,other-it,0.0,0,7.043975e-05
+glints-1776677061-188,Software Engineer,glints,software-engineering,0.0,0,0.002592323
+glints-1776678103-454,Quality Assurance Engineer,glints,qa-security,0.0,0,0.0051971218
+glints-1776679502-814,It Developer,glints,other-it,1.0,1,0.9795331
+glints-1776678256-493,Dosen Teknik Informatika,glints,other-it,0.0,0,0.0025930312
+glints-1776678054-441,System Analyst Jakarta/Malang,glints,software-engineering,1.0,1,0.97359467
+glints-1778507485-107,Admin Gudang,glints,sales-account,0.0,0,0.001426112
+glints-1778507598-147,Manager Finance,glints,admin-operations,1.0,1,0.9932309
+glints-1778508148-327,Vault Engineer (Ibm / Secrets Management),glints,software-engineering,1.0,1,0.96309906
+glints-1778507207-27,Product Sales Executive,glints,qa-security,0.0,0,0.00078881555
+linkedin-linkedin-2201,Gameplay Engineer (Cocos2D-X),linkedin,other-it,0.0,0,0.00028661542
+glints-1778509761-825,It Team Leader,glints,data-ai,0.0,0,0.009708019
+glints-1778510194-963,It Business Analyst,glints,product-project-business,0.0,0,0.006372474
+glints-1776679816-887,It Programming,glints,software-engineering,0.0,0,0.0018306082
+glints-1778507284-36,Engineer On Site,glints,it-support-network,1.0,1,0.9790017
+glints-1776678302-505,Etl Developer,glints,data-ai,1.0,1,0.9718685
+glints-1778509611-776,Quality Assurance (It),glints,qa-security,1.0,1,0.9650101
+glints-1778508297-381,Network Infrastructure (Junior And Middle Level Asap),glints,it-support-network,0.0,0,0.002793023
+glints-1778508829-570,Account Manager - It Solutions,glints,sales-account,1.0,1,0.9812049
+glints-1778509082-637,It Sales Executive,glints,it-support-network,0.0,0,0.0006210995
+glints-1776678640-589,It Sales Manager,glints,sales-account,0.0,0,0.00014121878
+glints-1778509761-825,It Team Leader,glints,data-ai,0.0,0,0.0005719408
+glints-1776678510-558,Business Development Manager (Non-It),glints,sales-account,0.0,0,0.009005054
+glints-1776678302-505,Etl Developer,glints,data-ai,0.0,0,0.00032201814
+glints-1776676364-9,Back End Programer & Mobile Program,glints,software-engineering,0.0,0,0.004126864
+glints-1776676803-120,"Smart Assistant (Remote, Part-Time)",glints,sales-account,1.0,1,0.98397964
+glints-1776677112-201,Technical Writer,glints,qa-security,1.0,1,0.9729741
+glints-1776678383-525,Business Data Analyst (Accounting Divison),glints,data-ai,0.0,0,0.0006253828
+glints-1778507942-264,Technical Support,glints,it-support-network,1.0,1,0.98689526
+glints-1776678486-552,"Erp System Analyst (Dynamics 365) Wfo Jakarta/Yogyakarta, Asap",glints,qa-security,1.0,1,0.9687627
+glints-1778508637-501,Data Analis,glints,other-it,0.0,0,0.0009174809
+glints-1778509693-804,System Analyst,glints,software-engineering,1.0,1,0.96029466
+glints-1776679274-754,It Internship (Magang),glints,software-engineering,0.0,0,0.0066370997
+glints-1778509405-716,Account Executive (It),glints,sales-account,0.0,0,0.004385513
+glints-1776676364-9,Back End Programer & Mobile Program,glints,software-engineering,1.0,1,0.93932664
+glints-1778507695-175,Security Awareness Training Engineer,glints,qa-security,0.0,0,0.0006426972
+glints-1778508247-363,Sales Executive Area Makassar (Aksesoris It / Audio),glints,sales-account,1.0,1,0.95251477
+glints-1776677004-173,Sales Executive,glints,sales-account,0.0,0,0.009670069
+linkedin-linkedin-2020,"Account Solution Engineer, Informatica - Indonesia",linkedin,other-it,0.0,0,0.001481736
+glints-1776679371-779,Sales Staff It,glints,sales-account,0.0,0,0.0072327326
+glints-1778507210-28,Database Administrator,glints,it-support-network,0.0,0,0.0169424
+glints-1776676440-29,Exim,glints,other-it,0.0,0,0.00064085587
+glints-1776679184-730,It Mandarin Speaker,glints,it-support-network,0.0,0,0.000107830514
+linkedin-linkedin-2068,Fullstack Engineer - Kredimall (Sde 2),linkedin,software-engineering,1.0,1,0.98888594
+linkedin-linkedin-2201,Gameplay Engineer (Cocos2D-X),linkedin,other-it,1.0,1,0.9907647
+glints-1776679036-690,It Intern,glints,software-engineering,1.0,1,0.975827
+glints-1776678532-564,Junior It Quality Assurance - Can Join Immediately,glints,qa-security,1.0,1,0.9705475
+glints-1776678025-434,System Analyst,glints,software-engineering,1.0,1,0.97972834
+linkedin-linkedin-2078,Senior Qa Engineer (Enterprise Efficiency) - Sea Labs,linkedin,qa-security,0.0,0,5.7637026e-05
+glints-1776677333-255,Qa Cs Trainer,glints,qa-security,0.0,0,0.0036226974
+glints-1776677572-318,Admin Gudang,glints,admin-operations,1.0,1,0.9971689
+linkedin-linkedin-1999,Ai Engineer,linkedin,data-ai,0.0,0,0.00024616922
+glints-1778507413-83,Integrated Campaign Specialist,glints,qa-security,1.0,1,0.9875483
+linkedin-linkedin-2128,"Software Engineer, Ios Core Product - Surabaya, Indonesia",linkedin,software-engineering,0.0,0,0.0042190156
+glints-1776679467-805,It Helpdesk Manager,glints,it-support-network,0.0,0,0.0010584698
+linkedin-linkedin-2168,Web Developer (Ui/Ux + Seo Focus),linkedin,software-engineering,0.0,0,0.0091380505
+glints-1776679510-816,Supervisor It,glints,it-support-network,1.0,1,0.9630642
+glints-1776679252-748,Operational Data & Tech,glints,it-support-network,1.0,1,0.98921096
+glints-1778508637-501,Data Analis,glints,other-it,0.0,0,0.0029815827
+glints-1778509175-657,Junior It Project Manager,glints,qa-security,0.0,0,0.0026278822
+glints-1778507609-151,"Software Engineer (Php, Javascript)",glints,software-engineering,0.0,0,0.00069461454
+glints-1778507210-28,Database Administrator,glints,it-support-network,1.0,1,0.98905057
+glints-1776678640-589,It Sales Manager,glints,sales-account,0.0,0,0.04293122
+glints-1776679533-822,It Officer,glints,it-support-network,0.0,0,0.0020978996
+glints-1776679307-762,It Officer,glints,it-support-network,0.0,0,0.0024715932
+glints-1776678013-431,Information Technology Project Manager,glints,data-ai,1.0,1,0.98787284
+glints-1778509391-713,It Sales Executive,glints,it-support-network,0.0,0,0.0006996335
+glints-1778508929-604,Guru Informatika/Tik,glints,other-it,0.0,0,0.00020770595
+linkedin-linkedin-2118,Ai Implementation Developer,linkedin,data-ai,1.0,1,0.98983765
+glints-1776678995-679,It Operations / Production Support (L1+),glints,it-support-network,0.0,0,0.0065477393
+glints-1778507373-69,Quality Assurance Customer Service,glints,qa-security,0.0,0,0.012718396
+glints-1778507663-163,Noc Helpdesk,glints,it-support-network,0.0,0,0.00089932256
+linkedin-linkedin-2205,Senior Staff Engineer Test Technology And Solutions,linkedin,it-support-network,0.0,0,0.0012547151
+glints-1776678684-600,It Business Development (B2B Sales),glints,sales-account,1.0,1,0.98776984
+glints-1776678013-431,Information Technology Project Manager,glints,data-ai,0.0,0,0.0015840341
+glints-1778509012-626,It Sales (Remote Jogja),glints,sales-account,1.0,1,0.9791109
+glints-1778507531-122,Guru Ict Sd,glints,other-it,0.0,0,0.00054406415
+glints-1776679252-748,Operational Data & Tech,glints,it-support-network,0.0,0,0.021788867
+glints-1778510023-900,It Supervisor,glints,data-ai,1.0,1,0.993279
+glints-1778509611-776,Quality Assurance (It),glints,qa-security,0.0,0,0.003043137
+glints-1776676695-96,Technical Writer,glints,design-content,0.0,0,9.260613e-05
+glints-1776679165-725,It Product Manager,glints,qa-security,0.0,0,0.00025206315
+glints-1776677326-253,Noc Helpdesk,glints,it-support-network,0.0,0,0.00089932256
+linkedin-linkedin-2006,Application Developer Malang (.Net),linkedin,other-it,1.0,1,0.9807769
+linkedin-linkedin-2115,"Game Engine Developer (Cocos2D-X, C++)",linkedin,other-it,0.0,0,0.0029349271
+glints-1778507585-142,Network Engineer Intern (Jakarta),glints,it-support-network,0.0,0,0.0041465983
+glints-1776677760-367,Data Engineer,glints,data-ai,0.0,0,0.0018975957
+glints-1776680005-931,It Business Analyst,glints,product-project-business,0.0,0,0.0002562736
+glints-1776679510-816,Supervisor It,glints,it-support-network,0.0,0,0.0010278667
+linkedin-linkedin-2115,"Game Engine Developer (Cocos2D-X, C++)",linkedin,other-it,0.0,0,0.006851972
+glints-1776677677-346,Odoo Python Developer,glints,data-ai,0.0,0,0.00033955617
+glints-1776678013-431,Information Technology Project Manager,glints,data-ai,0.0,0,0.003741439
+linkedin-linkedin-2122,Site Reliability Engineer,linkedin,it-support-network,1.0,1,0.97912085
+glints-1776678387-526,It Quality Assurance (Manual/Automation) - Asap Wfo Jakarta,glints,qa-security,0.0,0,0.0033638729
+glints-1778509513-748,It Product Manager,glints,product-project-business,1.0,1,0.98027927
+glints-1778509575-763,It Marketing,glints,data-ai,0.0,0,0.0043331473
+glints-1776678387-526,It Quality Assurance (Manual/Automation) - Asap Wfo Jakarta,glints,qa-security,0.0,0,0.0042635333
+glints-1776677000-172,Cloud Engineer,glints,software-engineering,1.0,1,0.96360797
+glints-1778508465-439,Senior Sourcing Analyst (It/ Talent),glints,other-it,0.0,0,0.001149773
+glints-1778507299-42,Ai Engineer Specialist,glints,data-ai,0.0,0,0.00062207103
+glints-1776679274-754,It Internship (Magang),glints,software-engineering,0.0,0,0.009255753
+glints-1778509932-870,It Intern,glints,qa-security,1.0,1,0.9639956
+glints-1776678861-645,Teknisi/It (Network Internet Service Provider),glints,it-support-network,1.0,1,0.9951964
+glints-1776677673-345,"Konstruksi & Property Perbaikan Bangunan,Gambar,It-Ai-E-Commerce",glints,qa-security,0.0,0,0.011914483
+glints-1776679223-740,It Presales Consultant,glints,qa-security,0.0,0,0.00043874598
+glints-1778507778-206,Data Engineer (Etl Microsoft Fabric) - Asap,glints,data-ai,1.0,1,0.9758873
+glints-1776676962-161,"Project Manager (Erp, Ticketing & Assessment)",glints,product-project-business,1.0,1,0.9786586
+linkedin-linkedin-2183,Technology Lead (Indonesia),linkedin,data-ai,0.0,0,0.0020866832
+glints-1776676487-42,Kabag Operasional,glints,other-it,0.0,0,0.00014018678
+glints-1778507628-158,Digital Marketing,glints,sales-account,0.0,0,0.00060776743
+glints-1776679474-807,It Helpdesk,glints,it-support-network,0.0,0,0.0002567476
+glints-1776676387-15,Recruitment Internship,glints,admin-operations,0.0,0,0.0011679404
+glints-1776678746-615,It Service Engineer (Ev Battery) - Chinese Speaker (#483),glints,qa-security,0.0,0,0.0010187252
+glints-1778508790-556,Etl Developer,glints,data-ai,0.0,0,0.0004142067
+glints-1776676814-123,"Senior Devops Engineer - Banking Industry, Prefer Asap",glints,software-engineering,0.0,0,0.0018513227
+glints-1778508200-347,Devops Engineer,glints,software-engineering,1.0,1,0.98452324
+glints-1778508247-363,Sales Executive Area Makassar (Aksesoris It / Audio),glints,sales-account,0.0,0,0.0005110528
+glints-1776678438-539,It Coding Teacher - Kemayoran,glints,other-it,0.0,0,0.0020141716
+glints-1776679474-807,It Helpdesk,glints,it-support-network,1.0,1,0.96320814
+glints-1778508219-354,"Video Engineer Broadcasting (Wfo Tangerang, Prefer Asap)",glints,it-support-network,0.0,0,0.0040823333
+linkedin-linkedin-2091,Senior Software Engineer,linkedin,software-engineering,0.0,0,4.4124812e-05
+glints-1778508357-402,Account Representative,glints,sales-account,0.0,0,0.00074022065
+glints-1776676799-119,Tentor Privat (Tik),glints,other-it,0.0,0,0.0010743303
+glints-1778508148-327,Vault Engineer (Ibm / Secrets Management),glints,software-engineering,0.0,0,0.005029414
+glints-1776678704-605,It Support & Admin Support Sales,glints,it-support-network,0.0,0,0.003308728
+glints-1778508849-577,It Product Owner For Banking Industry,glints,qa-security,0.0,0,0.05485601
+glints-1776677673-345,"Konstruksi & Property Perbaikan Bangunan,Gambar,It-Ai-E-Commerce",glints,qa-security,0.0,0,0.002480243
+glints-1776679036-690,It Intern,glints,software-engineering,0.0,0,0.003541029
+glints-1776679846-893,It Internship,glints,software-engineering,0.0,0,0.25077087
+glints-1778509407-717,It Support Engineer Wajib Bisa Laravel & Flutter,glints,it-support-network,0.0,0,0.0002537339
+glints-1778509932-870,It Intern,glints,qa-security,0.0,0,0.00060981826
+glints-1778509232-675,Sales It Training Specialist,glints,sales-account,1.0,1,0.9793095
+glints-1778508297-381,Network Infrastructure (Junior And Middle Level Asap),glints,it-support-network,0.0,0,0.0010131699
+glints-1776679057-696,Project Leader (It),glints,other-it,0.0,0,7.140423e-05
+linkedin-linkedin-2006,Application Developer Malang (.Net),linkedin,other-it,0.0,0,9.71067e-05
+glints-1776678858-644,(Female) It Project Manager,glints,product-project-business,0.0,0,0.00057518046
+glints-1776676368-10,Admin Marketplace & Media Sosial,glints,admin-operations,0.0,1,0.9854012
+glints-1776677677-346,Odoo Python Developer,glints,data-ai,1.0,1,0.97529763
+glints-1778509300-680,Digital & It Operations Assistant,glints,it-support-network,1.0,1,0.9698143
+glints-1778507590-144,Internal Audit (Perbankan),glints,other-it,0.0,0,0.0007649121
+glints-1778507485-107,Admin Gudang,glints,sales-account,1.0,1,0.986298
+glints-1776676590-69,Pre-Sales Consultant,glints,product-project-business,0.0,0,0.020549828
+glints-1778509598-772,It Security Analyst (Banking Industry),glints,qa-security,0.0,0,0.0060806973
+glints-1778509146-646,It Functional Analyst,glints,data-ai,0.0,0,0.0043089357
+glints-1778508701-523,It Account Executive Intern,glints,sales-account,0.0,0,0.0152883325
+glints-1778510010-895,It Business Analyst,glints,qa-security,1.0,1,0.9832518
+glints-1776679958-923,Bootcamp It,glints,qa-security,0.0,0,0.0024187418
+glints-1776676726-104,Project Coordinator,glints,other-it,0.0,0,0.0006803329
+glints-1778509165-653,Information Technology Governance & Sevice Management,glints,qa-security,0.0,0,0.0011170144
+glints-1776679248-747,It & Operation Helpdesk,glints,it-support-network,0.0,0,0.00731631
+glints-1778510194-963,It Business Analyst,glints,product-project-business,0.0,0,0.0016779308
+glints-1776679036-690,It Intern,glints,software-engineering,0.0,0,0.0002582264
+linkedin-linkedin-2132,Machine Learning & Ai Engineer,linkedin,data-ai,0.0,0,0.0014299755
+glints-1778508313-387,Eos (Engineer Onsite),glints,it-support-network,0.0,0,0.0053349608
+glints-1776679241-745,It Support & Development,glints,it-support-network,0.0,0,0.0084262965
+glints-1778507373-69,Quality Assurance Customer Service,glints,qa-security,1.0,1,0.9841845
+glints-1778507682-170,Administrator Network Service,glints,it-support-network,1.0,1,0.959387
+glints-1778509677-799,Sales Staff It,glints,sales-account,0.0,0,0.035484705
+glints-1778509743-823,It Solutions Engineer,glints,sales-account,0.0,0,0.042515386
+glints-1776679349-773,Data Migration Analyst,glints,other-it,0.0,0,0.0052570757
+glints-1778509413-719,Unpaid - Internship Magang Perusahaan Teknologi Informasi,glints,software-engineering,0.0,0,0.0006696035
+glints-1778508849-577,It Product Owner For Banking Industry,glints,qa-security,0.0,0,0.00045223243
+glints-1776677673-345,"Konstruksi & Property Perbaikan Bangunan,Gambar,It-Ai-E-Commerce",glints,qa-security,1.0,1,0.9866223
+glints-1776678486-552,"Erp System Analyst (Dynamics 365) Wfo Jakarta/Yogyakarta, Asap",glints,qa-security,0.0,0,0.0045722728
+glints-1778508963-608,It Helpdesk Microsoft 365 - English Speaker,glints,it-support-network,0.0,0,0.0012831925
+glints-1778507609-151,"Software Engineer (Php, Javascript)",glints,software-engineering,0.0,0,0.0036016484
+glints-1776679345-772,It Business Analyst - Asap (Wfo Jakarta Area),glints,qa-security,0.0,0,0.011198997
+linkedin-linkedin-2050,Rest Api Programmer,linkedin,software-engineering,1.0,1,0.98582447
+glints-1778508118-316,Admin Gudang,glints,admin-operations,1.0,1,0.9813594
+glints-1778509229-674,Presales - It Server And Cloud,glints,sales-account,0.0,0,0.0011111165
+glints-1778510099-927,It Business Analyst,glints,qa-security,0.0,0,8.011131e-05
+glints-1776679482-809,It Admin Staff,glints,it-support-network,0.0,0,0.009719531
+glints-1776678383-525,Business Data Analyst (Accounting Divison),glints,data-ai,0.0,0,0.001246717
+glints-1778508807-562,Guru Informatika,glints,other-it,0.0,0,0.0007054749
+linkedin-linkedin-2179,"Lead Software Engineer, Javascript/Typescript (Remote)",linkedin,software-engineering,0.0,0,0.000112375026
+glints-1776679274-754,It Internship (Magang),glints,software-engineering,1.0,1,0.97197896
+glints-1778508963-608,It Helpdesk Microsoft 365 - English Speaker,glints,it-support-network,1.0,1,0.8963859
+glints-1778508929-604,Guru Informatika/Tik,glints,other-it,1.0,1,0.99185044
+glints-1776679371-779,Sales Staff It,glints,sales-account,0.0,0,0.0072358563
+glints-1778508759-544,Pengembang Aplikasi Dan Sistem It,glints,software-engineering,1.0,1,0.981049
+glints-1776679435-796,Functional Analyst,glints,other-it,0.0,0,0.00026185732
+glints-1776677604-327,Devops Engineer,glints,software-engineering,0.0,0,0.0021646295
+glints-1778510083-921,Helpdesk It,glints,software-engineering,1.0,1,0.9923428
+glints-1776679482-809,It Admin Staff,glints,it-support-network,1.0,1,0.984015
+glints-1776678404-530,Marketing Digital Produk It,glints,sales-account,0.0,0,0.016502649
+glints-1778509882-853,It Support,glints,it-support-network,1.0,1,0.9844983
+glints-1776676387-15,Recruitment Internship,glints,admin-operations,0.0,0,0.0044965968
+glints-1776677112-201,Technical Writer,glints,qa-security,0.0,0,0.00037370247
+glints-1776678903-656,Co Engineer Ai It,glints,data-ai,1.0,1,0.9859962
+glints-1778509346-696,Ai & It Support Specialist,glints,it-support-network,0.0,0,0.0009085235
+glints-1778508200-347,Devops Engineer,glints,software-engineering,0.0,0,0.002734296
+glints-1776676833-128,Quality Assurance Analyst,glints,software-engineering,0.0,0,0.0056741685
+glints-1776678753-617,Kepala Sales ((It Retail),glints,sales-account,0.0,0,0.0018013453
+glints-1778508300-382,Sales Executive Area Banjarmasin (Aksesoris It / Audio),glints,sales-account,0.0,0,0.004417214
+glints-1776676730-105,Data Engineer,glints,data-ai,1.0,1,0.97878367
+glints-1776677604-327,Devops Engineer,glints,software-engineering,0.0,0,0.0017971317
+glints-1776678684-600,It Business Development (B2B Sales),glints,sales-account,0.0,0,0.0064571146
+glints-1778508158-331,Account Management Associate,glints,it-support-network,1.0,1,0.9832915
+glints-1778508829-570,Account Manager - It Solutions,glints,sales-account,0.0,0,0.0014611267
+glints-1776679816-887,It Programming,glints,software-engineering,0.0,0,0.002386764
+glints-1776678684-600,It Business Development (B2B Sales),glints,sales-account,0.0,0,0.0023747594
+glints-1778508448-433,System Analyst Jakarta/Malang,glints,software-engineering,0.0,0,0.001644022
+glints-1778508102-310,Data Engineer,glints,data-ai,0.0,0,0.003928029
+glints-1776676455-33,Programmer,glints,data-ai,1.0,1,0.9839234
+glints-1778508135-322,Engineer On-Site Bali (Outsourcing),glints,it-support-network,0.0,0,0.005063279
+glints-1776679554-828,It Network Supervisor,glints,it-support-network,0.0,0,0.011291598
+glints-1778507942-264,Technical Support,glints,it-support-network,0.0,0,0.0041258293
+glints-1776677076-192,Software Developer Engineer C And C++,glints,software-engineering,0.0,0,0.004421943
+glints-1776679922-914,It Developer,glints,qa-security,0.0,0,0.0020148905
+glints-1776680028-937,It Business Analyst,glints,qa-security,0.0,0,0.003127364
+glints-1776678861-645,Teknisi/It (Network Internet Service Provider),glints,it-support-network,0.0,0,0.0037254412
+glints-1776679933-916,It Helpdesk,glints,it-support-network,0.0,0,0.00040597393
+glints-1778508313-387,Eos (Engineer Onsite),glints,it-support-network,1.0,1,0.99445987
+linkedin-linkedin-2014,"Staff Data Engineer Display Marketing Team (Bangkok Based, Relocation Provided)",linkedin,data-ai,0.0,0,0.0068651494
+glints-1778509289-678,Sales Marketing It B2B,glints,it-support-network,0.0,0,0.00022743076
+glints-1776677677-346,Odoo Python Developer,glints,data-ai,0.0,0,0.009298048
+linkedin-linkedin-1999,Ai Engineer,linkedin,data-ai,1.0,1,0.99723935
+glints-1778509882-853,It Support,glints,it-support-network,0.0,0,0.010077512
+glints-1778508929-604,Guru Informatika/Tik,glints,other-it,0.0,0,0.0021569477
+glints-1776679057-696,Project Leader (It),glints,other-it,1.0,1,0.9505267
+glints-1776680067-948,It Consultant Manager,glints,qa-security,0.0,0,0.0037330203
+glints-1776676895-144,Head Of Project,glints,product-project-business,1.0,1,0.98066473
+glints-1776678404-530,Marketing Digital Produk It,glints,sales-account,1.0,1,0.98318857
+glints-1776678302-505,Etl Developer,glints,data-ai,0.0,0,0.009050007
+glints-1778509641-786,It Support (Internship),glints,it-support-network,0.0,0,0.0013716526
+linkedin-linkedin-2118,Ai Implementation Developer,linkedin,data-ai,0.0,0,0.0003567293
+glints-1776678965-671,It Support & Qa Internship,glints,qa-security,0.0,0,0.0003275434
+glints-1776677684-348,Admin Project,glints,it-support-network,0.0,0,0.002768417
+linkedin-linkedin-2205,Senior Staff Engineer Test Technology And Solutions,linkedin,it-support-network,1.0,1,0.98837036
+glints-1778507771-203,Quality Assurance Automation,glints,qa-security,0.0,0,0.002594832
+glints-1776677505-301,Administrasi Finance,glints,admin-operations,1.0,1,0.98537606
+glints-1776677183-219,Software Quality Assurance,glints,qa-security,1.0,1,0.98582995
+glints-1776677547-311,Admin,glints,admin-operations,0.0,0,0.0027162614
+glints-1778507299-42,Ai Engineer Specialist,glints,data-ai,1.0,1,0.97873384
+linkedin-linkedin-2198,Lead Data Engineer,linkedin,data-ai,0.0,0,0.0029856623
+glints-1776677241-234,Project Manager,glints,product-project-business,0.0,0,0.022424988
+glints-1778509973-885,It Invetory,glints,it-support-network,0.0,0,0.006106504
+glints-1776677494-298,Bootcamp Software Quality Assurance Automation & Ai Development,glints,qa-security,0.0,0,0.004807788
+glints-1778507682-170,Administrator Network Service,glints,it-support-network,0.0,0,0.017061342
+glints-1778508835-572,Supervisor Sistem Erp Dan It Inventory,glints,admin-operations,0.0,0,0.0020867623
+glints-1776679495-812,Project Admin It,glints,qa-security,0.0,0,0.00083719596
+glints-1778509300-680,Digital & It Operations Assistant,glints,it-support-network,0.0,0,0.006300147
+glints-1778508520-459,"It Project Manager (Pmp Certified) - Banking Industry, Asap",glints,product-project-business,0.0,0,0.002703059
+linkedin-linkedin-2005,Odoo Developer,linkedin,other-it,0.0,0,0.004311383
+glints-1778509413-719,Unpaid - Internship Magang Perusahaan Teknologi Informasi,glints,software-engineering,1.0,1,0.9850292
+glints-1776680199-979,It Intern,glints,it-support-network,1.0,1,0.9592124
+glints-1778507531-122,Guru Ict Sd,glints,other-it,0.0,0,4.5256784e-05
+glints-1776680028-937,It Business Analyst,glints,qa-security,0.0,0,0.0016181275
+glints-1776678746-615,It Service Engineer (Ev Battery) - Chinese Speaker (#483),glints,qa-security,0.0,0,0.0012238509
+glints-1778507712-181,Product Owner/Tech Pm,glints,product-project-business,0.0,0,0.008249893
+glints-1778507805-216,Support Engineer (Observability),glints,it-support-network,0.0,0,0.0016735807
+glints-1776680199-979,It Intern,glints,it-support-network,0.0,0,0.0023803578
+glints-1776677319-251,Admin Sales (Sales Support),glints,sales-account,0.0,0,0.013562647
+linkedin-linkedin-2010,Software Engineer,linkedin,software-engineering,1.0,1,0.96056694
+glints-1778507319-49,Frontend Developer For Banking Industry,glints,software-engineering,1.0,1,0.98432887
+glints-1776678704-605,It Support & Admin Support Sales,glints,it-support-network,1.0,1,0.962025
+linkedin-linkedin-2128,"Software Engineer, Ios Core Product - Surabaya, Indonesia",linkedin,software-engineering,0.0,0,0.013764298
+glints-1778507771-203,Quality Assurance Automation,glints,qa-security,1.0,1,0.98407197
+glints-1778508815-565,Guru Rekayasa Perangkat Lunak,glints,other-it,0.0,0,0.001097747
+glints-1778507748-195,Security Engineer,glints,it-support-network,1.0,1,0.9917237
+glints-1778509211-668,System Analyst,glints,product-project-business,0.0,0,0.0006208095
+glints-1776678823-635,It Project Manager,glints,product-project-business,0.0,0,0.00055216096
+glints-1776676455-33,Programmer,glints,data-ai,0.0,0,0.000250676
+glints-1778509641-786,It Support (Internship),glints,it-support-network,0.0,0,0.0040647485
+glints-1778509677-799,Sales Staff It,glints,sales-account,1.0,1,0.9877575
+glints-1776679307-762,It Officer,glints,it-support-network,1.0,1,0.9921361
+glints-1776678497-555,Coding Teacher,glints,other-it,1.0,1,0.97639215
+glints-1776680031-938,It System Analyst (Finance & Erp),glints,qa-security,1.0,1,0.98875546

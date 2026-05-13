@@ -7,9 +7,14 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import matplotlib
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+from sklearn.metrics import ConfusionMatrixDisplay, classification_report, confusion_matrix
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
 
 AIENGINE_ROOT = Path(__file__).resolve().parents[1]
 SERVICE_SRC = AIENGINE_ROOT / "services" / "career-match" / "src"
@@ -117,6 +122,92 @@ def save_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def make_inputs(frame: pd.DataFrame) -> dict[str, Any]:
+    return {
+        "candidate_text": tf.constant(frame["candidate_text"].astype(str).tolist(), dtype=tf.string),
+        "job_text": tf.constant(frame["job_text"].astype(str).tolist(), dtype=tf.string),
+        "numeric_features": frame[NUMERIC_FEATURES].to_numpy(dtype="float32"),
+    }
+
+
+def save_classification_artifacts(
+    model: tf.keras.Model,
+    frame: pd.DataFrame,
+    model_dir: Path,
+    *,
+    batch_size: int,
+) -> dict[str, Any]:
+    y_true = frame["label"].astype(int).to_numpy()
+    y_score = model.predict(make_inputs(frame), batch_size=batch_size, verbose=0).reshape(-1)
+    y_pred = (y_score >= 0.5).astype(int)
+    target_names = ["not_match", "match"]
+
+    report = classification_report(
+        y_true,
+        y_pred,
+        labels=[0, 1],
+        target_names=target_names,
+        output_dict=True,
+        zero_division=0,
+    )
+    report_text = classification_report(
+        y_true,
+        y_pred,
+        labels=[0, 1],
+        target_names=target_names,
+        zero_division=0,
+    )
+
+    report_rows = pd.DataFrame(report).transpose().reset_index(names="label")
+    report_rows.to_csv(model_dir / "classification_report.csv", index=False)
+    (model_dir / "classification_report.txt").write_text(report_text, encoding="utf-8")
+    save_json(model_dir / "classification_report.json", report)
+
+    predictions = frame[["job_id", "job_title", "source", "role_family", "label"]].copy()
+    predictions["predicted_label"] = y_pred
+    predictions["match_probability"] = y_score
+    predictions.to_csv(model_dir / "test_predictions.csv", index=False)
+
+    numeric_report = report_rows.copy()
+    for column in ["precision", "recall", "f1-score"]:
+        if column in numeric_report:
+            numeric_report[column] = numeric_report[column].map(lambda value: "" if pd.isna(value) else f"{float(value):.3f}")
+    if "support" in numeric_report:
+        numeric_report["support"] = numeric_report["support"].map(lambda value: "" if pd.isna(value) else f"{float(value):.0f}")
+
+    fig, ax = plt.subplots(figsize=(8, 3.8))
+    ax.axis("off")
+    table = ax.table(
+        cellText=numeric_report.fillna("").values,
+        colLabels=numeric_report.columns,
+        loc="center",
+        cellLoc="center",
+    )
+    table.auto_set_font_size(False)
+    table.set_fontsize(9)
+    table.scale(1, 1.35)
+    ax.set_title("Classification Report - Test Set", fontweight="bold", pad=14)
+    fig.tight_layout()
+    fig.savefig(model_dir / "classification_report.png", dpi=180, bbox_inches="tight")
+    plt.close(fig)
+
+    matrix = confusion_matrix(y_true, y_pred, labels=[0, 1])
+    disp = ConfusionMatrixDisplay(confusion_matrix=matrix, display_labels=target_names)
+    fig, ax = plt.subplots(figsize=(5, 4))
+    disp.plot(ax=ax, cmap="Blues", values_format="d", colorbar=False)
+    ax.set_title("Confusion Matrix - Test Set", fontweight="bold")
+    fig.tight_layout()
+    fig.savefig(model_dir / "confusion_matrix.png", dpi=180, bbox_inches="tight")
+    plt.close(fig)
+
+    return {
+        "classification_report_csv": str(model_dir / "classification_report.csv"),
+        "classification_report_png": str(model_dir / "classification_report.png"),
+        "confusion_matrix_png": str(model_dir / "confusion_matrix.png"),
+        "test_predictions_csv": str(model_dir / "test_predictions.csv"),
+    }
+
+
 def run_training(args: argparse.Namespace) -> dict[str, Any]:
     tf.keras.utils.set_random_seed(args.seed)
     np.random.seed(args.seed)
@@ -160,6 +251,8 @@ def run_training(args: argparse.Namespace) -> dict[str, Any]:
 
     args.model_dir.mkdir(parents=True, exist_ok=True)
     tensorboard_dir = args.model_dir / "tensorboard"
+    if tensorboard_dir.exists():
+        shutil.rmtree(tensorboard_dir)
     train_writer = tf.summary.create_file_writer(str(tensorboard_dir / "train"))
     val_writer = tf.summary.create_file_writer(str(tensorboard_dir / "validation"))
 
@@ -215,6 +308,13 @@ def run_training(args: argparse.Namespace) -> dict[str, Any]:
     if catalog_source.exists():
         shutil.copy2(catalog_source, args.model_dir / "jobs_catalog.json")
 
+    evaluation_artifacts = save_classification_artifacts(
+        model,
+        test_frame,
+        args.model_dir,
+        batch_size=args.batch_size,
+    )
+
     vocabulary_path = args.model_dir / "vectorizer_vocabulary.txt"
     vocabulary_path.write_text("\n".join(vectorizer.get_vocabulary()), encoding="utf-8")
 
@@ -240,6 +340,7 @@ def run_training(args: argparse.Namespace) -> dict[str, Any]:
         "architecture": "Functional API dual text encoder plus numeric readiness features",
         "custom_components": [
             "CosineSimilarityLayer",
+            "AbsoluteDifferenceLayer",
             "CareerMatchLoss",
             "QualityThresholdCallback",
             "tf.GradientTape custom training loop",
@@ -248,6 +349,7 @@ def run_training(args: argparse.Namespace) -> dict[str, Any]:
         "model_path": str(model_path),
         "saved_model_dir": str(saved_model_dir),
         "tensorboard_dir": str(tensorboard_dir),
+        "evaluation_artifacts": evaluation_artifacts,
         "metrics": metrics,
     }
     save_json(args.model_dir / "metrics.json", metrics)

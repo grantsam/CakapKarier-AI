@@ -1,0 +1,8 @@
+              precision    recall  f1-score   support
+
+   not_match       1.00      1.00      1.00       664
+       match       1.00      1.00      1.00       332
+
+    accuracy                           1.00       996
+   macro avg       1.00      1.00      1.00       996
+weighted avg       1.00      1.00      1.00       996

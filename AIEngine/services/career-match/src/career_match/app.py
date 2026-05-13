@@ -4,9 +4,9 @@ from fastapi import FastAPI, HTTPException
 
 from .genai import generate_summary
 from .inference import CareerMatchService
-from .schemas import CandidateProfile, HealthResponse, PredictionResponse
+from .schemas import CandidateProfile, HealthResponse, PredictionResponse, WebAnalysisRequest
 
-app = FastAPI(title="CakapKarier AI Career Match API", version="1.0.0")
+app = FastAPI(title="CakapKarier AI Career Match API", version="1.2.0")
 _service: CareerMatchService | None = None
 
 
@@ -35,6 +35,32 @@ def predict(profile: CandidateProfile) -> PredictionResponse:
             experience_years=profile.experience_years,
             education_level=profile.education_level,
             certifications=profile.certifications,
+            interests=profile.interests,
+            target_role=profile.target_role,
+            preferred_location=profile.preferred_location,
+            top_k=profile.top_k,
+        )
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+    if profile.use_genai:
+        prediction["ai_summary"] = generate_summary(profile.model_dump(), prediction)
+
+    return PredictionResponse(**prediction)
+
+
+@app.post("/predict/web", response_model=PredictionResponse)
+def predict_web(profile: WebAnalysisRequest) -> PredictionResponse:
+    try:
+        service = get_service()
+        prediction = service.predict_from_web_form(
+            education_level=profile.education_level,
+            skills=profile.skills,
+            interests=profile.interests,
+            experience_text=profile.experience_text,
+            experience_years=profile.experience_years,
+            certifications=profile.certifications,
+            target_role=profile.target_role,
             preferred_location=profile.preferred_location,
             top_k=profile.top_k,
         )

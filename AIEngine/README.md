@@ -17,6 +17,7 @@ Area kerja AI Engineer.
 ## Deliverable Career Match v1
 
 Model AI yang sudah dibuat berada di domain `career-match` untuk fitur prediksi role, readiness score, skill gap, dan rekomendasi pengembangan skill.
+Service juga menyediakan adapter `/predict/web` untuk kebutuhan integrasi `WebApplication`, sehingga backend web bisa mengirim bentuk data dari form analisis tanpa mengubah model inti.
 
 ### Checklist AI Engineer
 
@@ -33,10 +34,25 @@ Model AI yang sudah dibuat berada di domain `career-match` untuk fitur prediksi 
 | Custom training loop `tf.GradientTape` | Selesai | `pipelines/train_model.py` |
 | Generative AI optional summary | Selesai | `services/career-match/src/career_match/genai.py` |
 | TensorBoard log | Selesai | `models/registry/career-match/v1/tensorboard/` |
-| Target performa | Selesai | test accuracy `0.9955`, test MAE `0.0156` |
+| Classification report visual | Selesai | `models/registry/career-match/v1/classification_report.png` |
+| Confusion matrix visual | Selesai | `models/registry/career-match/v1/confusion_matrix.png` |
+| Target performa | Selesai | test accuracy `0.9990`, test MAE `0.0120` |
 | Notebook ringkas | Selesai | `notebooks/career_match_experiment.ipynb` |
 
-Catatan data: dataset Glints berisi lowongan, bukan histori kandidat yang sudah berlabel. Karena itu label training dibuat sebagai weak/synthetic supervision dari kecocokan skill, role family, pengalaman minimum, dan pendidikan. Ini cukup untuk MVP career matching, tetapi versi produksi berikutnya sebaiknya ditingkatkan dengan data kandidat nyata dan feedback pengguna.
+Catatan data: dataset utama sekarang memakai final clean dataset dari tim Data Science. Dataset tetap berisi lowongan, bukan histori kandidat yang sudah berlabel. Karena itu label training dibuat sebagai weak/synthetic supervision dari kecocokan skill, sertifikasi, role family, pengalaman minimum, dan pendidikan. Ini cukup untuk MVP career matching, tetapi versi produksi berikutnya sebaiknya ditingkatkan dengan data kandidat nyata dan feedback pengguna.
+
+### Data Gabungan
+
+- Final clean dataset DS: `data/raw/all_data_clean.csv`
+- Data dictionary DS: `data/raw/Data_Dictionary.xlsx`
+- Processed jobs: `data/processed/career-match-v1/jobs_processed.csv`
+- Jumlah baris final DS: 2.215
+- Jumlah lowongan bersih setelah dedupe model: 2.209
+- Sumber data setelah dedupe: Glints 1.980, LinkedIn 229
+- Training pairs sintetis: 6.627
+- Mandatory inference parameters: `experience_years`, `skills`, `certifications`
+- Web adapter: `POST /predict/web` menerima `pendidikan_terakhir`, `skill_yang_dikuasai`, `minat_bakat`, `pengalaman_sertifikasi`, dan `target_role`
+- Data dictionary: `data/processed/career-match-v1/data_dictionary.md`
 
 ### Cara Menjalankan
 

@@ -5,12 +5,14 @@
   "architecture": "Functional API dual text encoder plus numeric readiness features",
   "custom_components": [
     "CosineSimilarityLayer",
+    "AbsoluteDifferenceLayer",
     "CareerMatchLoss",
     "QualityThresholdCallback",
     "tf.GradientTape custom training loop"
   ],
   "numeric_features": [
     "skill_overlap",
+    "certification_overlap",
     "experience_ratio",
     "education_match",
     "skill_count_ratio",
@@ -20,26 +22,32 @@
   "model_path": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\career_match_model.keras",
   "saved_model_dir": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\saved_model",
   "tensorboard_dir": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\tensorboard",
+  "evaluation_artifacts": {
+    "classification_report_csv": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\classification_report.csv",
+    "classification_report_png": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\classification_report.png",
+    "confusion_matrix_png": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\confusion_matrix.png",
+    "test_predictions_csv": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\test_predictions.csv"
+  },
   "metrics": {
     "train": {
-      "loss": 0.002785485005006194,
-      "binary_accuracy": 0.9995182752609253,
-      "mae": 0.008209777064621449
+      "loss": 0.00410580774769187,
+      "binary_accuracy": 0.9971952438354492,
+      "mae": 0.013333464972674847
     },
     "validation": {
-      "loss": 0.005897413939237595,
-      "binary_accuracy": 0.9932885766029358,
-      "mae": 0.015900176018476486
+      "loss": 0.002706635743379593,
+      "binary_accuracy": 0.9969879388809204,
+      "mae": 0.012775727547705173
     },
     "test": {
-      "loss": 0.006696563214063644,
-      "binary_accuracy": 0.9955257177352905,
-      "mae": 0.015574230812489986
+      "loss": 0.00378962024115026,
+      "binary_accuracy": 0.9989959597587585,
+      "mae": 0.01200424786657095
     },
     "thresholds": {
       "min_accuracy": 0.85,
       "max_mae": 0.02
     },
-    "threshold_callback_reached_epoch": 12
+    "threshold_callback_reached_epoch": 6
   }
 }

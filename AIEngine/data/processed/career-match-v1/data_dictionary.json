@@ -1,0 +1,117 @@
+[
+  {
+    "field": "job_id",
+    "type": "string",
+    "description": "Unique internal job id from source and source row id."
+  },
+  {
+    "field": "source",
+    "type": "string",
+    "description": "Data origin, e.g. glints or linkedin."
+  },
+  {
+    "field": "job_title",
+    "type": "string",
+    "description": "Job title after text cleaning."
+  },
+  {
+    "field": "company",
+    "type": "string",
+    "description": "Company name."
+  },
+  {
+    "field": "location",
+    "type": "string",
+    "description": "Job location."
+  },
+  {
+    "field": "job_detail",
+    "type": "string",
+    "description": "Original job URL."
+  },
+  {
+    "field": "description",
+    "type": "string",
+    "description": "Cleaned job description."
+  },
+  {
+    "field": "requirements",
+    "type": "string",
+    "description": "Cleaned requirements text."
+  },
+  {
+    "field": "skills_text",
+    "type": "string",
+    "description": "Original DS skill text used as the primary skill extraction source."
+  },
+  {
+    "field": "skills_clean_text",
+    "type": "string",
+    "description": "Data Science cleaned skill text retained for audit/EDA traceability."
+  },
+  {
+    "field": "skills",
+    "type": "array<string>",
+    "description": "Extracted hard and soft skills."
+  },
+  {
+    "field": "skills_joined",
+    "type": "string",
+    "description": "Extracted skills joined for manual inspection and dashboard display."
+  },
+  {
+    "field": "certifications_required",
+    "type": "array<string>",
+    "description": "Extracted certification signals from job text."
+  },
+  {
+    "field": "certifications_required_joined",
+    "type": "string",
+    "description": "Certification signals joined for manual inspection and dashboard display."
+  },
+  {
+    "field": "job_benefits",
+    "type": "string",
+    "description": "Cleaned job benefit text from Data Science final dataset when available."
+  },
+  {
+    "field": "min_experience_years",
+    "type": "float",
+    "description": "Minimum required experience in years."
+  },
+  {
+    "field": "max_experience_years",
+    "type": "float",
+    "description": "Maximum required experience in years when available."
+  },
+  {
+    "field": "education_level_required",
+    "type": "integer",
+    "description": "Ordinal education level: 0 unknown, 2 diploma, 3 bachelor, 4 master."
+  },
+  {
+    "field": "education_required",
+    "type": "string",
+    "description": "Human-readable education label for the extracted ordinal education level."
+  },
+  {
+    "field": "work_mode",
+    "type": "string",
+    "description": "remote, hybrid, onsite, or unknown."
+  },
+  {
+    "field": "role_family",
+    "type": "string",
+    "description": "Rule-based role family used for stratification and analysis."
+  },
+  {
+    "field": "job_text",
+    "type": "string",
+    "description": "Combined production text input for the TensorFlow job encoder."
+  },
+  {
+    "field": "label",
+    "type": "float",
+    "description": "Training pair target: 1 match, 0 not match."
+  }
+]

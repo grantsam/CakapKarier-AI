@@ -1,27 +1,46 @@
 {
   "service": "career-match",
-  "version": "1.0.0",
-  "endpoint": "POST /predict",
+  "version": "1.2.0",
+  "endpoints": {
+    "predict": "POST /predict",
+    "predict_web": "POST /predict/web"
+  },
   "request": {
     "skills": {
-      "type": "array<string>",
+      "type": "array<string>|string",
       "required": true,
-      "description": "Daftar skill kandidat."
+      "description": "Daftar skill kandidat. Untuk /predict disarankan array; /predict/web boleh string dipisah koma."
     },
     "experience_years": {
       "type": "number",
-      "required": true,
+      "required": "true for /predict, optional for /predict/web",
       "min": 0,
       "max": 60
     },
     "education_level": {
       "type": "string|integer",
       "required": false,
-      "examples": ["diploma", "bachelor", "master", 3]
+      "examples": ["sma", "d3", "s1", "diploma", "bachelor", "master", 3]
     },
     "certifications": {
-      "type": "array<string>",
-      "required": false
+      "type": "array<string>|string",
+      "required": "true for /predict, optional for /predict/web",
+      "description": "Daftar sertifikasi kandidat. Kirim array kosong jika kandidat belum memiliki sertifikasi."
+    },
+    "interests": {
+      "type": "array<string>|string|null",
+      "required": false,
+      "description": "Minat dan bakat dari form web."
+    },
+    "experience_text": {
+      "type": "string|null",
+      "required": false,
+      "description": "Teks gabungan pengalaman dan sertifikasi dari form web; service mengekstrak tahun pengalaman dan sertifikasi."
+    },
+    "target_role": {
+      "type": "string|null",
+      "required": false,
+      "examples": ["fe", "be", "ds", "ae", "Front-End Developer", "AI Engineer"]
     },
     "preferred_location": {
       "type": "string|null",
@@ -40,14 +59,30 @@
       "default": false
     }
   },
+  "web_request_aliases": {
+    "pendidikan_terakhir": "education_level",
+    "skill_yang_dikuasai": "skills",
+    "minat_bakat": "interests",
+    "pengalaman_sertifikasi": "experience_text",
+    "sertifikasi": "certifications",
+    "target_skill_role": "target_role"
+  },
   "response": {
     "predicted_role": "string",
+    "target_role": "string|null",
     "role_family": "string",
     "readiness_score": "number, 0-100",
+    "readiness_status": "Siap|Cukup Siap|Perlu Ditingkatkan",
     "match_confidence": "number, 0-1",
     "top_matches": "array<object>",
+    "mastered_skills": "array<string>",
+    "mastered_skill_count": "integer",
     "skill_gap": "array<string>",
+    "skill_gap_count": "integer",
+    "skill_gap_analysis": "array<{name:string,priority:string,description:string}>",
+    "roadmap": "array<{phase:string,items:array<string>}>",
     "recommendations": "array<string>",
+    "tips": "array<string>",
     "ai_summary": "string|null"
   },
   "model_contract": {
@@ -56,6 +91,7 @@
       "job_text": "tf.string scalar batch",
       "numeric_features": [
         "skill_overlap",
+        "certification_overlap",
         "experience_ratio",
         "education_match",
         "skill_count_ratio",
