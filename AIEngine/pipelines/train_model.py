@@ -4,6 +4,7 @@ import argparse
 import json
 import shutil
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -267,17 +268,21 @@ def run_training(args: argparse.Namespace) -> dict[str, Any]:
     history: list[dict[str, float]] = []
     model.stop_training = False
     for epoch in range(1, args.epochs + 1):
+        epoch_start = time.perf_counter()
         train_logs = train_one_epoch(model, train_dataset, optimizer, loss_fn, train_metrics)
         val_logs = evaluate(model, val_dataset, loss_fn, eval_metrics, prefix="val_")
+        epoch_duration = time.perf_counter() - epoch_start
         logs = {**train_logs, **val_logs}
-        history.append({"epoch": float(epoch), **logs})
+        history.append({"epoch": float(epoch), "epoch_duration_seconds": float(epoch_duration), **logs})
         write_scalars(train_writer, train_logs, epoch)
         write_scalars(val_writer, val_logs, epoch)
+        write_scalars(train_writer, {"epoch_duration_seconds": epoch_duration}, epoch)
         threshold_callback.on_epoch_end(epoch - 1, logs)
 
         print(
             "epoch={epoch:02d} loss={loss:.5f} acc={acc:.4f} mae={mae:.5f} "
-            "val_loss={val_loss:.5f} val_acc={val_acc:.4f} val_mae={val_mae:.5f}".format(
+            "val_loss={val_loss:.5f} val_acc={val_acc:.4f} val_mae={val_mae:.5f} "
+            "time={epoch_duration:.2f}s".format(
                 epoch=epoch,
                 loss=train_logs["loss"],
                 acc=train_logs["binary_accuracy"],
@@ -285,6 +290,7 @@ def run_training(args: argparse.Namespace) -> dict[str, Any]:
                 val_loss=val_logs["val_loss"],
                 val_acc=val_logs["val_binary_accuracy"],
                 val_mae=val_logs["val_mae"],
+                epoch_duration=epoch_duration,
             )
         )
         if model.stop_training:
@@ -331,6 +337,12 @@ def run_training(args: argparse.Namespace) -> dict[str, Any]:
             "max_mae": args.max_mae,
         },
         "threshold_callback_reached_epoch": threshold_callback.reached_epoch,
+        "training_time": {
+            "epochs_ran": len(history),
+            "total_epoch_seconds": round(sum(row["epoch_duration_seconds"] for row in history), 3),
+            "mean_epoch_seconds": round(float(np.mean([row["epoch_duration_seconds"] for row in history])), 3),
+            "last_epoch_seconds": round(history[-1]["epoch_duration_seconds"], 3),
+        },
     }
 
     metadata = {

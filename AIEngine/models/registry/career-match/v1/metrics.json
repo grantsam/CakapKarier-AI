@@ -18,5 +18,11 @@
     "min_accuracy": 0.85,
     "max_mae": 0.02
   },
-  "threshold_callback_reached_epoch": 6
+  "threshold_callback_reached_epoch": 6,
+  "training_time": {
+    "epochs_ran": 6,
+    "total_epoch_seconds": 58.02,
+    "mean_epoch_seconds": 9.67,
+    "last_epoch_seconds": 10.505
+  }
 }

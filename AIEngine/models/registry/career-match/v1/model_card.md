@@ -53,6 +53,11 @@ Metric terakhir:
 - Test classification report:
   - `not_match` precision 1.0000, recall 0.9985, f1-score 0.9992, support 664
   - `match` precision 0.9970, recall 1.0000, f1-score 0.9985, support 332
+- Training time:
+  - Epochs run: 6
+  - Total epoch time: 58.02 seconds
+  - Mean epoch time: 9.67 seconds
+  - Last epoch time: 10.51 seconds
 
 Target checklist:
 

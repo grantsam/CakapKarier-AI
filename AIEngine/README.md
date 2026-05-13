@@ -36,6 +36,7 @@ Service juga menyediakan adapter `/predict/web` untuk kebutuhan integrasi `WebAp
 | TensorBoard log | Selesai | `models/registry/career-match/v1/tensorboard/` |
 | Classification report visual | Selesai | `models/registry/career-match/v1/classification_report.png` |
 | Confusion matrix visual | Selesai | `models/registry/career-match/v1/confusion_matrix.png` |
+| Durasi training per epoch | Selesai | `models/registry/career-match/v1/training_history.csv` |
 | Target performa | Selesai | test accuracy `0.9990`, test MAE `0.0120` |
 | Notebook ringkas | Selesai | `notebooks/career_match_experiment.ipynb` |
 
