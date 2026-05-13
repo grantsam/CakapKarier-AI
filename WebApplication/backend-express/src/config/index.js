@@ -21,5 +21,9 @@ export const config = {
   jwt: {
     secret: process.env.JWT_SECRET,
     expiresIn: process.env.JWT_EXPIRES_IN,
+  },
+  ai: {
+    careerMatchUrl: process.env.AI_CAREER_MATCH_URL || 'http://127.0.0.1:8001',
+    requestTimeoutMs: Number(process.env.AI_REQUEST_TIMEOUT_MS || 30000),
   }
 };

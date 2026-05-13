@@ -3,6 +3,8 @@
 # =========================
 node_modules/
 **/node_modules/
+WebApplication/frontend-react/node_modules/
+WebApplication/backend-express/node_modules/
 
 
 # =========================
@@ -28,9 +30,21 @@ __pycache__/
 
 
 # =========================
+# Python Virtual Environments
+# =========================
+venv/
+.venv/
+**/venv/
+**/.venv/
+AIEngine/venv/
+AIEngine/.venv/
+
+
+# =========================
 # Logs
 # =========================
 AIEngine/services/*/uvicorn*.log
+*.log
 
 
 # =========================
