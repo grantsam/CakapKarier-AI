@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../config/index.js';
+import * as authRepository from '../repositories/auth.repository.js';
 import AppError from '../utils/AppError.js';
 
 export const protect = async (req, res, next) => {
@@ -16,9 +17,13 @@ export const protect = async (req, res, next) => {
 
     // 2. Verifikasi token
     const decoded = jwt.verify(token, config.jwt.secret);
+    const user = await authRepository.findUserById(decoded.id);
+    if (!user) {
+      return next(new AppError('User tidak ditemukan. Silakan masuk kembali.', 401));
+    }
 
     // 3. Simpan data user ke request
-    req.user = { id: decoded.id };
+    req.user = { id: user.id };
     next();
   } catch (error) {
     if (error.name === 'JsonWebTokenError') {

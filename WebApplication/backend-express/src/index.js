@@ -2,10 +2,12 @@ import cors from 'cors';
 import express from 'express';
 import { config } from './config/index.js';
 import db from './database/db.js';
+import analysisRoutes from './routes/analysis.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
 import globalErrorHandler from './middleware/error.js';
 import AppError from './utils/AppError.js';
+import { openApiSpec, swaggerUiHtml } from './docs/openapi.js';
 
 const app = express();
 
@@ -14,6 +16,15 @@ app.use(cors());
 // Middleware
 app.use(express.json());
 
+// API documentation for frontend integration
+app.get('/api-docs.json', (req, res) => {
+  res.json(openApiSpec);
+});
+
+app.get(['/api-docs', '/api-docs/'], (req, res) => {
+  res.type('html').send(swaggerUiHtml);
+});
+
 // Routes
 app.get('/', (req, res) => {
   res.json({ message: 'CakapKarier-AI Backend API is running' });
@@ -21,6 +32,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/analysis', analysisRoutes);
 
 // Health Check
 app.get('/health', async (req, res, next) => {

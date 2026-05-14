@@ -1,4 +1,5 @@
 import db from '../database/db.js';
+import AppError from '../utils/AppError.js';
 
 export const createProfile = async (userId) => {
   const query = `
@@ -36,7 +37,10 @@ export const updateProfile = async (userId, data) => {
       WHERE id = $3
       RETURNING id, nama, email;
     `;
-    await client.query(updateUserQuery, [nama, email, userId]);
+    const updatedUser = await client.query(updateUserQuery, [nama, email, userId]);
+    if (updatedUser.rowCount === 0) {
+      throw new AppError('User tidak ditemukan', 404);
+    }
     
     // 2. UPSERT profiles table (Insert if not exists, otherwise update)
     const upsertProfileQuery = `
