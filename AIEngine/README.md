@@ -32,9 +32,9 @@ Service juga menyediakan adapter `/predict/web` untuk kebutuhan integrasi `WebAp
 | Kode inference sederhana | Selesai | `services/career-match/src/career_match/inference.py` |
 | FastAPI REST API | Selesai | `services/career-match/src/career_match/app.py` |
 | Custom training loop `tf.GradientTape` | Selesai | `pipelines/train_model.py` |
-| Generative AI optional summary | Selesai | `services/career-match/src/career_match/genai.py` |
+| Generative AI optional summary | Selesai | Ollama/OpenAI-compatible API di `services/career-match/src/career_match/genai.py` |
 | TensorBoard log | Selesai | `models/registry/career-match/v1/tensorboard/` |
-| Classification report visual | Selesai | `models/registry/career-match/v1/classification_report.png` |
+| Classification report | Selesai | `models/registry/career-match/v1/classification_report.txt` |
 | Confusion matrix visual | Selesai | `models/registry/career-match/v1/confusion_matrix.png` |
 | Durasi training per epoch | Selesai | `models/registry/career-match/v1/training_history.csv` |
 | Target performa | Selesai | test accuracy `0.9990`, test MAE `0.0120` |
@@ -86,6 +86,27 @@ REST API:
 
 ```bash
 uvicorn career_match.app:app --app-dir services/career-match/src --host 127.0.0.1 --port 8001
+```
+
+GenAI lokal dengan Ollama:
+
+```bash
+ollama pull llama3.1
+ollama serve
+```
+
+PowerShell:
+
+```powershell
+$env:GENAI_PROVIDER="ollama"
+$env:GENAI_API_URL="http://localhost:11434/v1/chat/completions"
+$env:GENAI_MODEL="llama3.1"
+```
+
+Cek status GenAI:
+
+```bash
+curl http://127.0.0.1:8001/genai/health
 ```
 
 TensorBoard:

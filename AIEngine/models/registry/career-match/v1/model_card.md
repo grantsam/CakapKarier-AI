@@ -69,7 +69,7 @@ Target checklist:
 - `.keras`: `career_match_model.keras`
 - SavedModel: `saved_model/`
 - TensorBoard log: `tensorboard/`
-- Classification report: `classification_report.csv`, `classification_report.png`
+- Classification report: `classification_report.txt`, `classification_report.csv`
 - Confusion matrix: `confusion_matrix.png`
 - Test predictions: `test_predictions.csv`
 - Katalog inference: `jobs_catalog.json`

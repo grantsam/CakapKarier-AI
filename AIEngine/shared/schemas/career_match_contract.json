@@ -2,6 +2,8 @@
   "service": "career-match",
   "version": "1.2.0",
   "endpoints": {
+    "health": "GET /health",
+    "genai_health": "GET /genai/health",
     "predict": "POST /predict",
     "predict_web": "POST /predict/web"
   },
@@ -102,5 +104,13 @@
     "output": {
       "match_score": "sigmoid probability for career readiness match"
     }
+  },
+  "genai_contract": {
+    "provider_default": "ollama",
+    "api_style": "OpenAI-compatible Chat Completions",
+    "default_url": "http://localhost:11434/v1/chat/completions",
+    "default_model": "llama3.1",
+    "output_field": "ai_summary",
+    "fallback": "deterministic_summary when Ollama/provider is unavailable"
   }
 }
