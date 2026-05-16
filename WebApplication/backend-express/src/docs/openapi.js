@@ -103,35 +103,98 @@ export const openApiSpec = {
       },
       CareerMatchRequest: {
         type: 'object',
-        required: ['skill_yang_dikuasai'],
+        required: ['education_level', 'skills', 'experience_years', 'experience_text'],
         properties: {
+          education_level: {
+            oneOf: [
+              { type: 'string', enum: ['sma', 'smk', 'd3', 's1', 's2', 's3'] },
+              { type: 'string', minLength: 1 },
+            ],
+            example: 's1',
+            description: 'Canonical key untuk pendidikan user pada kontrak frontend-backend.',
+          },
           pendidikan_terakhir: {
             oneOf: [
               { type: 'string', enum: ['sma', 'smk', 'd3', 's1', 's2', 's3'] },
               { type: 'string', minLength: 1 },
             ],
-            default: 's1',
             example: 's1',
+            description: 'Legacy alias untuk education_level. Diterima sementara untuk kompatibilitas request lama.',
+          },
+          skills: {
+            oneOf: [
+              { type: 'string', example: 'PHP, SQL, Golang' },
+              { type: 'array', items: { type: 'string' }, example: ['PHP', 'SQL', 'Golang'] },
+            ],
+            description: 'Canonical key untuk skill eksplisit user. Minimal salah satu dari skills atau skill_yang_dikuasai wajib diisi.',
           },
           skill_yang_dikuasai: {
             type: 'string',
             minLength: 2,
-            example: 'Python, SQL, Machine Learning, TensorFlow',
+            example: 'PHP, SQL, Golang',
+            description: 'Legacy alias untuk skills.',
+          },
+          interests: {
+            oneOf: [
+              { type: 'string', example: 'Backend Developer, API Development' },
+              { type: 'array', items: { type: 'string' }, example: ['Backend Developer', 'API Development'] },
+            ],
+            description: 'Canonical key untuk minat atau preferensi bidang.',
           },
           minat_bakat: {
             type: 'string',
             nullable: true,
-            example: 'AI Engineer, Data Analyst, Problem Solving',
+            example: 'Backend Developer, API Development',
+            description: 'Legacy alias untuk interests.',
+          },
+          experience_text: {
+            type: 'string',
+            nullable: true,
+            description: 'Canonical field untuk Pengalaman Relevan berupa job/project/organization experience.',
+            example: '1 tahun sebagai PHP Developer membangun modul backend dan query SQL.',
           },
           pengalaman_sertifikasi: {
             type: 'string',
             nullable: true,
-            example: '1 tahun project machine learning, sertifikasi TensorFlow Developer',
+            description: 'Legacy alias untuk experience_text. Tidak lagi dimaknai sebagai gabungan pengalaman dan sertifikasi.',
+            example: '1 tahun sebagai PHP Developer membangun modul backend dan query SQL.',
+          },
+          experience_years: {
+            type: 'number',
+            minimum: 0,
+            maximum: 60,
+            example: 1,
+            description: 'Canonical field untuk jumlah tahun pengalaman yang diisi eksplisit oleh user.',
+          },
+          certifications: {
+            oneOf: [
+              { type: 'string', example: 'AWS Practitioner, Golang Developer' },
+              { type: 'array', items: { type: 'string' }, example: ['AWS Practitioner', 'Golang Developer'] },
+            ],
+            description: 'Daftar sertifikasi eksplisit user.',
+          },
+          experiences: {
+            type: 'array',
+            description: 'Opsional untuk structured experience v2. Frontend saat ini belum wajib mengirim field ini.',
+            items: {
+              type: 'object',
+              properties: {
+                type: { type: 'string', example: 'work' },
+                role: { type: 'string', example: 'PHP Developer' },
+                organization: { type: 'string', example: 'PT Contoh' },
+                duration_months: { type: 'number', example: 12 },
+                description: { type: 'string', example: 'Membangun modul backend dan query SQL.' },
+                skills_used: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  example: ['PHP', 'SQL'],
+                },
+              },
+            },
           },
           target_role: {
             type: 'string',
             enum: ['', 'fe', 'be', 'ds', 'ae'],
-            default: '',
             example: 'ae',
           },
           preferred_location: {
@@ -156,9 +219,11 @@ export const openApiSpec = {
       SkillGapItem: {
         type: 'object',
         properties: {
-          skill: { type: 'string', example: 'Deep Learning' },
+          name: { type: 'string', example: 'Docker' },
+          skill: { type: 'string', example: 'Docker' },
           priority: { type: 'string', example: 'Tinggi' },
-          reason: { type: 'string', example: 'Dibutuhkan untuk role AI Engineer.' },
+          description: { type: 'string', example: 'Skill ini relevan untuk Backend Developer dan belum kuat terdeteksi dari profil kandidat.' },
+          reason: { type: 'string', example: 'Dibutuhkan untuk role Backend Developer.' },
         },
         additionalProperties: true,
       },
@@ -178,10 +243,75 @@ export const openApiSpec = {
       TopMatch: {
         type: 'object',
         properties: {
+          job_id: { type: 'string', example: 'job-123' },
+          job_title: { type: 'string', example: 'Backend Developer' },
           role: { type: 'string', example: 'AI Engineer' },
+          match_score: { type: 'number', example: 0.87 },
           score: { type: 'number', example: 0.87 },
           company: { type: 'string', example: 'PT Teknologi Nusantara' },
           location: { type: 'string', example: 'Jakarta' },
+        },
+        additionalProperties: true,
+      },
+      CareerInputInterpretation: {
+        type: 'object',
+        properties: {
+          pendidikan: { type: 'string', example: 'Sarjana (S1)' },
+          education_level: { type: 'string', example: 's1' },
+          education_label: { type: 'string', example: 'Sarjana (S1)' },
+          experience_years: { type: 'number', example: 1 },
+          experience_text: { type: 'string', example: '1 tahun sebagai PHP Developer membangun modul backend dan query SQL.' },
+          certifications: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['AWS Practitioner', 'Golang Developer'],
+          },
+          skills: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['PHP', 'SQL', 'Golang'],
+          },
+          pengalaman_tahun: { type: 'number', example: 1 },
+          pengalaman_text: { type: 'string', example: '1 tahun sebagai PHP Developer membangun modul backend dan query SQL.' },
+          sertifikasi: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['AWS Practitioner', 'Golang Developer'],
+          },
+          explicit_skills: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['PHP', 'SQL', 'Golang'],
+          },
+          experience_derived_skills: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['PHP', 'SQL'],
+          },
+          certification_derived_skills: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['AWS', 'Golang'],
+          },
+          skill_evidence: {
+            type: 'object',
+            additionalProperties: true,
+            example: {
+              PHP: { sources: ['self_declared', 'experience_text'], confidence: 'high' },
+              Golang: { sources: ['self_declared', 'certification'], confidence: 'medium' },
+            },
+          },
+          risk_flags: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                code: { type: 'string', example: 'CERTIFICATION_ONLY_SKILL' },
+                skill: { type: 'string', example: 'Golang' },
+                message: { type: 'string', example: 'Golang belum memiliki bukti pengalaman kerja/proyek dari Pengalaman Relevan.' },
+              },
+            },
+          },
         },
         additionalProperties: true,
       },
@@ -223,6 +353,7 @@ export const openApiSpec = {
             type: 'array',
             items: { $ref: '#/components/schemas/TopMatch' },
           },
+          input_interpretation: { $ref: '#/components/schemas/CareerInputInterpretation' },
         },
         additionalProperties: true,
       },
@@ -234,8 +365,8 @@ export const openApiSpec = {
           target_role: { type: 'string', nullable: true, example: 'ae' },
           readiness_score: { type: 'number', nullable: true, example: 82.4 },
           readiness_status: { type: 'string', nullable: true, example: 'Siap Berkembang' },
-          mastered_skill_count: { type: 'integer', example: 3 },
-          skill_gap_count: { type: 'integer', example: 2 },
+          mastered_skill_count: { type: 'integer', nullable: true, example: 3 },
+          skill_gap_count: { type: 'integer', nullable: true, example: 2 },
           created_at: { type: 'string', format: 'date-time' },
         },
       },
@@ -245,9 +376,9 @@ export const openApiSpec = {
           total_analysis: { type: 'integer', example: 12 },
           latest_score: { type: 'number', nullable: true, example: 82.4 },
           previous_score: { type: 'number', nullable: true, example: 76.2 },
-          score_delta: { type: 'number', example: 6.2 },
-          latest_mastered_skill_count: { type: 'integer', example: 5 },
-          mastered_skill_delta: { type: 'integer', example: 1 },
+          score_delta: { type: 'number', nullable: true, example: 6.2 },
+          latest_mastered_skill_count: { type: 'integer', nullable: true, example: 5 },
+          mastered_skill_delta: { type: 'integer', nullable: true, example: 1 },
         },
       },
       AnalysisHistoryPagination: {

@@ -1,20 +1,25 @@
 # Laporan Integrasi AIEngine ke WebApplication
 
-Tanggal review: 2026-05-13  
+Tanggal review awal: 2026-05-13  
+Terakhir diperbarui: 2026-05-16  
 Reviewer: Backend integration handoff  
 Area yang direview: `AIEngine/` dan `WebApplication/`
 
 ## Ringkasan Eksekutif
 
-`AIEngine` sudah menyediakan service AI siap integrasi untuk fitur analisis kesiapan karier melalui FastAPI service `career-match`. Backend `WebApplication/backend-express` tidak perlu menjalankan model TensorFlow secara langsung. Pola integrasi yang paling aman adalah menjadikan Express sebagai API gateway yang menerima request dari frontend, melakukan validasi/auth, meneruskan payload ke FastAPI `/predict/web`, lalu mengembalikan response AI ke frontend.
+`AIEngine` menyediakan service AI untuk fitur analisis kesiapan karier melalui FastAPI service `career-match`. Backend `WebApplication/backend-express` bertindak sebagai API gateway: menerima request dari frontend, melakukan validasi/auth, membangun smart evidence profile, meneruskan payload kompatibel ke FastAPI `/predict/web`, menyimpan history, lalu mengembalikan response siap render ke frontend.
 
 Status saat ini:
 
 - Model dan katalog lowongan sudah tersedia di `AIEngine/models/registry/career-match/v1/`.
 - FastAPI endpoint sudah tersedia di `AIEngine/services/career-match/src/career_match/app.py`.
 - Kontrak lintas service tersedia di `AIEngine/shared/schemas/career_match_contract.json`.
-- Frontend halaman analisis masih memakai data dummy dan belum memanggil backend.
-- Backend Express saat ini hanya punya auth, profile, dan health check. Belum ada route analisis AI.
+- Backend Express sudah memiliki endpoint analisis, health AI, history list, dan history detail di bawah `/api/analysis/career-match`.
+- Frontend `AnalisisPage.jsx` sudah submit ke backend dengan canonical keys.
+- Frontend `AnalisisResultPage.jsx` sudah render response backend/AI dan bisa mengambil detail history dari `/riwayat/:id`.
+- Frontend `HistoryPage.jsx` sudah memakai API history real, bukan data dummy.
+- Backend menyimpan `request_payload` dan `response_payload` ke `career_analysis_results`.
+- Backend menambahkan `input_interpretation`, `skill_evidence`, dan `risk_flags` tanpa mengubah `AIEngine`.
 
 ## Artefak AIEngine yang Relevan
 
@@ -75,29 +80,35 @@ Alasan memakai `/predict/web`:
 
 Endpoint `/predict` tetap tersedia, tetapi lebih cocok untuk caller internal yang sudah memiliki payload terstruktur `skills`, `experience_years`, dan `certifications`.
 
-## Mapping Field Frontend ke AIEngine
+## Mapping Field Frontend ke Backend ke AIEngine
 
 Form saat ini berada di `WebApplication/frontend-react/src/pages/AnalisisPage.jsx`.
 
-| Field UI | Payload ke backend | Diterima AI `/predict/web` | Catatan |
+| Field UI | Payload frontend ke backend | Payload backend ke AI `/predict/web` | Catatan |
 | --- | --- | --- | --- |
-| Pendidikan Terakhir | `pendidikan_terakhir` | `education_level` alias | Nilai valid: `sma`, `d3`, `s1`, `s2`, `s3`, atau angka level. |
-| Skill yang Dikuasai | `skill_yang_dikuasai` | `skills` alias | Wajib. Bisa string `"Python, SQL"` atau array. |
-| Minat dan Bakat | `minat_bakat` | `interests` alias | Opsional secara model, tetapi UI saat ini wajib. |
-| Pengalaman dan Sertifikasi | `pengalaman_sertifikasi` | `experience_text` alias | Opsional. Service mencoba ekstrak tahun dan sertifikasi dari teks ini. |
-| Target Skill/Role | `target_role` | `target_role` | Opsional. Alias tersedia: `fe`, `be`, `ds`, `ae`. |
-| Top K | `top_k` | `top_k` | Default 5, min 1, max 20. |
-| GenAI summary | `use_genai` | `use_genai` | Default `false`. Jangan aktifkan di MVP kecuali env GenAI sudah siap. |
+| Pendidikan Terakhir | `education_level` | `pendidikan_terakhir` | Wajib dari frontend; backend tetap menerima legacy `pendidikan_terakhir`. |
+| Skill yang Dikuasai | `skills` | `skill_yang_dikuasai` | Wajib. Backend menggabungkan explicit skill, skill dari pengalaman, dan skill dari sertifikasi. |
+| Bidang Minat | `interests` | `minat_bakat` | Opsional. |
+| Tahun Pengalaman | `experience_years` | `experience_years` | Wajib. Tidak diekstrak dari narasi jika user sudah mengisi angka eksplisit. |
+| Pengalaman Relevan | `experience_text` | `pengalaman_sertifikasi` | Wajib sebagai narasi job/project/organization experience, bukan gabungan sertifikasi. |
+| Sertifikasi | `certifications` | `certifications` | Opsional array. |
+| Target Role | `target_role` | `target_role` | Opsional. Alias tersedia: `fe`, `be`, `ds`, `ae`. |
+| Preferensi Lokasi | `preferred_location` | `preferred_location` | Opsional. |
+| Top K | `top_k` | `top_k` | Default teknis 5, min 1, max 20. |
+| GenAI summary | `use_genai` | `use_genai` | Default teknis `false`. |
 
 Contoh payload dari backend Express ke AI:
 
 ```json
 {
   "pendidikan_terakhir": "s1",
-  "skill_yang_dikuasai": "Python, SQL, Machine Learning, TensorFlow",
-  "minat_bakat": "AI Engineer, Data Analyst, Problem Solving",
-  "pengalaman_sertifikasi": "1 tahun project machine learning, sertifikasi TensorFlow Developer",
+  "skill_yang_dikuasai": "Python, SQL, REST API, Docker",
+  "minat_bakat": "Backend Developer, API Development",
+  "pengalaman_sertifikasi": "2 tahun membangun REST API dan deployment Docker untuk sistem inventori.",
+  "experience_years": 2,
+  "certifications": ["AWS Cloud Practitioner"],
   "target_role": "ae",
+  "preferred_location": "Jakarta",
   "top_k": 5,
   "use_genai": false
 }
@@ -139,7 +150,7 @@ Response utama dari AI:
 }
 ```
 
-Frontend `AnalisisResultPage.jsx` sebaiknya mengganti data dummy dengan field berikut:
+Frontend `AnalisisResultPage.jsx` mengonsumsi field berikut:
 
 - Target role: `target_role || predicted_role`
 - Skor kesiapan: `readiness_score`
@@ -150,9 +161,9 @@ Frontend `AnalisisResultPage.jsx` sebaiknya mengganti data dummy dengan field be
 - Tips sukses: `tips`
 - Rekomendasi lowongan: `top_matches`
 
-## Rekomendasi Desain Backend Express
+## Desain Backend Express Saat Ini
 
-Tambahkan module baru di `WebApplication/backend-express/src`:
+Module integrasi berada di `WebApplication/backend-express/src`:
 
 ```text
 src/
@@ -174,13 +185,23 @@ Authorization: Bearer <jwt>
 Content-Type: application/json
 ```
 
+Route history:
+
+```http
+GET /api/analysis/career-match/history?limit=20&offset=0
+GET /api/analysis/career-match/history/:id
+Authorization: Bearer <jwt>
+```
+
 Flow:
 
 1. Frontend submit form ke Express.
 2. Middleware `protect` memastikan user login.
 3. Zod validation memvalidasi field minimal.
 4. `ai.service.js` memanggil FastAPI `POST /predict/web`.
-5. Controller mengembalikan response AI dalam wrapper standar backend.
+5. Controller memperkaya response dengan `input_interpretation`.
+6. Backend menyimpan request dan response ke database.
+7. Controller mengembalikan response AI dalam wrapper standar backend.
 
 Contoh response Express:
 
@@ -217,18 +238,14 @@ ai: {
 
 ## Validasi Backend yang Disarankan
 
-Minimal Zod schema:
+Validasi Zod saat ini menerima canonical keys dan legacy aliases. Field profil wajib:
 
-```js
-pendidikan_terakhir: z.enum(['sma', 'smk', 'd3', 's1', 's2', 's3']).or(z.string().min(1)),
-skill_yang_dikuasai: z.string().min(2),
-minat_bakat: z.string().optional().nullable(),
-pengalaman_sertifikasi: z.string().optional().nullable(),
-target_role: z.enum(['', 'fe', 'be', 'ds', 'ae']).optional(),
-top_k: z.number().int().min(1).max(20).optional()
-```
+- `education_level` atau legacy `pendidikan_terakhir`
+- `skills` atau legacy `skill_yang_dikuasai`
+- `experience_years` atau legacy `pengalaman_tahun`
+- `experience_text` atau legacy `pengalaman_sertifikasi`
 
-Catatan penting: `/predict/web` bisa menerima `pengalaman_sertifikasi` kosong. Jika kosong dan `experience_years` tidak dikirim, service menganggap pengalaman `0`.
+Backend tidak membuat default output profil seperti pendidikan `s1`, pengalaman `0 tahun`, readiness `0`, atau count `0` jika AI/backend tidak mengirim field tersebut.
 
 ## Error Handling
 
@@ -256,26 +273,31 @@ Gunakan timeout eksplisit. Jangan biarkan request menggantung karena inference T
 ## Risiko dan Gap
 
 1. Dataset training memakai weak/synthetic supervision dari data lowongan, bukan histori kandidat nyata. Skor cocok untuk MVP, tetapi belum bisa dianggap validasi final produksi.
-2. Frontend belum menyimpan state hasil analisis. Setelah submit perlu membawa result via route state, global state, atau simpan history ke database.
-3. Backend belum memiliki tabel untuk riwayat analisis. Jika fitur History harus nyata, perlu desain tabel baru.
+2. Backend smart evidence masih memakai keyword/alias extraction, bukan semantic job description matching.
+3. Durasi pengalaman masih level profil global, belum dibagi per skill atau per pengalaman terstruktur.
 4. `requirements.txt` memakai versi dependency yang sangat baru. Pastikan environment deployment mendukung versi Python dan wheel TensorFlow yang kompatibel.
 5. Metadata model menyimpan path absolut dari environment lama, tetapi loader runtime sudah memakai path relatif/`CAKAP_MODEL_DIR`, jadi ini bukan blocker.
 6. CORS FastAPI belum dikonfigurasi. Karena browser sebaiknya hanya memanggil Express, ini tidak menjadi masalah selama frontend tidak memanggil AI service langsung.
 
 ## Checklist Implementasi Backend
 
-- [ ] Tambahkan env `AI_CAREER_MATCH_URL` dan `AI_REQUEST_TIMEOUT_MS`.
-- [ ] Tambahkan config `ai` di `backend-express/src/config/index.js`.
-- [ ] Tambahkan `analysis.validation.js`.
-- [ ] Tambahkan `ai.service.js` untuk call `POST /predict/web`.
-- [ ] Tambahkan `analysis.controller.js`.
-- [ ] Tambahkan `analysis.routes.js` dengan middleware `protect`.
-- [ ] Register route di `index.js`: `app.use('/api/analysis', analysisRoutes)`.
-- [ ] Tambahkan handling timeout dan mapping error AI.
-- [ ] Update frontend submit form agar POST ke `/api/analysis/career-match`.
-- [ ] Update halaman hasil agar memakai response AI, bukan data dummy.
-- [ ] Jalankan smoke test AI: `python tests/integration/smoke_inference.py`.
-- [ ] Jalankan manual E2E: submit form frontend -> Express -> FastAPI -> halaman hasil.
+- [X] Tambahkan env `AI_CAREER_MATCH_URL` dan `AI_REQUEST_TIMEOUT_MS`.
+- [X] Tambahkan config `ai` di `backend-express/src/config/index.js`.
+- [X] Tambahkan `analysis.validation.js`.
+- [X] Tambahkan `ai.service.js` untuk call `POST /predict/web`.
+- [X] Tambahkan `analysis.controller.js`.
+- [X] Tambahkan `analysis.routes.js` dengan middleware `protect`.
+- [X] Register route di `index.js`: `app.use('/api/analysis', analysisRoutes)`.
+- [X] Tambahkan handling timeout dan mapping error AI.
+- [X] Update frontend submit form agar POST ke `/api/analysis/career-match`.
+- [X] Update halaman hasil agar memakai response AI, bukan data dummy.
+- [X] Tambahkan penyimpanan history `career_analysis_results`.
+- [X] Tambahkan endpoint history list.
+- [X] Tambahkan endpoint history detail.
+- [X] Integrasikan `HistoryPage.jsx` dengan endpoint history real.
+- [X] Integrasikan `/riwayat/:id` dengan detail history real.
+- [X] Jalankan smoke test AI: `python tests/integration/smoke_inference.py`.
+- [X] Jalankan manual E2E: submit form frontend -> Express -> FastAPI -> halaman hasil/history.
 
 ## Contoh cURL untuk Testing Integrasi
 
@@ -287,15 +309,29 @@ curl -X POST http://127.0.0.1:8001/predict/web \
   -d "{\"pendidikan_terakhir\":\"s1\",\"skill_yang_dikuasai\":\"Python, SQL, Machine Learning\",\"minat_bakat\":\"AI Engineer, Data Analyst\",\"pengalaman_sertifikasi\":\"1 tahun project machine learning, sertifikasi TensorFlow Developer\",\"target_role\":\"ae\",\"top_k\":5}"
 ```
 
-Tes via Express setelah route dibuat:
+Tes via Express:
 
 ```bash
 curl -X POST http://localhost:3000/api/analysis/career-match \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d "{\"pendidikan_terakhir\":\"s1\",\"skill_yang_dikuasai\":\"Python, SQL, Machine Learning\",\"minat_bakat\":\"AI Engineer, Data Analyst\",\"pengalaman_sertifikasi\":\"1 tahun project machine learning, sertifikasi TensorFlow Developer\",\"target_role\":\"ae\",\"top_k\":5}"
+  -d "{\"education_level\":\"s1\",\"skills\":[\"Python\",\"SQL\",\"REST API\",\"Docker\"],\"interests\":[\"Backend Developer\"],\"experience_years\":2,\"experience_text\":\"2 tahun membangun REST API dan deployment Docker untuk sistem inventori.\",\"certifications\":[\"AWS Cloud Practitioner\"],\"target_role\":\"be\",\"preferred_location\":\"Jakarta\",\"top_k\":5,\"use_genai\":false}"
+```
+
+Tes history list:
+
+```bash
+curl http://localhost:3000/api/analysis/career-match/history?limit=5 \
+  -H "Authorization: Bearer <token>"
+```
+
+Tes history detail:
+
+```bash
+curl http://localhost:3000/api/analysis/career-match/history/<analysis_id> \
+  -H "Authorization: Bearer <token>"
 ```
 
 ## Kesimpulan
 
-AIEngine sudah cukup siap untuk diintegrasikan sebagai microservice inference. Tugas utama backend adalah membuat gateway endpoint di Express, validasi request dari frontend, memanggil FastAPI `/predict/web`, dan menstabilkan error/timeout. Setelah itu frontend tinggal mengganti data dummy di halaman analisis dan hasil dengan response nyata dari backend.
+AIEngine sudah terintegrasi sebagai microservice inference melalui Backend Express. Frontend submit, halaman hasil, history list, dan detail history sudah memakai data backend/AI real. Area yang masih perlu dikembangkan berikutnya adalah peningkatan semantic evidence di backend atau AIEngine, terutama untuk mencocokkan narasi pengalaman dengan job description secara lebih dalam.

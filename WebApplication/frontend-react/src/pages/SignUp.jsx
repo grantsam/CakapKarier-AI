@@ -61,7 +61,7 @@ const SignUp = () => {
     if (!validateForm()) return;
     setLoading(true);
     try {
-      const response = await api.post('/auth/signup', {
+      await api.post('/auth/signup', {
         nama: formData.username,
         email: formData.email,
         password: formData.password

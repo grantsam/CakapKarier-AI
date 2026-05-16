@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS career_analysis_results (
     target_role TEXT,
     readiness_score NUMERIC(5, 2),
     readiness_status VARCHAR(50),
-    mastered_skill_count INTEGER DEFAULT 0,
-    skill_gap_count INTEGER DEFAULT 0,
+    mastered_skill_count INTEGER,
+    skill_gap_count INTEGER,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

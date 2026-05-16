@@ -1,5 +1,7 @@
 # Laporan Gap Kontrak Frontend, Backend, dan Model AI
 
+Status dokumen: arsip pra-implementasi. Untuk kontrak terkini setelah integrasi submit, smart evidence, history list, dan history detail, gunakan `docs/architecture/CAREER_MATCH_DATA_FLOW_CONTRACT.md`.
+
 Tanggal review: 2026-05-13  
 Scope: form analisis karier, backend gateway, AIEngine `career-match`  
 Tujuan: menjelaskan perbedaan input/output frontend dengan input/output model, gap UX akibat faktor user, dan solusi titik tengah untuk penyampaian informasi.

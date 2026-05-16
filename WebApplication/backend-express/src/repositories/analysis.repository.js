@@ -1,10 +1,17 @@
 import db from '../database/db.js';
 
 const toNumberOrNull = (value) => {
-  if (value === null || value === undefined) return null;
+  if (value === null || value === undefined || value === '') return null;
   const numberValue = Number(value);
   return Number.isFinite(numberValue) ? numberValue : null;
 };
+
+const toIntegerOrNull = (value) => {
+  const numberValue = toNumberOrNull(value);
+  return numberValue === null ? null : Math.trunc(numberValue);
+};
+
+const countArrayOrNull = (value) => (Array.isArray(value) ? value.length : null);
 
 const roundToTwoDecimals = (value) => Math.round(value * 100) / 100;
 
@@ -14,16 +21,16 @@ const mapHistoryItem = (row) => ({
   target_role: row.target_role,
   readiness_score: toNumberOrNull(row.readiness_score),
   readiness_status: row.readiness_status,
-  mastered_skill_count: Number(row.mastered_skill_count || 0),
-  skill_gap_count: Number(row.skill_gap_count || 0),
+  mastered_skill_count: toIntegerOrNull(row.mastered_skill_count),
+  skill_gap_count: toIntegerOrNull(row.skill_gap_count),
   created_at: row.created_at,
 });
 
 const buildHistorySummary = (totalAnalysis, latest, previous) => {
   const latestScore = toNumberOrNull(latest?.readiness_score);
   const previousScore = toNumberOrNull(previous?.readiness_score);
-  const latestMasteredSkillCount = latest ? Number(latest.mastered_skill_count || 0) : 0;
-  const previousMasteredSkillCount = previous ? Number(previous.mastered_skill_count || 0) : null;
+  const latestMasteredSkillCount = latest ? toIntegerOrNull(latest.mastered_skill_count) : null;
+  const previousMasteredSkillCount = previous ? toIntegerOrNull(previous.mastered_skill_count) : null;
 
   return {
     total_analysis: totalAnalysis,
@@ -32,12 +39,13 @@ const buildHistorySummary = (totalAnalysis, latest, previous) => {
     score_delta:
       latestScore !== null && previousScore !== null
         ? roundToTwoDecimals(latestScore - previousScore)
-        : 0,
+        : null,
     latest_mastered_skill_count: latestMasteredSkillCount,
     mastered_skill_delta:
+      latestMasteredSkillCount !== null &&
       previousMasteredSkillCount !== null
         ? latestMasteredSkillCount - previousMasteredSkillCount
-        : 0,
+        : null,
   };
 };
 
@@ -56,8 +64,8 @@ const mapHistoryDetail = (row) => {
       readiness_score: responsePayload.readiness_score ?? toNumberOrNull(row.readiness_score),
       readiness_status: responsePayload.readiness_status ?? row.readiness_status,
       mastered_skill_count:
-        responsePayload.mastered_skill_count ?? Number(row.mastered_skill_count || 0),
-      skill_gap_count: responsePayload.skill_gap_count ?? Number(row.skill_gap_count || 0),
+        responsePayload.mastered_skill_count ?? toIntegerOrNull(row.mastered_skill_count),
+      skill_gap_count: responsePayload.skill_gap_count ?? toIntegerOrNull(row.skill_gap_count),
     },
   };
 };
@@ -96,8 +104,8 @@ export const createCareerAnalysisResult = async ({ userId, requestPayload, respo
     responsePayload.target_role || null,
     responsePayload.readiness_score ?? null,
     responsePayload.readiness_status || null,
-    responsePayload.mastered_skill_count ?? 0,
-    responsePayload.skill_gap_count ?? 0,
+    responsePayload.mastered_skill_count ?? countArrayOrNull(responsePayload.mastered_skills),
+    responsePayload.skill_gap_count ?? countArrayOrNull(responsePayload.skill_gap_analysis) ?? countArrayOrNull(responsePayload.skill_gap),
   ];
 
   const result = await db.query(query, values);

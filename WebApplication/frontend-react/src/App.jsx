@@ -19,6 +19,7 @@ function App() {
         <Route path="/analisis" element={<AnalisisPage />} />
         <Route path="/analisis/hasil" element={<AnalisisResultPage />} />
         <Route path="/riwayat" element={<HistoryPage />} />
+        <Route path="/riwayat/:id" element={<AnalisisResultPage />} />
         <Route path="/profil" element={<ProfilPage />} />
         <Route path="/profil/edit" element={<EditProfilPage />} />
       </Routes>

@@ -8,6 +8,31 @@ const __dirname = path.dirname(__filename);
 // Load .env from backend-express root
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
+const requireEnv = (key) => {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${key}`);
+  }
+  return value;
+};
+
+const requireStrongJwtSecret = () => {
+  const secret = requireEnv('JWT_SECRET');
+  if (secret.length < 32) {
+    throw new Error('JWT_SECRET must be at least 32 characters long');
+  }
+  return secret;
+};
+
+const parsePositiveIntegerEnv = (key, fallback) => {
+  const rawValue = process.env[key] || fallback;
+  const value = Number(rawValue);
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new Error(`${key} must be a positive integer`);
+  }
+  return value;
+};
+
 export const config = {
   port: process.env.PORT || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -19,11 +44,11 @@ export const config = {
     name: process.env.DB_NAME,
   },
   jwt: {
-    secret: process.env.JWT_SECRET,
-    expiresIn: process.env.JWT_EXPIRES_IN,
+    secret: requireStrongJwtSecret(),
+    expiresIn: requireEnv('JWT_EXPIRES_IN'),
   },
   ai: {
     careerMatchUrl: process.env.AI_CAREER_MATCH_URL || 'http://127.0.0.1:8001',
-    requestTimeoutMs: Number(process.env.AI_REQUEST_TIMEOUT_MS || 30000),
+    requestTimeoutMs: parsePositiveIntegerEnv('AI_REQUEST_TIMEOUT_MS', '30000'),
   }
 };

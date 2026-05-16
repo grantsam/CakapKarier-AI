@@ -1,5 +1,6 @@
 import * as aiService from '../services/ai.service.js';
 import * as analysisRepository from '../repositories/analysis.repository.js';
+import { buildCareerEvidenceProfile } from '../services/careerEvidence.service.js';
 import AppError from '../utils/AppError.js';
 
 export const getCareerMatchHealth = async (req, res, next) => {
@@ -16,11 +17,20 @@ export const getCareerMatchHealth = async (req, res, next) => {
 
 export const createCareerMatchAnalysis = async (req, res, next) => {
   try {
-    const result = await aiService.predictCareerMatch(req.body);
+    const evidenceProfile = buildCareerEvidenceProfile(req.body);
+    const result = await aiService.predictCareerMatch(evidenceProfile.aiPayload);
+    const enrichedResult = {
+      ...result,
+      input_interpretation: evidenceProfile.inputInterpretation,
+    };
     const savedAnalysis = await analysisRepository.createCareerAnalysisResult({
       userId: req.user.id,
-      requestPayload: req.body,
-      responsePayload: result,
+      requestPayload: {
+        original: req.body,
+        normalized: evidenceProfile.normalizedProfile,
+        ai_payload: evidenceProfile.aiPayload,
+      },
+      responsePayload: enrichedResult,
     });
 
     res.status(200).json({
@@ -28,7 +38,7 @@ export const createCareerMatchAnalysis = async (req, res, next) => {
       data: {
         analysis_id: savedAnalysis.id,
         saved_at: savedAnalysis.created_at,
-        ...result,
+        ...enrichedResult,
       },
     });
   } catch (error) {

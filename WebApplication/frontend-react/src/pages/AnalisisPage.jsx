@@ -9,7 +9,6 @@ import {
   IconX, 
   IconPlus, 
   IconCertificate, 
-  IconMessageChatbot, 
   IconMapPin
 } from '@tabler/icons-react';
 
@@ -129,7 +128,7 @@ const AnalisisPage = () => {
       try {
         const res = await api.get('/analysis/skills'); 
         setAvailableSkills(res.data); 
-      } catch (error) {
+      } catch {
         setAvailableSkills(["Python", "SQL", "Machine Learning", "TensorFlow", "React", "JavaScript"]);
       }
     };
@@ -169,12 +168,16 @@ const AnalisisPage = () => {
   setLoading(true);
     try {
       const payload = {
-        pendidikan_terakhir: formData.pendidikan_terakhir, 
-        skill_yang_dikuasai: selectedSkills.map(s => s.name).join(", "),
-        minat_bakat: selectedInterests.join(", "),
-        pengalaman_sertifikasi: `Pengalaman ${formData.pengalaman_tahun} tahun: ${formData.pengalaman_text}. Sertifikasi yang dimiliki: ${formData.sertifikasi.join(", ")}`,
+        education_level: formData.pendidikan_terakhir,
+        skills: selectedSkills.map(s => s.name),
+        interests: selectedInterests,
+        experience_text: formData.pengalaman_text,
+        experience_years: Number(formData.pengalaman_tahun || 0),
+        certifications: formData.sertifikasi,
         target_role: formData.target_role,
-        top_k: 5
+        preferred_location: formData.preferred_location,
+        top_k: 5,
+        use_genai: false
       };
 
       const response = await api.post('/analysis/career-match', payload);
@@ -291,6 +294,9 @@ const AnalisisPage = () => {
                   placeholder="Jelaskan peran Anda, perusahaan, atau proyek utama..."
                   className="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none min-h-[100px] text-sm resize-y"
                 ></textarea>
+                <p className="text-[11px] text-slate-500 leading-relaxed">
+                  Jelaskan pengalaman kerja, proyek, atau organisasi yang benar-benar memakai skill terkait. Tahun pengalaman tidak otomatis berlaku untuk semua skill yang dicantumkan.
+                </p>
               </div>
             </div>
 
