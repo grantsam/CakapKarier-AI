@@ -9,7 +9,7 @@ import {
   IconChevronRight 
 } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 
 const ProfilPage = () => {
   const navigate = useNavigate();
@@ -17,22 +17,41 @@ const ProfilPage = () => {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
+          console.warn("Token tidak ditemukan di localStorage, mengalihkan ke signin...");
           navigate('/signin');
           return;
         }
 
-        const response = await axios.get('http://localhost:3000/api/user/profile', {
-          headers: { Authorization: `Bearer ${token}` }
+        const response = await api.get('/user/profile', {
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+          },
+          signal: controller.signal
         });
 
-        setUserData(response.data.data);
+        console.log("Data user yang berhasil diambil:", response.data);
+
+        const profilePayload = response.data?.data;
+        
+        if (profilePayload) {
+          setUserData(profilePayload);
+        } else {
+          console.error("Respons sukses tapi properti 'data' kosong:", response.data);
+        }
+
       } catch (error) {
-        console.error("Gagal mengambil data profil:", error);
-        if (error.response?.status === 401) {
+        if (api.isCancel && api.isCancel(error)) return;
+        
+        console.error("Gagal mengambil data profil. Detail Error:", error.response || error);
+        
+        if (error.response?.status === 401 || error.response?.status === 403) {
           localStorage.removeItem('token');
           localStorage.removeItem('isLoggedIn');
           navigate('/signin');
@@ -43,6 +62,8 @@ const ProfilPage = () => {
     };
 
     fetchProfile();
+
+    return () => controller.abort();
   }, [navigate]);
 
   if (loading) {
@@ -62,14 +83,14 @@ const ProfilPage = () => {
           
           {/* Section 1: Profil Header & Informasi Pribadi */}
           <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
-            {/* Header Profil Biru Muda */}
             <div className="bg-[#E0F2FE]/40 p-8 flex items-center gap-5 border-b border-slate-100">
               <div className="bg-white p-1 rounded-full shadow-sm">
                 <IconUserCircle size={80} className="text-[#004A7C]" stroke={1.5} />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-[#004A7C]">{userData?.nama || 'User'}</h2>
-                <p className="text-slate-500 font-medium">{userData?.email || 'email@domain.com'}</p>
+                {/* DIUBAH: fallback menggunakan tanda strip (-) agar terlihat jika data kosong */}
+                <h2 className="text-xl font-bold text-[#004A7C]">{userData?.nama || '-'}</h2>
+                <p className="text-slate-500 font-medium">{userData?.email || 'Memuat email...'}</p>
               </div>
             </div>
 

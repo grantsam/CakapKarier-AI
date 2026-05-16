@@ -4,8 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/landing/Footer';
 import { 
-  IconInfoCircle, IconBolt, IconX, IconPlus, 
-  IconCertificate, IconMessageChatbot, IconMapPin
+  IconInfoCircle, 
+  IconBolt, 
+  IconX, 
+  IconPlus, 
+  IconCertificate, 
+  IconMessageChatbot, 
+  IconMapPin
 } from '@tabler/icons-react';
 
 // Reusable MultiSelect Container
@@ -158,26 +163,23 @@ const AnalisisPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (selectedSkills.length === 0) return alert("Mohon isi skill minimal satu.");
-  
-    setLoading(true);
+  e.preventDefault();
+  if (selectedSkills.length === 0) return alert("Mohon isi skill minimal satu.");
+
+  setLoading(true);
     try {
       const payload = {
         pendidikan_terakhir: formData.pendidikan_terakhir, 
-        skill_yang_dikuasai: selectedSkills
-          .map(s => s.name)
-          .join(", "),
+        skill_yang_dikuasai: selectedSkills.map(s => s.name).join(", "),
         minat_bakat: selectedInterests.join(", "),
-        pengalaman_sertifikasi: `${formData.pengalaman_tahun} tahun. ${formData.pengalaman_text}. Sertifikasi: ${formData.sertifikasi.join(", ")}`,
-        target_role: formData.target_role || "ae", 
-        preferred_location: formData.preferred_location,
-        top_k: 5,
-        use_genai: false
+        pengalaman_sertifikasi: `Pengalaman ${formData.pengalaman_tahun} tahun: ${formData.pengalaman_text}. Sertifikasi yang dimiliki: ${formData.sertifikasi.join(", ")}`,
+        target_role: formData.target_role,
+        top_k: 5
       };
 
       const response = await api.post('/analysis/career-match', payload);
-      navigate('/analisis/hasil', { state: { data: response.data } });
+    
+      navigate('/analisis/hasil', { state: { data: response.data.data } }); 
     } catch (error) {
       if (error.response?.status === 401) {
         alert("Sesi Anda berakhir. Silakan login kembali.");
@@ -234,7 +236,7 @@ const AnalisisPage = () => {
 
             {/* Skill */}
             <MultiSelectContainer 
-              label="Skill & Kompetensi"
+              label="Skill yang Dikuasai"
               placeholder="Cari skill (contoh: Python)..."
               items={availableSkills}
               selectedItems={selectedSkills}
@@ -251,7 +253,7 @@ const AnalisisPage = () => {
 
             {/* Minat */}
             <MultiSelectContainer 
-              label="Minat & Bidang Fokus"
+              label="Bidang Minat"
               placeholder="Ketik minat Anda..."
               items={staticInterests}
               selectedItems={selectedInterests}
@@ -281,7 +283,7 @@ const AnalisisPage = () => {
                 />
               </div>
               <div className="md:col-span-3 space-y-2">
-                <label className="block text-sm font-semibold text-slate-800">Deskripsi Pengalaman <span className="text-red-500">*</span></label>
+                <label className="block text-sm font-semibold text-slate-800">Pengalaman Relevan <span className="text-red-500">*</span></label>
                 <textarea 
                   required
                   value={formData.pengalaman_text}
@@ -294,7 +296,7 @@ const AnalisisPage = () => {
 
             {/* Sertifikasi */}
             <div className="space-y-3">
-              <label className="block text-sm font-semibold text-slate-800">Sertifikasi Professional</label>
+              <label className="block text-sm font-semibold text-slate-800">Sertifikasi</label>
               <div className="flex gap-2">
                 <div className="relative flex-grow">
                   <IconCertificate className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -329,7 +331,7 @@ const AnalisisPage = () => {
             {/* Role & Lokasi */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-slate-800">Target Role Kerja</label>
+                <label className="block text-sm font-semibold text-slate-800">Target Role yang Dituju</label>
                 <select 
                   value={formData.target_role}
                   onChange={(e) => setFormData({...formData, target_role: e.target.value})}

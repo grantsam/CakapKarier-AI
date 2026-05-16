@@ -54,13 +54,18 @@ const SignIn = () => {
         password: formData.password
       });
 
-      const token = response.data.token || response.data.data?.token;
+      // Menyesuaikan fleksibilitas struktur token dari backend kamu
+      const token = response.data?.token || response.data?.data?.token;
 
       if (token) {
         localStorage.setItem('token', token);
         localStorage.setItem('isLoggedIn', 'true');
         alert("Selamat datang kembali!");
-        navigate('/');
+        
+        // DIUBAH: Langsung arahkan ke halaman profil untuk memverifikasi data asli
+        navigate('/profil'); 
+      } else {
+        alert("Token tidak ditemukan dalam respon server.");
       }
     } catch (error) {
       const serverMessage = error.response?.data?.message || "Email atau kata sandi salah";
