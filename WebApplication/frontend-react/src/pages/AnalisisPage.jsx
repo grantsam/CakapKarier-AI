@@ -9,13 +9,17 @@ import {
   IconX, 
   IconPlus, 
   IconCertificate, 
-  IconMapPin
+  IconMapPin,
+  IconBriefcase,
+  IconSchool,
+  IconBrain,
+  IconHeart,
+  IconTarget
 } from '@tabler/icons-react';
 
-// Reusable MultiSelect Container
 const MultiSelectContainer = ({ 
   label, placeholder, items, selectedItems, inputValue, setInputValue, 
-  showDropdown, setShowDropdown, onAdd, onRemove, type, containerRef, required = true 
+  showDropdown, setShowDropdown, onAdd, onRemove, type, containerRef, required = true, icon: Icon 
 }) => {
   const safeItems = Array.isArray(items) ? items : [];
   
@@ -26,8 +30,9 @@ const MultiSelectContainer = ({
 
   return (
     <div className="space-y-2 relative" ref={containerRef}>
-      <label className="block text-sm font-semibold text-slate-800">
-        {label} {required && <span className="text-red-500">*</span>}
+      <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+        {Icon && <Icon size={18} className="text-slate-600" />}
+        <span>{label} {required && <span className="text-red-500">*</span>}</span>
       </label>
       
       <div 
@@ -100,13 +105,14 @@ const AnalisisPage = () => {
   const [loading, setLoading] = useState(false);
   
   const [availableSkills, setAvailableSkills] = useState([]);
-  const staticInterests = ["UI/UX Design", "Back-End Developer", "Data Analyst", "AI Engineer", "Mobile Developer"];
+  const [availableEducation, setAvailableEducation] = useState([]);
+  const [availableRoles, setAvailableRoles] = useState([]);
+  const [availableLocations, setAvailableLocations] = useState([]);
+  const [availableInterests, setAvailableInterests] = useState([]); // SEKARANG SUDAH DINAMIS
 
-  // Inisialisasi state sesuai dengan kebutuhan payload Swagger
   const [formData, setFormData] = useState({ 
     pendidikan_terakhir: '', 
     pengalaman_text: '', 
-    pengalaman_tahun: '', 
     target_role: '', 
     preferred_location: '', 
     sertifikasi: [] 
@@ -126,10 +132,39 @@ const AnalisisPage = () => {
   useEffect(() => {
     const fetchDataset = async () => {
       try {
-        const res = await api.get('/analysis/skills'); 
-        setAvailableSkills(res.data); 
-      } catch {
+        const [skillsRes, eduRes, rolesRes, locsRes, interestsRes] = await Promise.all([
+          api.get('/analysis/skills'),
+          api.get('/analysis/education'),
+          api.get('/analysis/roles'),
+          api.get('/analysis/locations'),
+          api.get('/analysis/interests')
+        ]);
+
+        setAvailableSkills(skillsRes.data);
+        setAvailableEducation(eduRes.data);
+        setAvailableRoles(rolesRes.data);
+        setAvailableLocations(locsRes.data);
+        setAvailableInterests(interestsRes.data);
+      } catch (error) {
+        console.error("Gagal memuat data dari API, menggunakan fallback.", error);
+      
+        // FALLBACK: Data cadangan jika backend belum menyediakan endpoint tersebut
         setAvailableSkills(["Python", "SQL", "Machine Learning", "TensorFlow", "React", "JavaScript"]);
+        setAvailableEducation([
+          { id: "sma", label: "SMA/SMK" },
+          { id: "d3", label: "Diploma (D3)" },
+          { id: "s1", label: "Sarjana (S1)" },
+          { id: "s2", label: "Magister (S2)" },
+          { id: "s3", label: "Doktor (S3)" }
+        ]);
+        setAvailableRoles([
+          { id: "ae", label: "AI Engineer" },
+          { id: "ds", label: "Data Scientist" },
+          { id: "fe", label: "Front-End Developer" },
+          { id: "be", label: "Back-End Developer" }
+        ]);
+        setAvailableLocations(["Jakarta", "Bandung", "Surabaya", "Yogyakarta", "Remote"]);
+        setAvailableInterests(["UI/UX Design", "Back-End Developer", "Data Analyst", "AI Engineer", "Mobile Developer"]);
       }
     };
     fetchDataset();
@@ -162,17 +197,20 @@ const AnalisisPage = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (selectedSkills.length === 0) return alert("Mohon isi skill minimal satu.");
+    e.preventDefault();
+    if (selectedSkills.length === 0) return alert("Mohon isi skill minimal satu.");
 
-  setLoading(true);
+    setLoading(true);
     try {
+      const yearMatch = formData.pengalaman_text.match(/(\d+)\s*(tahun|year)/i);
+      const calculatedYears = yearMatch ? parseInt(yearMatch[1], 10) : 0;
+
       const payload = {
-        education_level: formData.pendidikan_terakhir,
+        education_level: formData.pendidikan_terakhir, 
         skills: selectedSkills.map(s => s.name),
         interests: selectedInterests,
         experience_text: formData.pengalaman_text,
-        experience_years: Number(formData.pengalaman_tahun || 0),
+        experience_years: calculatedYears,
         certifications: formData.sertifikasi,
         target_role: formData.target_role,
         preferred_location: formData.preferred_location,
@@ -181,7 +219,6 @@ const AnalisisPage = () => {
       };
 
       const response = await api.post('/analysis/career-match', payload);
-    
       navigate('/analisis/hasil', { state: { data: response.data.data } }); 
     } catch (error) {
       if (error.response?.status === 401) {
@@ -218,8 +255,9 @@ const AnalisisPage = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Pendidikan Terakhir */}
             <div className="space-y-2">
-              <label className="block text-sm font-semibold text-slate-800">
-                Pendidikan Terakhir <span className="text-red-500">*</span>
+              <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+                <IconSchool size={18} className="text-slate-600" />
+                <span>Pendidikan Terakhir <span className="text-red-500">*</span></span>
               </label>
               <select 
                 required 
@@ -228,12 +266,11 @@ const AnalisisPage = () => {
                 className="w-full p-4 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none bg-[url('https://cdn-icons-png.flaticon.com/512/271/271238.png')] bg-[length:12px] bg-[right_1.5rem_center] bg-no-repeat"
               >
                 <option value="">Pilih Jenjang</option>
-                <option value="sma">SMA/SMK</option>
-                <option value="d3">Diploma (D3)</option>
-                <option value="s1">Sarjana (S1)</option>
-                <option value="s2">Magister (S2)</option>
-                <option value="s3">Doktor (S3)</option>
-                <option value="Lainnya">Lainnya</option>
+                {availableEducation.map((edu) => (
+                  <option key={edu.id || edu} value={edu.id || edu}>
+                    {edu.label || edu}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -252,13 +289,14 @@ const AnalisisPage = () => {
               type="skill"
               containerRef={skillRef}
               required={true}
+              icon={IconBrain}
             />
 
             {/* Minat */}
             <MultiSelectContainer 
               label="Bidang Minat"
               placeholder="Ketik minat Anda..."
-              items={staticInterests}
+              items={availableInterests}
               selectedItems={selectedInterests}
               inputValue={interestInput}
               setInputValue={setInterestInput}
@@ -269,40 +307,33 @@ const AnalisisPage = () => {
               type="interest"
               containerRef={interestRef}
               required={false}
+              icon={IconHeart}
             />
 
             {/* Pengalaman */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-2">
-              <div className="md:col-span-1 space-y-2">
-                <label className="block text-sm font-semibold text-slate-800">
-                  Tahun Pengalaman <span className="text-red-500">*</span>
-                </label>
-                <input 
-                  type="number" 
-                  required min="0" placeholder="0"
-                  value={formData.pengalaman_tahun}
-                  onChange={(e) => setFormData({...formData, pengalaman_tahun: e.target.value})}
-                  className="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm shadow-sm"
-                />
-              </div>
-              <div className="md:col-span-3 space-y-2">
-                <label className="block text-sm font-semibold text-slate-800">Pengalaman Relevan <span className="text-red-500">*</span></label>
-                <textarea 
-                  required
-                  value={formData.pengalaman_text}
-                  onChange={(e) => setFormData({...formData, pengalaman_text: e.target.value})}
-                  placeholder="Jelaskan peran Anda, perusahaan, atau proyek utama..."
-                  className="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none min-h-[100px] text-sm resize-y"
-                ></textarea>
-                <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Jelaskan pengalaman kerja, proyek, atau organisasi yang benar-benar memakai skill terkait. Tahun pengalaman tidak otomatis berlaku untuk semua skill yang dicantumkan.
-                </p>
+            <div className="space-y-2 pt-2">
+              <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+                <IconBriefcase size={18} className="text-slate-600" />
+                <span>Riwayat Pengalaman Kerja / Proyek <span className="text-red-500">*</span></span>
+              </label>
+              <textarea 
+                required
+                value={formData.pengalaman_text}
+                onChange={(e) => setFormData({...formData, pengalaman_text: e.target.value})}
+                placeholder="Contoh: 2 tahun sebagai Frontend Developer di PT ABC memimpin 3 proyek React, atau 6 bulan magang UI/UX mengerjakan desain aplikasi mobile..."
+                className="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none min-h-[120px] text-sm resize-y shadow-sm placeholder:text-slate-400"
+              ></textarea>
+              <div className="bg-sky-50 border border-sky-100 rounded-xl p-3 text-[12px] text-slate-600 leading-relaxed">
+                💡 <span className="font-semibold text-[#004A7C]">Petunjuk Input:</span> Tuliskan total durasi waktu beserta deskripsi singkat pengalaman Anda. Sistem AI kami akan otomatis mendeteksi total tahun masa kerja dan relevansi portofolio proyek Anda dari teks di atas.
               </div>
             </div>
 
             {/* Sertifikasi */}
             <div className="space-y-3">
-              <label className="block text-sm font-semibold text-slate-800">Sertifikasi</label>
+              <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+                <IconCertificate size={18} className="text-slate-600" />
+                <span>Sertifikasi</span>
+              </label>
               <div className="flex gap-2">
                 <div className="relative flex-grow">
                   <IconCertificate className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -336,24 +367,31 @@ const AnalisisPage = () => {
 
             {/* Role & Lokasi */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Target Role */}
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-slate-800">Target Role yang Dituju</label>
+                <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+                  <IconTarget size={18} className="text-slate-600" />
+                  <span>Target Role yang Dituju</span>
+                </label>
                 <select 
                   value={formData.target_role}
                   onChange={(e) => setFormData({...formData, target_role: e.target.value})}
                   className="w-full p-4 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none bg-[url('https://cdn-icons-png.flaticon.com/512/271/271238.png')] bg-[length:12px] bg-[right_1.5rem_center] bg-no-repeat"
                 >
                   <option value="">Rekomendasikan yang cocok</option>
-                  <option value="ae">AI Engineer</option>
-                  <option value="ds">Data Scientist</option>
-                  <option value="fe">Front-End Developer</option>
-                  <option value="be">Back-End Developer</option>
+                  {availableRoles.map((role) => (
+                    <option key={role.id || role} value={role.id || role}>
+                      {role.label || role}
+                    </option>
+                  ))}
                 </select>
               </div>
 
+              {/* Lokasi */}
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-slate-800 flex items-center gap-2">
-                  <IconMapPin size={16} /> Preferensi Lokasi
+                <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+                  <IconMapPin size={18} className="text-slate-600" />
+                  <span>Preferensi Lokasi</span>
                 </label>
                 <select 
                   value={formData.preferred_location}
@@ -361,11 +399,11 @@ const AnalisisPage = () => {
                   className="w-full p-4 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none bg-[url('https://cdn-icons-png.flaticon.com/512/271/271238.png')] bg-[length:12px] bg-[right_1.5rem_center] bg-no-repeat"
                 >
                   <option value="">Pilih Lokasi</option>
-                  <option value="Jakarta">Jakarta</option>
-                  <option value="Bandung">Bandung</option>
-                  <option value="Surabaya">Surabaya</option>
-                  <option value="Yogyakarta">Yogyakarta</option>
-                  <option value="Remote">Remote</option>
+                  {availableLocations.map((loc) => (
+                    <option key={loc} value={loc}>
+                      {loc}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

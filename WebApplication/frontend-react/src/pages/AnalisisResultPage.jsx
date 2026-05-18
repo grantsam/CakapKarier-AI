@@ -23,13 +23,35 @@ const AnalisisResultPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id: historyId } = useParams();
+  
   const stateAnalysisData = location.state?.data;
-  const [historyAnalysisData, setHistoryAnalysisData] = useState(null);
-  const [loadingHistoryDetail, setLoadingHistoryDetail] = useState(Boolean(historyId && !stateAnalysisData));
+  const [analysisData, setAnalysisData] = useState(null);
+  const [loadingHistoryDetail, setLoadingHistoryDetail] = useState(true);
   const [historyDetailError, setHistoryDetailError] = useState('');
 
   useEffect(() => {
-    if (!historyId || stateAnalysisData) return;
+    if (stateAnalysisData) {
+      if (stateAnalysisData.result) {
+        setAnalysisData({
+          ...stateAnalysisData.result,
+          analysis_id: stateAnalysisData.id,
+          saved_at: stateAnalysisData.created_at
+        });
+      } else {
+        setAnalysisData({
+          ...stateAnalysisData,
+          analysis_id: stateAnalysisData.id || stateAnalysisData.analysis_id,
+          saved_at: stateAnalysisData.created_at || stateAnalysisData.saved_at
+        });
+      }
+      setLoadingHistoryDetail(false);
+      return;
+    }
+
+    if (!historyId) {
+      setLoadingHistoryDetail(false);
+      return;
+    }
 
     const fetchHistoryDetail = async () => {
       setLoadingHistoryDetail(true);
@@ -37,14 +59,17 @@ const AnalisisResultPage = () => {
 
       try {
         const response = await api.get(`/analysis/career-match/history/${historyId}`);
-        const detail = response.data?.data;
-        const result = detail?.result || {};
+        const detail = response.data?.data || response.data;
 
-        setHistoryAnalysisData({
-          ...result,
-          analysis_id: detail?.id,
-          saved_at: detail?.created_at,
-        });
+        if (detail && detail.result) {
+          setAnalysisData({
+            ...detail.result,
+            analysis_id: detail.id,
+            saved_at: detail.created_at,
+          });
+        } else {
+          setHistoryDetailError('Format data hasil analisis (result) tidak ditemukan.');
+        }
       } catch (err) {
         if (err.response?.status === 401) {
           alert('Sesi Anda berakhir. Silakan login kembali.');
@@ -60,14 +85,12 @@ const AnalisisResultPage = () => {
     fetchHistoryDetail();
   }, [historyId, navigate, stateAnalysisData]);
 
-  const analysisData = stateAnalysisData || historyAnalysisData;
-
   if (loadingHistoryDetail) {
     return (
       <div className="min-h-screen bg-slate-50 font-poppins flex flex-col justify-between">
         <Navbar />
         <main className="flex-grow pt-32 pb-16 px-6 text-center max-w-md mx-auto space-y-4">
-          <IconAlertCircle className="mx-auto text-[#004A7C]" size={48} />
+          <IconAlertCircle className="mx-auto text-[#004A7C] animate-pulse" size={48} />
           <h2 className="text-xl font-bold text-slate-800">Memuat Detail Riwayat</h2>
           <p className="text-slate-600 text-sm">Mengambil hasil analisis tersimpan dari backend.</p>
         </main>
@@ -133,6 +156,7 @@ const AnalisisResultPage = () => {
 
   const isFiniteNumber = (value) => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
   const emptyValueLabel = 'Belum tersedia';
+  
   const displayEducation = education_label || pendidikan || education_level || null;
   const displayExperienceYears = isFiniteNumber(experience_years ?? pengalaman_tahun)
     ? Number(experience_years ?? pengalaman_tahun)
@@ -147,15 +171,19 @@ const AnalisisResultPage = () => {
   const displaySkillGapAnalysis = Array.isArray(skill_gap_analysis) ? skill_gap_analysis : [];
   const displayRoadmap = Array.isArray(roadmap) ? roadmap : [];
   const displayTips = Array.isArray(tips) ? tips.filter(Boolean) : [];
+  
   const readinessScoreValue = isFiniteNumber(readiness_score) ? Number(readiness_score) : null;
   const matchConfidenceValue = isFiniteNumber(match_confidence) ? Number(match_confidence) : null;
   const confidencePercent = matchConfidenceValue !== null ? Math.round(matchConfidenceValue * 100) : null;
+  
   const masteredSkillCountValue = isFiniteNumber(mastered_skill_count)
     ? Number(mastered_skill_count)
     : (displayMasteredSkills.length > 0 ? displayMasteredSkills.length : null);
+    
   const skillGapCountValue = isFiniteNumber(skill_gap_count)
     ? Number(skill_gap_count)
     : (displaySkillGapAnalysis.length > 0 ? displaySkillGapAnalysis.length : null);
+
   const validTopMatches = Array.isArray(top_matches)
     ? top_matches
         .map((job) => ({
@@ -165,6 +193,7 @@ const AnalisisResultPage = () => {
         }))
         .filter((job) => job.displayTitle)
     : [];
+
   const hasCoreResult = Boolean(predicted_role) && readinessScoreValue !== null && Boolean(readiness_status);
 
   const getGapBadgeColor = (priority) => {
@@ -219,10 +248,7 @@ const AnalisisResultPage = () => {
             </div>
           )}
 
-          {/* ========================================== */}
-          {/* LAYER 1: RINGKASAN UNTUK USER             */}
-          {/* ========================================== */}
-          
+          {/* LAYER 1: RINGKASAN UNTUK USER */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Skor Kesiapan */}
             <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-sm">
@@ -244,7 +270,7 @@ const AnalisisResultPage = () => {
                 )}
               </div>
               <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-3">
-                <div className="bg-teal-50 h-full transition-all duration-500" style={{ width: `${readinessScoreValue ?? 0}%` }}></div>
+                <div className="bg-teal-550 h-full transition-all duration-500 bg-teal-600" style={{ width: `${readinessScoreValue ?? 0}%` }}></div>
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed">
                 {readiness_status ? (
@@ -379,10 +405,7 @@ const AnalisisResultPage = () => {
             </div>
           </div>
 
-          {/* ========================================== */}
-          {/* LAYER 2: DETAIL DAN TRANSPARANSI DATA     */}
-          {/* ========================================== */}
-          
+          {/* LAYER 2: DETAIL DAN TRANSPARANSI DATA */}
           <div className="border-t border-dashed border-slate-300 pt-6">
             <div className="flex items-center gap-2 mb-6">
               <IconEye className="text-slate-500" size={20} />

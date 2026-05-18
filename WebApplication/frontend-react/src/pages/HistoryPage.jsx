@@ -49,7 +49,7 @@ const HistoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState('');
-
+  
   const fetchHistory = async ({ offset = 0, append = false } = {}) => {
     if (append) {
       setLoadingMore(true);
@@ -89,52 +89,17 @@ const HistoryPage = () => {
   };
 
   useEffect(() => {
-    let isMounted = true;
+    fetchHistory();
+  }, []);
 
-    api.get('/analysis/career-match/history', {
-      params: {
-        limit: HISTORY_PAGE_LIMIT,
-        offset: 0
-      }
-    })
-      .then((response) => {
-        if (!isMounted) return;
-        const nextItems = Array.isArray(response.data?.data) ? response.data.data : [];
-        setHistoryItems(nextItems);
-        setSummary(response.data?.summary || null);
-        setPagination(response.data?.pagination || {
-          limit: HISTORY_PAGE_LIMIT,
-          offset: 0,
-          total: nextItems.length,
-          has_next: false
-        });
-      })
-      .catch((err) => {
-        if (!isMounted) return;
-        if (err.response?.status === 401) {
-          alert('Sesi Anda berakhir. Silakan login kembali.');
-          navigate('/signin');
-          return;
-        }
-        setError(err.response?.data?.message || 'Gagal memuat riwayat analisis.');
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [navigate]);
-
-  const handleDetailClick = (analysisId) => {
-    navigate(`/riwayat/${analysisId}`);
+  const handleDetailClick = (item) => {
+    navigate(`/riwayat/${item.id}`, { state: { data: item } });
   };
 
   const getStatusStyle = (status) => {
     const s = status?.toLowerCase();
-    if (s === 'siap') return 'bg-teal-50 text-teal-600 border-teal-100';
-    if (s === 'cukup siap') return 'bg-orange-50 text-orange-600 border-orange-100';
+    if (s === 'siap' || s === 'ready') return 'bg-teal-50 text-teal-600 border-teal-100';
+    if (s === 'cukup siap' || s === 'moderately ready') return 'bg-orange-50 text-orange-600 border-orange-100';
     if (!s) return 'bg-slate-50 text-slate-500 border-slate-100';
     return 'bg-red-50 text-red-600 border-red-100';
   };
@@ -224,7 +189,9 @@ const HistoryPage = () => {
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="space-y-3">
                       <div className="flex flex-wrap items-center gap-3">
-                        <h3 className="font-bold text-slate-800 text-lg">{item.target_role || item.predicted_role || 'Target belum tersedia'}</h3>
+                        <h3 className="font-bold text-slate-800 text-lg">
+                          {item.target_role || item.predicted_role || item.result?.target_role || 'Target belum tersedia'}
+                        </h3>
                         {item.readiness_status && (
                           <span className={`px-4 py-0.5 rounded-full text-[10px] font-medium border ${getStatusStyle(item.readiness_status)}`}>
                             {item.readiness_status}
@@ -237,24 +204,24 @@ const HistoryPage = () => {
                           <IconCalendar size={14} /> {formatDate(item.created_at)}
                         </div>
                         <div className="flex items-center gap-1.5 text-slate-400 font-medium text-[11px]">
-                          <IconCircleCheck size={14} /> {formatMetric(item.mastered_skill_count, ' skill dikuasai')}
+                          <IconCircleCheck size={14} /> {formatMetric(item.mastered_skill_count ?? item.result?.mastered_skill_count, ' skill dikuasai')}
                         </div>
                         <div className="flex items-center gap-1.5 text-slate-400 font-medium text-[11px]">
-                          <IconBolt size={14} /> {formatMetric(item.skill_gap_count, ' skill gap')}
+                          <IconBolt size={14} /> {formatMetric(item.skill_gap_count ?? item.result?.skill_gap_count, ' skill gap')}
                         </div>
                       </div>
                     </div>
 
                     <div className="md:text-right">
                       <div className="text-4xl font-bold text-[#004A7C]">
-                        {formatMetric(item.readiness_score)}
+                        {formatMetric(item.readiness_score ?? item.result?.readiness_score)}
                       </div>
                       <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Skor Kesiapan</div>
                     </div>
                   </div>
 
                   <button
-                    onClick={() => handleDetailClick(item.id)}
+                    onClick={() => handleDetailClick(item)}
                     className="w-full mt-6 bg-[#004A7C] text-white py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#00365d] transition-all active:scale-[0.98]"
                   >
                     Lihat Detail

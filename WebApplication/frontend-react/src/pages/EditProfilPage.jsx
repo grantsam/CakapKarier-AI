@@ -13,6 +13,11 @@ const EditProfilPage = () => {
   const [generalError, setGeneralError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   
+  const [initialData, setInitialData] = useState({
+    nama: '',
+    email: ''
+  });
+
   const [formData, setFormData] = useState({
     nama: '',
     email: '',
@@ -40,12 +45,20 @@ const EditProfilPage = () => {
 
         const profilePayload = response.data?.data || response.data;
         
-        setFormData({
+        const dataProfil = {
           nama: profilePayload?.nama || '',
           email: profilePayload?.email || '',
           nomor_telepon: profilePayload?.nomor_telepon || '',
           bio: profilePayload?.bio || ''
+        };
+
+        setFormData(dataProfil);
+
+        setInitialData({
+          nama: profilePayload?.nama || '',
+          email: profilePayload?.email || ''
         });
+
       } catch (error) {
         if (axios.isCancel(error)) return;
         console.error("Gagal mengambil data profil:", error);
@@ -148,13 +161,14 @@ const EditProfilPage = () => {
         <div className="max-w-4xl mx-auto">
           <form onSubmit={handleSave} className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
             
+            {/* Bagian Header yang diperbaiki menggunakan initialData */}
             <div className="bg-[#E0F2FE]/40 p-8 flex items-center gap-5 border-b border-slate-100">
               <div className="bg-white p-1 rounded-full shadow-sm shrink-0">
                 <IconUserCircle size={80} className="text-[#004A7C]" stroke={1.5} />
               </div>
               <div className="truncate">
-                <h2 className="text-xl font-bold text-[#004A7C] truncate">{formData.nama || 'User'}</h2>
-                <p className="text-slate-500 font-medium truncate">{formData.email || '-'}</p>
+                <h2 className="text-xl font-bold text-[#004A7C] truncate">{initialData.nama || 'User'}</h2>
+                <p className="text-slate-500 font-medium truncate">{initialData.email || '-'}</p>
               </div>
             </div>
 
