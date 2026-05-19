@@ -23,10 +23,17 @@ const MultiSelectContainer = ({
 }) => {
   const safeItems = Array.isArray(items) ? items : [];
   
-  const filteredItems = safeItems.filter(i => 
-    i.toLowerCase().includes(inputValue.toLowerCase()) && 
-    !selectedItems.some(selected => (typeof selected === 'string' ? selected : selected.name) === i)
-  );
+  const filteredItems = safeItems.filter(i => {
+    const itemString = typeof i === 'string' ? i : (i.label || i.name || '');
+    const isMatched = itemString.toLowerCase().includes(inputValue.toLowerCase());
+    
+    const isAlreadySelected = selectedItems.some(selected => {
+      const selectedName = typeof selected === 'string' ? selected : selected.name;
+      return selectedName.toLowerCase() === itemString.toLowerCase();
+    });
+
+    return isMatched && !isAlreadySelected;
+  });
 
   return (
     <div className="space-y-2 relative" ref={containerRef}>
@@ -39,15 +46,15 @@ const MultiSelectContainer = ({
         onClick={() => setShowDropdown(true)}
         className="w-full p-2.5 min-h-[52px] bg-white rounded-xl border border-slate-300 focus-within:ring-2 focus-within:ring-[#004A7C] flex flex-wrap gap-2 cursor-text transition-all"
       >
-        {selectedItems.map((item, index) => {
+        {selectedItems.map((item) => {
           const itemName = typeof item === 'string' ? item : item.name;
           return (
-            <div key={index} className="flex items-center gap-2 bg-sky-50 text-[#004A7C] pl-3 pr-2 py-1 rounded-full text-[11px] font-bold border border-sky-100">
+            <div key={itemName} className="flex items-center gap-2 bg-sky-50 text-[#004A7C] pl-3 pr-2 py-1 rounded-full text-[11px] font-bold border border-sky-100">
               <span>{itemName}</span>
               {type === 'skill' && (
                 <select 
                   className="bg-white border border-sky-200 text-[10px] rounded px-1 py-0.5 outline-none text-slate-600 cursor-pointer"
-                  value={item.level}
+                  value={item.level || 'Basic'}
                   onChange={(e) => onAdd({ ...item, level: e.target.value }, 'update_skill')}
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -76,15 +83,21 @@ const MultiSelectContainer = ({
 
       {showDropdown && (
         <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-60 overflow-y-auto p-2">
-          {filteredItems.slice(0, 10).map(item => (
-            <div
-              key={item}
-              onClick={() => onAdd(type === 'skill' ? { name: item, level: 'Basic' } : item, type)}
-              className="px-4 py-2 hover:bg-slate-50 rounded-lg cursor-pointer text-sm text-slate-700 transition-colors"
-            >
-              {item}
-            </div>
-          ))}
+          {filteredItems.slice(0, 10).map(item => {
+            const itemValue = typeof item === 'string' ? item : (item.label || item.name);
+            return (
+              <div
+                key={itemValue}
+                onClick={() => onAdd(type === 'skill' ? { name: itemValue, level: 'Basic' } : itemValue, type)}
+                className="px-4 py-2 hover:bg-slate-50 rounded-lg cursor-pointer text-sm text-slate-700 transition-colors"
+              >
+                {itemValue}
+              </div>
+            );
+          })}
+          {filteredItems.length === 0 && !inputValue && (
+            <div className="px-4 py-2 text-xs text-slate-400 italic">Tidak ada data ditemukan</div>
+          )}
           {inputValue && (
             <button
               type="button"
@@ -108,7 +121,7 @@ const AnalisisPage = () => {
   const [availableEducation, setAvailableEducation] = useState([]);
   const [availableRoles, setAvailableRoles] = useState([]);
   const [availableLocations, setAvailableLocations] = useState([]);
-  const [availableInterests, setAvailableInterests] = useState([]); // SEKARANG SUDAH DINAMIS
+  const [availableInterests, setAvailableInterests] = useState([]);
 
   const [formData, setFormData] = useState({ 
     pendidikan_terakhir: '', 
@@ -148,7 +161,6 @@ const AnalisisPage = () => {
       } catch (error) {
         console.error("Gagal memuat data dari API, menggunakan fallback.", error);
       
-        // FALLBACK: Data cadangan jika backend belum menyediakan endpoint tersebut
         setAvailableSkills(["Python", "SQL", "Machine Learning", "TensorFlow", "React", "JavaScript"]);
         setAvailableEducation([
           { id: "sma", label: "SMA/SMK" },
@@ -181,19 +193,29 @@ const AnalisisPage = () => {
 
   const handleAddItem = (item, type) => {
     if (type === 'skill') {
-      if (!selectedSkills.find(s => s.name === item.name)) setSelectedSkills([...selectedSkills, item]);
+      if (!selectedSkills.find(s => s.name.toLowerCase() === item.name.toLowerCase())) {
+        setSelectedSkills([...selectedSkills, item]);
+      }
       setSkillInput("");
+      setShowSkillDots(false);
     } else if (type === 'update_skill') {
       setSelectedSkills(selectedSkills.map(s => s.name === item.name ? item : s));
     } else if (type === 'interest') {
-      if (!selectedInterests.includes(item)) setSelectedInterests([...selectedInterests, item]);
+      const itemString = typeof item === 'string' ? item : (item.label || item.name);
+      if (!selectedInterests.some(i => i.toLowerCase() === itemString.toLowerCase())) {
+        setSelectedInterests([...selectedInterests, itemString]);
+      }
       setInterestInput("");
+      setShowInterestDots(false);
     }
   };
 
   const removeItem = (item, type) => {
-    if (type === 'skill') setSelectedSkills(selectedSkills.filter(i => i.name !== item.name));
-    else setSelectedInterests(selectedInterests.filter(i => i !== item));
+    if (type === 'skill') {
+      setSelectedSkills(selectedSkills.filter(i => i.name !== item.name));
+    } else {
+      setSelectedInterests(selectedInterests.filter(i => i !== item));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -259,19 +281,30 @@ const AnalisisPage = () => {
                 <IconSchool size={18} className="text-slate-600" />
                 <span>Pendidikan Terakhir <span className="text-red-500">*</span></span>
               </label>
-              <select 
-                required 
-                value={formData.pendidikan_terakhir}
-                onChange={(e) => setFormData({...formData, pendidikan_terakhir: e.target.value})}
-                className="w-full p-4 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none bg-[url('https://cdn-icons-png.flaticon.com/512/271/271238.png')] bg-[length:12px] bg-[right_1.5rem_center] bg-no-repeat"
-              >
-                <option value="">Pilih Jenjang</option>
-                {availableEducation.map((edu) => (
-                  <option key={edu.id || edu} value={edu.id || edu}>
-                    {edu.label || edu}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select 
+                  required 
+                  value={formData.pendidikan_terakhir}
+                  onChange={(e) => setFormData({...formData, pendidikan_terakhir: e.target.value})}
+                  className="w-full p-4 pr-12 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none"
+                >
+                  <option value="">Pilih Jenjang</option>
+                  {availableEducation.map((edu) => {
+                    const val = edu.id || edu;
+                    const lbl = edu.label || edu;
+                    return (
+                      <option key={val} value={val}>
+                        {lbl}
+                      </option>
+                    );
+                  })}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
             </div>
 
             {/* Skill */}
@@ -320,11 +353,11 @@ const AnalisisPage = () => {
                 required
                 value={formData.pengalaman_text}
                 onChange={(e) => setFormData({...formData, pengalaman_text: e.target.value})}
-                placeholder="Contoh: 2 tahun sebagai Frontend Developer di PT ABC memimpin 3 proyek React, atau 6 bulan magang UI/UX mengerjakan desain aplikasi mobile..."
+                placeholder="Contoh: 2 tahun sebagai Frontend Developer di PT ABC memimpin 3 proyek React..."
                 className="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none min-h-[120px] text-sm resize-y shadow-sm placeholder:text-slate-400"
-              ></textarea>
+              />
               <div className="bg-sky-50 border border-sky-100 rounded-xl p-3 text-[12px] text-slate-600 leading-relaxed">
-                💡 <span className="font-semibold text-[#004A7C]">Petunjuk Input:</span> Tuliskan total durasi waktu beserta deskripsi singkat pengalaman Anda. Sistem AI kami akan otomatis mendeteksi total tahun masa kerja dan relevansi portofolio proyek Anda dari teks di atas.
+                💡 <span className="font-semibold text-[#004A7C]">Petunjuk Input:</span> Tuliskan total durasi waktu beserta deskripsi singkat pengalaman Anda. Sistem AI kami akan otomatis mendeteksi total tahun masa kerja.
               </div>
             </div>
 
@@ -347,8 +380,8 @@ const AnalisisPage = () => {
                 </div>
                 <button 
                   type="button"
-                  onClick={() => { if(certInput) { setFormData({...formData, sertifikasi: [...formData.sertifikasi, certInput]}); setCertInput(""); } }}
-                  className="px-5 bg-[#004A7C] text-white rounded-xl hover:bg-[#00365d] transition-all"
+                  onClick={() => { if(certInput.trim()) { setFormData({...formData, sertifikasi: [...formData.sertifikasi, certInput.trim()]}); setCertInput(""); } }}
+                  className="px-5 bg-[#004A7C] text-white rounded-xl hover:bg-[#00365d] transition-all flex items-center justify-center"
                 >
                   <IconPlus size={24} />
                 </button>
@@ -373,18 +406,30 @@ const AnalisisPage = () => {
                   <IconTarget size={18} className="text-slate-600" />
                   <span>Target Role yang Dituju</span>
                 </label>
-                <select 
-                  value={formData.target_role}
-                  onChange={(e) => setFormData({...formData, target_role: e.target.value})}
-                  className="w-full p-4 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none bg-[url('https://cdn-icons-png.flaticon.com/512/271/271238.png')] bg-[length:12px] bg-[right_1.5rem_center] bg-no-repeat"
-                >
-                  <option value="">Rekomendasikan yang cocok</option>
-                  {availableRoles.map((role) => (
-                    <option key={role.id || role} value={role.id || role}>
-                      {role.label || role}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select 
+                    value={formData.target_role}
+                    onChange={(e) => setFormData({...formData, target_role: e.target.value})}
+                    className="w-full p-4 pr-12 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none"
+                  >
+                    <option value="">Rekomendasikan yang cocok</option>
+                    {availableRoles.map((role) => {
+                      const val = role.id || role;
+                      const lbl = role.label || role;
+                      return (
+                        <option key={val} value={val}>
+                          {lbl}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  {/* Custom Panah Dropdown */}
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
 
               {/* Lokasi */}
@@ -393,18 +438,26 @@ const AnalisisPage = () => {
                   <IconMapPin size={18} className="text-slate-600" />
                   <span>Preferensi Lokasi</span>
                 </label>
-                <select 
-                  value={formData.preferred_location}
-                  onChange={(e) => setFormData({...formData, preferred_location: e.target.value})}
-                  className="w-full p-4 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none bg-[url('https://cdn-icons-png.flaticon.com/512/271/271238.png')] bg-[length:12px] bg-[right_1.5rem_center] bg-no-repeat"
-                >
-                  <option value="">Pilih Lokasi</option>
-                  {availableLocations.map((loc) => (
-                    <option key={loc} value={loc}>
-                      {loc}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select 
+                    value={formData.preferred_location}
+                    onChange={(e) => setFormData({...formData, preferred_location: e.target.value})}
+                    className="w-full p-4 pr-12 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none"
+                  >
+                    <option value="">Pilih Lokasi</option>
+                    {availableLocations.map((loc) => (
+                      <option key={loc} value={loc}>
+                        {loc}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Custom Panah Dropdown */}
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
 
