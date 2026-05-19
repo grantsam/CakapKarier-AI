@@ -113,26 +113,23 @@ export const openApiSpec = {
             example: 's1',
             description: 'Canonical key untuk pendidikan user pada kontrak frontend-backend.',
           },
-          pendidikan_terakhir: {
-            oneOf: [
-              { type: 'string', enum: ['sma', 'smk', 'd3', 's1', 's2', 's3'] },
-              { type: 'string', minLength: 1 },
-            ],
-            example: 's1',
-            description: 'Legacy alias untuk education_level. Diterima sementara untuk kompatibilitas request lama.',
-          },
           skills: {
             oneOf: [
               { type: 'string', example: 'PHP, SQL, Golang' },
               { type: 'array', items: { type: 'string' }, example: ['PHP', 'SQL', 'Golang'] },
+              {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  required: ['name'],
+                  properties: {
+                    name: { type: 'string', minLength: 1, example: 'PHP' },
+                    level: { type: 'string', example: 'intermediate' },
+                  },
+                },
+              },
             ],
-            description: 'Canonical key untuk skill eksplisit user. Minimal salah satu dari skills atau skill_yang_dikuasai wajib diisi.',
-          },
-          skill_yang_dikuasai: {
-            type: 'string',
-            minLength: 2,
-            example: 'PHP, SQL, Golang',
-            description: 'Legacy alias untuk skills.',
+            description: 'Canonical key untuk skill eksplisit user.',
           },
           interests: {
             oneOf: [
@@ -141,22 +138,10 @@ export const openApiSpec = {
             ],
             description: 'Canonical key untuk minat atau preferensi bidang.',
           },
-          minat_bakat: {
-            type: 'string',
-            nullable: true,
-            example: 'Backend Developer, API Development',
-            description: 'Legacy alias untuk interests.',
-          },
           experience_text: {
             type: 'string',
             nullable: true,
             description: 'Canonical field untuk Pengalaman Relevan berupa job/project/organization experience.',
-            example: '1 tahun sebagai PHP Developer membangun modul backend dan query SQL.',
-          },
-          pengalaman_sertifikasi: {
-            type: 'string',
-            nullable: true,
-            description: 'Legacy alias untuk experience_text. Tidak lagi dimaknai sebagai gabungan pengalaman dan sertifikasi.',
             example: '1 tahun sebagai PHP Developer membangun modul backend dan query SQL.',
           },
           experience_years: {
@@ -183,11 +168,13 @@ export const openApiSpec = {
                 role: { type: 'string', example: 'PHP Developer' },
                 organization: { type: 'string', example: 'PT Contoh' },
                 duration_months: { type: 'number', example: 12 },
+                duration_years: { type: 'number', example: 1 },
                 description: { type: 'string', example: 'Membangun modul backend dan query SQL.' },
                 skills_used: {
-                  type: 'array',
-                  items: { type: 'string' },
-                  example: ['PHP', 'SQL'],
+                  oneOf: [
+                    { type: 'string', example: 'PHP, SQL' },
+                    { type: 'array', items: { type: 'string' }, example: ['PHP', 'SQL'] },
+                  ],
                 },
               },
             },
@@ -395,9 +382,75 @@ export const openApiSpec = {
         properties: {
           id: { type: 'string', format: 'uuid' },
           created_at: { type: 'string', format: 'date-time' },
-          request: { $ref: '#/components/schemas/CareerMatchRequest' },
-          result: { $ref: '#/components/schemas/CareerMatchResult' },
+          request: {
+            type: 'object',
+            properties: {
+              original: { $ref: '#/components/schemas/CareerMatchRequest' },
+              normalized: {
+                type: 'object',
+                additionalProperties: true,
+                description: 'Profil hasil normalisasi backend yang disimpan saat analisis dibuat.',
+              },
+              ai_payload: {
+                type: 'object',
+                additionalProperties: true,
+                description: 'Payload final yang dikirim backend ke layanan AI.',
+              },
+            },
+          },
+          result: {
+            type: 'object',
+            allOf: [{ $ref: '#/components/schemas/CareerMatchResultPayload' }],
+          },
         },
+      },
+      CareerMatchHealth: {
+        type: 'object',
+        additionalProperties: true,
+        example: {
+          status: 'ok',
+          model_ready: true,
+        },
+      },
+      CareerMatchResultPayload: {
+        type: 'object',
+        properties: {
+          predicted_role: { type: 'string', example: 'AI Engineer' },
+          target_role: { type: 'string', nullable: true, example: 'ae' },
+          readiness_score: { type: 'number', nullable: true, example: 82.4 },
+          readiness_status: { type: 'string', nullable: true, example: 'Siap Berkembang' },
+          mastered_skills: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['Python', 'SQL', 'Machine Learning'],
+          },
+          mastered_skill_count: { type: 'integer', nullable: true, example: 3 },
+          skill_gap: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['Deep Learning', 'MLOps'],
+          },
+          skill_gap_count: { type: 'integer', nullable: true, example: 2 },
+          skill_gap_analysis: {
+            type: 'array',
+            items: { $ref: '#/components/schemas/SkillGapItem' },
+          },
+          roadmap: {
+            type: 'array',
+            items: { $ref: '#/components/schemas/RoadmapPhase' },
+          },
+          tips: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['Fokus pada skill prioritas tinggi terlebih dahulu.'],
+          },
+          top_matches: {
+            type: 'array',
+            items: { $ref: '#/components/schemas/TopMatch' },
+          },
+          input_interpretation: { $ref: '#/components/schemas/CareerInputInterpretation' },
+        },
+        additionalProperties: true,
       },
     },
   },
@@ -602,6 +655,17 @@ export const openApiSpec = {
         responses: {
           200: {
             description: 'AIEngine tersedia',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: { type: 'string', example: 'success' },
+                    data: { $ref: '#/components/schemas/CareerMatchHealth' },
+                  },
+                },
+              },
+            },
           },
           401: {
             description: 'Token tidak ada, tidak valid, expired, atau user token tidak ditemukan',
@@ -686,6 +750,14 @@ export const openApiSpec = {
           },
           503: {
             description: 'Layanan AI tidak tersedia',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ApiError' },
+              },
+            },
+          },
+          502: {
+            description: 'Response layanan AI tidak valid atau layanan AI mengalami gangguan',
             content: {
               'application/json': {
                 schema: { $ref: '#/components/schemas/ApiError' },
