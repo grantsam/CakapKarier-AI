@@ -100,15 +100,46 @@ const MultiSelectContainer = ({
   );
 };
 
+const fallbackSkills = ["Python", "SQL", "Machine Learning", "TensorFlow", "React", "JavaScript", "PHP", "Golang"];
+const fallbackEducation = [
+  { id: "sma", label: "SMA/SMK" },
+  { id: "d3", label: "Diploma (D3)" },
+  { id: "s1", label: "Sarjana (S1)" },
+  { id: "s2", label: "Magister (S2)" },
+  { id: "s3", label: "Doktor (S3)" }
+];
+const fallbackRoles = [
+  { id: "ae", label: "AI Engineer" },
+  { id: "ds", label: "Data Scientist" },
+  { id: "fe", label: "Front-End Developer" },
+  { id: "be", label: "Back-End Developer" }
+];
+const fallbackLocations = ["Jakarta", "Bandung", "Surabaya", "Yogyakarta", "Remote"];
+const fallbackInterests = ["UI/UX Design", "Back-End Developer", "Data Analyst", "AI Engineer", "Mobile Developer"];
+
+const parseExperienceYears = (text) => {
+  const matches = [...String(text || '').matchAll(/(\d+(?:[.,]\d+)?)\s*(tahun|year|years|yr|yrs|bulan|month|months)/gi)];
+  if (!matches.length) return 0;
+
+  const totalYears = matches.reduce((sum, match) => {
+    const value = Number(String(match[1]).replace(',', '.'));
+    if (!Number.isFinite(value)) return sum;
+    const unit = match[2].toLowerCase();
+    return sum + (unit === 'bulan' || unit.startsWith('month') ? value / 12 : value);
+  }, 0);
+
+  return Math.round(totalYears * 100) / 100;
+};
+
 const AnalisisPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   
-  const [availableSkills, setAvailableSkills] = useState([]);
-  const [availableEducation, setAvailableEducation] = useState([]);
-  const [availableRoles, setAvailableRoles] = useState([]);
-  const [availableLocations, setAvailableLocations] = useState([]);
-  const [availableInterests, setAvailableInterests] = useState([]); // SEKARANG SUDAH DINAMIS
+  const [availableSkills] = useState(fallbackSkills);
+  const [availableEducation] = useState(fallbackEducation);
+  const [availableRoles] = useState(fallbackRoles);
+  const [availableLocations] = useState(fallbackLocations);
+  const [availableInterests] = useState(fallbackInterests);
 
   const [formData, setFormData] = useState({ 
     pendidikan_terakhir: '', 
@@ -128,47 +159,6 @@ const AnalisisPage = () => {
   const [interestInput, setInterestInput] = useState("");
   const [showInterestDots, setShowInterestDots] = useState(false);
   const interestRef = useRef(null);
-
-  useEffect(() => {
-    const fetchDataset = async () => {
-      try {
-        const [skillsRes, eduRes, rolesRes, locsRes, interestsRes] = await Promise.all([
-          api.get('/analysis/skills'),
-          api.get('/analysis/education'),
-          api.get('/analysis/roles'),
-          api.get('/analysis/locations'),
-          api.get('/analysis/interests')
-        ]);
-
-        setAvailableSkills(skillsRes.data);
-        setAvailableEducation(eduRes.data);
-        setAvailableRoles(rolesRes.data);
-        setAvailableLocations(locsRes.data);
-        setAvailableInterests(interestsRes.data);
-      } catch (error) {
-        console.error("Gagal memuat data dari API, menggunakan fallback.", error);
-      
-        // FALLBACK: Data cadangan jika backend belum menyediakan endpoint tersebut
-        setAvailableSkills(["Python", "SQL", "Machine Learning", "TensorFlow", "React", "JavaScript"]);
-        setAvailableEducation([
-          { id: "sma", label: "SMA/SMK" },
-          { id: "d3", label: "Diploma (D3)" },
-          { id: "s1", label: "Sarjana (S1)" },
-          { id: "s2", label: "Magister (S2)" },
-          { id: "s3", label: "Doktor (S3)" }
-        ]);
-        setAvailableRoles([
-          { id: "ae", label: "AI Engineer" },
-          { id: "ds", label: "Data Scientist" },
-          { id: "fe", label: "Front-End Developer" },
-          { id: "be", label: "Back-End Developer" }
-        ]);
-        setAvailableLocations(["Jakarta", "Bandung", "Surabaya", "Yogyakarta", "Remote"]);
-        setAvailableInterests(["UI/UX Design", "Back-End Developer", "Data Analyst", "AI Engineer", "Mobile Developer"]);
-      }
-    };
-    fetchDataset();
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -202,8 +192,7 @@ const AnalisisPage = () => {
 
     setLoading(true);
     try {
-      const yearMatch = formData.pengalaman_text.match(/(\d+)\s*(tahun|year)/i);
-      const calculatedYears = yearMatch ? parseInt(yearMatch[1], 10) : 0;
+      const calculatedYears = parseExperienceYears(formData.pengalaman_text);
 
       const payload = {
         education_level: formData.pendidikan_terakhir, 
@@ -223,7 +212,7 @@ const AnalisisPage = () => {
     } catch (error) {
       if (error.response?.status === 401) {
         alert("Sesi Anda berakhir. Silakan login kembali.");
-        navigate('/login');
+        navigate('/signin');
       } else {
         alert(error.response?.data?.message || "Gagal melakukan analisis.");
       }
