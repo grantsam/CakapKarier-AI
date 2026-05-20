@@ -77,8 +77,6 @@ const WorkflowSection = () => {
           
           <h2 className="text-3xl md:text-4xl font-bold text-[#004A7C] mb-4">Siap Tingkatkan Potensi Diri Anda?</h2>
           <p className="text-slate-700 mb-10 text-lg">Mari bergabung dengan ribuan profesional yang telah menemukan arah karier mereka</p>
-          
-          {/* 2. Tombol diubah menjadi Link agar bisa mengarah ke /signup atau /analisis */}
           <Link 
             to={isLoggedIn ? "/analisis" : "/signup"} 
             className="inline-block bg-[#004A7C] text-white px-10 py-4 rounded-full font-meedium text-lg hover:shadow-2xl hover:scale-105 transition-all shadow-lg active:scale-95"

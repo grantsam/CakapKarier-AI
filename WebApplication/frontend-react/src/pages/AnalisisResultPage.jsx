@@ -19,6 +19,49 @@ import {
   IconAlertTriangle
 } from '@tabler/icons-react';
 
+// ==========================================
+// Pindahkan Fungsi Helper ke Luar Komponen (Aman dari Hoisting)
+// ==========================================
+const safeParse = (data) => {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (typeof data === 'string') {
+    const trimmed = data.trim();
+    if (trimmed.startsWith('[')) {
+      try { 
+        return JSON.parse(trimmed); 
+      } catch (e) { 
+        console.error("Gagal parse JSON Array, fallback ke text split", e);
+      }
+    }
+    
+    if (trimmed.includes('\n')) {
+      return trimmed.split('\n').map(line => line.replace(/^-\s*/, '').trim()).filter(Boolean);
+    }
+    if (trimmed.includes(',')) {
+      return trimmed.split(',').map(s => s.trim()).filter(Boolean);
+    }
+    return [trimmed];
+  }
+  
+  if (typeof data === 'object') return [data];
+  return [];
+};
+
+const safeParseObject = (data) => {
+  if (!data) return {};
+  if (typeof data === 'object' && !Array.isArray(data)) return data;
+  
+  if (typeof data === 'string') {
+    const trimmed = data.trim();
+    if (trimmed.startsWith('{')) {
+      try { return JSON.parse(trimmed); } catch (e) { }
+    }
+    return { info_text: trimmed, education_label: trimmed, pendidikan: trimmed };
+  }
+  return {};
+};
+
 const AnalisisResultPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,23 +74,22 @@ const AnalisisResultPage = () => {
 
   useEffect(() => {
     if (stateAnalysisData) {
-      if (stateAnalysisData.result) {
-        setAnalysisData({
-          ...stateAnalysisData.result,
-          analysis_id: stateAnalysisData.id,
-          saved_at: stateAnalysisData.created_at
-        });
-      } else {
-        setAnalysisData({
-          ...stateAnalysisData,
-          analysis_id: stateAnalysisData.id || stateAnalysisData.analysis_id,
-          saved_at: stateAnalysisData.created_at || stateAnalysisData.saved_at
-        });
-      }
+      console.log("=== DEBUG: Data dari Navigation State ===", stateAnalysisData);
+      
+      const rawPayload = stateAnalysisData.response_payload || stateAnalysisData.result || stateAnalysisData;
+      const parsedPayload = typeof rawPayload === 'string' ? safeParseObject(rawPayload) : rawPayload;
+
+      setAnalysisData({
+        ...stateAnalysisData,
+        response_payload: parsedPayload,
+        analysis_id: stateAnalysisData.id || stateAnalysisData.analysis_id,
+        saved_at: stateAnalysisData.created_at || stateAnalysisData.saved_at
+      });
       setLoadingHistoryDetail(false);
       return;
     }
 
+    console.log("=== DEBUG: historyId dari useParams() ===", historyId);
     if (!historyId) {
       setLoadingHistoryDetail(false);
       return;
@@ -58,19 +100,40 @@ const AnalisisResultPage = () => {
       setHistoryDetailError('');
 
       try {
-        const response = await api.get(`/analysis/career-match/history/${historyId}`);
-        const detail = response.data?.data || response.data;
+        const URL_API = `/api/analysis/career-match/history/${historyId}`;
+        console.log("=== DEBUG: Mencoba Hit Endpoint ===", URL_API);
+      
+        const response = await api.get(URL_API);
+        console.log("=== DEBUG: Mentah dari Axios (response.data) ===", response.data);
 
-        if (detail && detail.result) {
-          setAnalysisData({
-            ...detail.result,
-            analysis_id: detail.id,
-            saved_at: detail.created_at,
-          });
-        } else {
-          setHistoryDetailError('Format data hasil analisis (result) tidak ditemukan.');
+        const envelope = response.data;
+        const detail = envelope?.data || envelope;
+        console.log("=== DEBUG: Setelah Ekstraksi Properti 'data' ===", detail);
+
+        if (!detail) {
+          throw new Error("Respons kosong dari server");
         }
+
+        let finalPayload = {};
+        if (detail.response_payload) {
+          finalPayload = typeof detail.response_payload === 'string' 
+            ? safeParseObject(detail.response_payload) 
+            : detail.response_payload;
+        } else if (detail.result) {
+          finalPayload = typeof detail.result === 'string' ? safeParseObject(detail.result) : detail.result;
+        } else {
+          finalPayload = detail;
+        }
+
+        setAnalysisData({
+          ...detail,
+          response_payload: finalPayload,
+          analysis_id: detail.id || detail.analysis_id || historyId,
+          saved_at: detail.created_at || detail.saved_at,
+        });
+
       } catch (err) {
+        console.error("=== DEBUG ERROR: Gagal Fetch ===", err);
         if (err.response?.status === 401) {
           alert('Sesi Anda berakhir. Silakan login kembali.');
           navigate('/signin');
@@ -83,7 +146,7 @@ const AnalisisResultPage = () => {
     };
 
     fetchHistoryDetail();
-  }, [historyId, navigate, stateAnalysisData]);
+  }, [historyId, navigate, JSON.stringify(stateAnalysisData)]);
 
   if (loadingHistoryDetail) {
     return (
@@ -121,21 +184,24 @@ const AnalisisResultPage = () => {
     );
   }
 
-  const {
-    target_role,
-    predicted_role,
-    readiness_score,
-    readiness_status,
-    match_confidence,
-    mastered_skills,
-    mastered_skill_count,
-    skill_gap_count,
-    skill_gap_analysis,
-    roadmap,
-    tips,
-    top_matches,
-    input_interpretation
-  } = analysisData;
+  const sourceData = analysisData?.response_payload && Object.keys(analysisData.response_payload).length > 0
+    ? analysisData.response_payload 
+    : analysisData;
+  
+  const target_role = sourceData?.target_role || analysisData?.target_role;
+  const predicted_role = sourceData?.predicted_role || analysisData?.predicted_role;
+  const readiness_score = sourceData?.readiness_score ?? analysisData?.readiness_score;
+  const readiness_status = sourceData?.readiness_status || analysisData?.readiness_status;
+  const match_confidence = sourceData?.match_confidence ?? analysisData?.match_confidence;
+  const mastered_skill_count = sourceData?.mastered_skill_count ?? analysisData?.mastered_skill_count;
+  const skill_gap_count = sourceData?.skill_gap_count ?? analysisData?.skill_gap_count;
+
+  const mastered_skills = safeParse(sourceData?.mastered_skills);
+  const skill_gap_analysis = safeParse(sourceData?.skill_gap_analysis);
+  const roadmap = safeParse(sourceData?.roadmap);
+  const tips = safeParse(sourceData?.tips);
+  const top_matches = safeParse(sourceData?.top_matches);
+  const input_interpretation = safeParseObject(sourceData?.input_interpretation);
 
   const {
     education_label,
@@ -151,7 +217,8 @@ const AnalisisResultPage = () => {
     explicit_skills,
     experience_derived_skills,
     certification_derived_skills,
-    risk_flags
+    risk_flags,
+    info_text
   } = input_interpretation || {};
 
   const isFiniteNumber = (value) => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -270,7 +337,7 @@ const AnalisisResultPage = () => {
                 )}
               </div>
               <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-3">
-                <div className="bg-teal-550 h-full transition-all duration-500 bg-teal-600" style={{ width: `${readinessScoreValue ?? 0}%` }}></div>
+                <div className="bg-teal-600 h-full transition-all duration-500" style={{ width: `${readinessScoreValue ?? 0}%` }}></div>
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed">
                 {readiness_status ? (
@@ -337,9 +404,9 @@ const AnalisisResultPage = () => {
             <div className="p-6 space-y-3">
               {displaySkillGapAnalysis.length > 0 ? (
                 displaySkillGapAnalysis.slice(0, 3).map((item, idx) => {
-                  const skillName = typeof item === 'object' ? item?.name || item?.skill : item;
-                  const skillReason = typeof item === 'object' ? item?.description || item?.reason : '';
-                  const skillPriority = typeof item === 'object' ? item?.priority : '';
+                  const skillName = typeof item === 'object' && item !== null ? (item?.name || item?.skill) : item;
+                  const skillReason = typeof item === 'object' && item !== null ? (item?.description || item?.reason) : '';
+                  const skillPriority = typeof item === 'object' && item !== null ? item?.priority : '';
 
                   return (
                     <div key={idx} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-all gap-4">
@@ -373,9 +440,9 @@ const AnalisisResultPage = () => {
               <div className="relative border-l-2 border-[#004A7C] ml-3 space-y-12">
                 {displayRoadmap.length > 0 ? (
                   displayRoadmap.slice(0, 3).map((step, idx) => {
-                    const phase = typeof step === 'object' ? step?.phase : '';
-                    const items = typeof step === 'object' && Array.isArray(step?.items) ? step.items.filter(Boolean) : [];
-                    const description = typeof step === 'object' ? step?.description : step;
+                    const phase = typeof step === 'object' && step !== null ? step?.phase : `Fase ${idx + 1}`;
+                    const items = typeof step === 'object' && step !== null && Array.isArray(step?.items) ? step.items.filter(Boolean) : [];
+                    const description = typeof step === 'object' && step !== null ? step?.description : step;
 
                     return (
                       <div key={idx} className="relative pl-8">
@@ -494,7 +561,7 @@ const AnalisisResultPage = () => {
                 </div>
               </div>
 
-              {/* Kolom Lowongan Pembanding (Top Matches dari Katalog) */}
+              {/* Kolom Lowongan Pembanding */}
               <div className="md:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <div>
                   <h4 className="text-xs font-bold text-[#004A7C] tracking-wider uppercase">Lowongan Pembanding dari Katalog</h4>

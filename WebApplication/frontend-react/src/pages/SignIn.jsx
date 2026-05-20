@@ -54,15 +54,12 @@ const SignIn = () => {
         password: formData.password
       });
 
-      // Menyesuaikan fleksibilitas struktur token dari backend kamu
       const token = response.data?.token || response.data?.data?.token;
 
       if (token) {
         localStorage.setItem('token', token);
         localStorage.setItem('isLoggedIn', 'true');
         alert("Selamat datang kembali!");
-        
-        // DIUBAH: Langsung arahkan ke halaman profil untuk memverifikasi data asli
         navigate('/profil'); 
       } else {
         alert("Token tidak ditemukan dalam respon server.");
