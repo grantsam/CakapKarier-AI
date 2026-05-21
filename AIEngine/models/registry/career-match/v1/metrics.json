@@ -1,18 +1,18 @@
 {
   "train": {
-    "loss": 0.00410580774769187,
-    "binary_accuracy": 0.9971952438354492,
-    "mae": 0.013333464972674847
+    "loss": 0.0009498536237515509,
+    "binary_accuracy": 0.9991369843482971,
+    "mae": 0.00808030180633068
   },
   "validation": {
-    "loss": 0.002706635743379593,
-    "binary_accuracy": 0.9969879388809204,
-    "mae": 0.012775727547705173
+    "loss": 0.005972142796963453,
+    "binary_accuracy": 0.9979919791221619,
+    "mae": 0.011818374507129192
   },
   "test": {
-    "loss": 0.00378962024115026,
+    "loss": 0.0034525038208812475,
     "binary_accuracy": 0.9989959597587585,
-    "mae": 0.01200424786657095
+    "mae": 0.010721627622842789
   },
   "thresholds": {
     "min_accuracy": 0.85,
@@ -21,8 +21,8 @@
   "threshold_callback_reached_epoch": 6,
   "training_time": {
     "epochs_ran": 6,
-    "total_epoch_seconds": 58.02,
-    "mean_epoch_seconds": 9.67,
-    "last_epoch_seconds": 10.505
+    "total_epoch_seconds": 64.586,
+    "mean_epoch_seconds": 10.764,
+    "last_epoch_seconds": 10.726
   }
 }

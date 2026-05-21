@@ -110,6 +110,11 @@
     "description": "Combined production text input for the TensorFlow job encoder."
   },
   {
+    "field": "semantic_similarity",
+    "type": "float",
+    "description": "Unsupervised hashed text-embedding cosine similarity between candidate profile and job text."
+  },
+  {
     "field": "label",
     "type": "float",
     "description": "Training pair target: 1 match, 0 not match."

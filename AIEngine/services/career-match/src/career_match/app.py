@@ -6,7 +6,7 @@ from .genai import genai_health, generate_summary
 from .inference import CareerMatchService
 from .schemas import CandidateProfile, HealthResponse, PredictionResponse, WebAnalysisRequest
 
-app = FastAPI(title="CakapKarier AI Career Match API", version="1.2.0")
+app = FastAPI(title="CakapKarier AI Career Match API", version="1.4.0")
 _service: CareerMatchService | None = None
 
 

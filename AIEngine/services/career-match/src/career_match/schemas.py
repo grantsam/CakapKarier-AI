@@ -65,6 +65,8 @@ class MatchItem(BaseModel):
     required_education: str | None = None
     match_score: float
     readiness_percentage: float
+    model_probability: float | None = None
+    readiness_features: dict[str, float] | None = None
     matched_skills: list[str]
     missing_skills: list[str]
 

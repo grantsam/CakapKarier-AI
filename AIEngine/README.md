@@ -37,7 +37,8 @@ Service juga menyediakan adapter `/predict/web` untuk kebutuhan integrasi `WebAp
 | Classification report | Selesai | `models/registry/career-match/v1/classification_report.txt` |
 | Confusion matrix visual | Selesai | `models/registry/career-match/v1/confusion_matrix.png` |
 | Durasi training per epoch | Selesai | `models/registry/career-match/v1/training_history.csv` |
-| Target performa | Selesai | test accuracy `0.9990`, test MAE `0.0120` |
+| Semantic similarity feature | Selesai | `semantic_similarity` berbasis cosine similarity hashed text embedding |
+| Target performa | Selesai | test accuracy `0.9990`, test MAE `0.0107` |
 | Notebook ringkas | Selesai | `notebooks/career_match_experiment.ipynb` |
 
 Catatan data: dataset utama sekarang memakai final clean dataset dari tim Data Science. Dataset tetap berisi lowongan, bukan histori kandidat yang sudah berlabel. Karena itu label training dibuat sebagai weak/synthetic supervision dari kecocokan skill, sertifikasi, role family, pengalaman minimum, dan pendidikan. Ini cukup untuk MVP career matching, tetapi versi produksi berikutnya sebaiknya ditingkatkan dengan data kandidat nyata dan feedback pengguna.
@@ -52,6 +53,7 @@ Catatan data: dataset utama sekarang memakai final clean dataset dari tim Data S
 - Sumber data setelah dedupe: Glints 1.980, LinkedIn 229
 - Training pairs sintetis: 6.627
 - Mandatory inference parameters: `experience_years`, `skills`, `certifications`
+- Numeric model features: `skill_overlap`, `certification_overlap`, `experience_ratio`, `education_match`, `skill_count_ratio`, `missing_skill_ratio`, `seniority_gap`, `semantic_similarity`
 - Web adapter: `POST /predict/web` menerima `pendidikan_terakhir`, `skill_yang_dikuasai`, `minat_bakat`, `pengalaman_sertifikasi`, dan `target_role`
 - Data dictionary: `data/processed/career-match-v1/data_dictionary.md`
 

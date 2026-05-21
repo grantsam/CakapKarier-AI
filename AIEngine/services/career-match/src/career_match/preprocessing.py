@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import math
 import re
 import unicodedata
 from typing import Iterable
@@ -12,6 +14,7 @@ NUMERIC_FEATURES = [
     "skill_count_ratio",
     "missing_skill_ratio",
     "seniority_gap",
+    "semantic_similarity",
 ]
 
 EDUCATION_ALIASES = {
@@ -107,6 +110,49 @@ GENERIC_SKILL_WORDS = {
     "strong",
     "basic",
     "advanced",
+    "especially",
+    "proficient",
+    "expertise",
+    "understanding",
+    "ms",
+    "bs",
+    "uv",
+}
+
+SEMANTIC_HASH_DIM = 768
+SEMANTIC_STOPWORDS = GENERIC_SKILL_WORDS | {
+    "candidate",
+    "role",
+    "work",
+    "mode",
+    "unknown",
+    "education",
+    "certification",
+    "certifications",
+    "required",
+    "description",
+    "target",
+    "interests",
+    "profile",
+}
+
+SEMANTIC_ALIASES = {
+    r"\bai\b": "artificial intelligence",
+    r"\bml\b": "machine learning",
+    r"\bbi\b": "business intelligence",
+    r"\bjs\b": "javascript",
+    r"\bts\b": "typescript",
+    r"\bfe\b": "front end",
+    r"\bbe\b": "back end",
+    r"\bfrontend\b": "front end",
+    r"\bbackend\b": "back end",
+    r"\bfront-end\b": "front end",
+    r"\bback-end\b": "back end",
+    r"\bpowerbi\b": "power bi",
+    r"\bpostgres\b": "postgresql",
+    r"\bgolang\b": "go",
+    r"\bgcp\b": "google cloud platform",
+    r"\baws\b": "amazon web services",
 }
 
 TARGET_ROLE_ALIASES = {
@@ -228,6 +274,55 @@ def clean_text(value: object) -> str:
     return text.strip()
 
 
+def semantic_tokens(value: object) -> list[str]:
+    """Build deterministic text tokens for unsupervised semantic similarity."""
+
+    text = clean_text(value).lower()
+    for pattern, replacement in SEMANTIC_ALIASES.items():
+        text = re.sub(pattern, replacement, text)
+    tokens = re.findall(r"[a-z0-9+#.]+", text)
+    tokens = [token for token in tokens if len(token) >= 2 and token not in SEMANTIC_STOPWORDS]
+
+    features: list[str] = []
+    features.extend(tokens)
+    features.extend(f"{left}_{right}" for left, right in zip(tokens, tokens[1:], strict=False))
+    return features
+
+
+def hashed_text_embedding(value: object, *, dimension: int = SEMANTIC_HASH_DIM) -> dict[int, float]:
+    """Create a sparse, normalized embedding-style vector without external services."""
+
+    weights: dict[int, float] = {}
+    for token in semantic_tokens(value):
+        digest = hashlib.blake2b(token.encode("utf-8"), digest_size=4).digest()
+        index = int.from_bytes(digest, "big") % dimension
+        weights[index] = weights.get(index, 0.0) + (1.25 if "_" in token else 1.0)
+
+    if not weights:
+        return {}
+
+    weights = {index: 1.0 + math.log(value) for index, value in weights.items()}
+    norm = math.sqrt(sum(value * value for value in weights.values()))
+    if norm <= 0:
+        return {}
+    return {index: value / norm for index, value in weights.items()}
+
+
+def semantic_text_similarity(left_text: object, right_text: object) -> float:
+    """Cosine similarity between two unsupervised hashed text embeddings."""
+
+    left_embedding = hashed_text_embedding(left_text)
+    right_embedding = hashed_text_embedding(right_text)
+    if not left_embedding or not right_embedding:
+        return 0.0
+
+    if len(left_embedding) > len(right_embedding):
+        left_embedding, right_embedding = right_embedding, left_embedding
+
+    score = sum(value * right_embedding.get(index, 0.0) for index, value in left_embedding.items())
+    return float(min(1.0, max(0.0, score)))
+
+
 def strip_scraper_prefix(value: object, prefix: str) -> str:
     text = clean_text(value)
     return re.sub(rf"^\s*{re.escape(prefix)}\s*", "", text, flags=re.IGNORECASE).strip()
@@ -241,11 +336,32 @@ def split_title_case_chunks(value: str) -> str:
 
 
 def normalize_known_skill_names(value: str) -> str:
+    compact_replacements = {
+        r"Node\.js(?=PHP|C\+\+|C#|Java|Python|React|Vue|Laravel|MySQL|PostgreSQL|SQL|Go|Golang)": "node.js,",
+        r"React\.js(?=PHP|C\+\+|C#|Java|Python|Node|Vue|Laravel|MySQL|PostgreSQL|SQL|Go|Golang)": "react.js,",
+        r"Vue\.js(?=PHP|C\+\+|C#|Java|Python|Node|React|Laravel|MySQL|PostgreSQL|SQL|Go|Golang)": "vue.js,",
+        r"Java(?=PHP|C\+\+|C#|Python|Node|React|Vue|Laravel|MySQL|PostgreSQL|SQL|Go|Golang)": "java,",
+        r"Python(?=PHP|C\+\+|C#|Java|Node|React|Vue|Laravel|MySQL|PostgreSQL|SQL|Go|Golang)": "python,",
+        r"PHP(?=C\+\+|C#|Java|Python|Node|React|Vue|Laravel|MySQL|PostgreSQL|SQL|Go|Golang)": "php,",
+        r"SQL(?=C\+\+|C#|Java|Python|PHP|Node|React|Vue|Laravel|Go|Golang)": "sql,",
+        r"MySQL(?=C\+\+|C#|Java|Python|PHP|Node|React|Vue|Laravel|Go|Golang)": "mysql,",
+        r"PostgreSQL(?=C\+\+|C#|Java|Python|PHP|Node|React|Vue|Laravel|Go|Golang)": "postgresql,",
+        r"Server(?=Python|Java|PHP|Node|React|Vue|Laravel|MySQL|PostgreSQL|SQL|Go|Golang)": "Server,",
+        r"server(?=python|java|php|node|react|vue|laravel|mysql|postgresql|sql|go|golang)": "server,",
+    }
     replacements = {
         r"PyTorch": "pytorch",
         r"TensorFlow": "tensorflow",
         r"JavaScript": "javascript",
         r"TypeScript": "typescript",
+        r"NestJS": "nestjs",
+        r"GraphQL": "graphql",
+        r"gRPC": "grpc",
+        r"HTML": "html",
+        r"CSS": "css",
+        r"RESTful API": "rest api",
+        r"C\+\+": "c++",
+        r"C#": "c#",
         r"PowerBI": "power bi",
         r"NodeJS": "node.js",
         r"ReactJS": "react.js",
@@ -259,6 +375,8 @@ def normalize_known_skill_names(value: str) -> str:
         r"UI/UX": "ui/ux",
     }
     text = value
+    for pattern, replacement in compact_replacements.items():
+        text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
     for pattern, replacement in replacements.items():
         text = re.sub(pattern, f",{replacement},", text, flags=re.IGNORECASE)
     text = re.sub(r",{2,}", ",", text)
@@ -269,7 +387,22 @@ def clean_skill_phrase(value: object) -> str:
     text = normalize_space(value).lower()
     text = re.sub(r"[^a-z0-9+#./ -]+", " ", text)
     text = re.sub(r"\s+", " ", text).strip(" -./")
-    return text
+    aliases = {
+        "nodejs": "node.js",
+        "node js": "node.js",
+        "reactjs": "react.js",
+        "react js": "react.js",
+        "nextjs": "next.js",
+        "next js": "next.js",
+        "vuejs": "vue.js",
+        "vue js": "vue.js",
+        "powerbi": "power bi",
+        "postgre": "postgresql",
+        "postgres": "postgresql",
+        "js": "javascript",
+        "ts": "typescript",
+    }
+    return aliases.get(text, text)
 
 
 def split_skills(value: object, *, max_items: int = 40) -> list[str]:
@@ -287,10 +420,19 @@ def split_skills(value: object, *, max_items: int = 40) -> list[str]:
 
     skills: list[str] = []
     seen: set[str] = set()
+    allowed_short_skills = {"c#", "c++", "go", "qa", "ui", "ux", "r"}
+    noisy_phrase_pattern = re.compile(
+        r"\b(such as|experience with|experienced in|proficient in|proficient understanding|"
+        r"expertise with|especially|familiarity with|working knowledge)\b"
+    )
     for part in parts:
         if not part or part in seen:
             continue
-        if len(part) < 2 or part in GENERIC_SKILL_WORDS:
+        if len(part) > 80 or len(part.split()) > 7:
+            continue
+        if noisy_phrase_pattern.search(part):
+            continue
+        if (len(part) < 3 and part not in allowed_short_skills) or part in GENERIC_SKILL_WORDS:
             continue
         seen.add(part)
         skills.append(part)
@@ -544,6 +686,8 @@ def numeric_feature_values(
     required_min_experience_years: float,
     candidate_education_level: int,
     required_education_level: int,
+    candidate_text: object = "",
+    job_text: object = "",
 ) -> list[float]:
     candidate_skills = parse_skill_inputs(candidate_skills)
     candidate_certifications = parse_skill_inputs(candidate_certifications or [])
@@ -565,6 +709,7 @@ def numeric_feature_values(
     education_match = 1.0 if required_education_level <= 0 or candidate_education_level >= required_education_level else 0.0
     skill_count_ratio = 1.0 if not job_skills else min(1.0, len(candidate_skills) / max(len(job_skills), 1))
     missing_skill_ratio = max(0.0, 1.0 - overlap)
+    semantic_similarity = semantic_text_similarity(candidate_text, job_text)
 
     return [
         float(overlap),
@@ -574,6 +719,7 @@ def numeric_feature_values(
         float(skill_count_ratio),
         float(missing_skill_ratio),
         float(seniority_gap),
+        float(semantic_similarity),
     ]
 
 

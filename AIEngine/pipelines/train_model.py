@@ -326,7 +326,7 @@ def run_training(args: argparse.Namespace) -> dict[str, Any]:
         "model_name": "cakapkarier_career_matcher",
         "version": "v1",
         "framework": "TensorFlow/Keras",
-        "architecture": "Functional API dual text encoder plus numeric readiness features",
+        "architecture": "Functional API dual text encoder plus numeric readiness and semantic similarity features",
         "custom_components": [
             "CosineSimilarityLayer",
             "AbsoluteDifferenceLayer",

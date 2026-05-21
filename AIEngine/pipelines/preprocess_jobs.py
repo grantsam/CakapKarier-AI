@@ -286,6 +286,12 @@ def _make_pair(
     pair_type: str,
     source_job_id: str,
 ) -> dict[str, Any]:
+    candidate_text = build_candidate_text(
+        skills=candidate_skills,
+        experience_years=candidate_experience,
+        education_level=candidate_education,
+        certifications=candidate_certifications,
+    )
     features = numeric_feature_values(
         candidate_skills=candidate_skills,
         candidate_certifications=candidate_certifications,
@@ -294,17 +300,14 @@ def _make_pair(
         required_min_experience_years=float(job["min_experience_years"]),
         candidate_education_level=candidate_education,
         required_education_level=int(job["education_level_required"]),
+        candidate_text=candidate_text,
+        job_text=job["job_text"],
     )
     record = {
         "job_id": job["job_id"],
         "source_job_id": source_job_id,
         "pair_type": pair_type,
-        "candidate_text": build_candidate_text(
-            skills=candidate_skills,
-            experience_years=candidate_experience,
-            education_level=candidate_education,
-            certifications=candidate_certifications,
-        ),
+        "candidate_text": candidate_text,
         "job_text": job["job_text"],
         "label": float(label),
         "job_title": job["job_title"],
@@ -422,6 +425,11 @@ def build_data_dictionary() -> list[dict[str, str]]:
         {"field": "work_mode", "type": "string", "description": "remote, hybrid, onsite, or unknown."},
         {"field": "role_family", "type": "string", "description": "Rule-based role family used for stratification and analysis."},
         {"field": "job_text", "type": "string", "description": "Combined production text input for the TensorFlow job encoder."},
+        {
+            "field": "semantic_similarity",
+            "type": "float",
+            "description": "Unsupervised hashed text-embedding cosine similarity between candidate profile and job text.",
+        },
         {"field": "label", "type": "float", "description": "Training pair target: 1 match, 0 not match."},
     ]
 

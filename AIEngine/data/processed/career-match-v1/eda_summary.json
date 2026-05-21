@@ -79,7 +79,8 @@
     "education_match",
     "skill_count_ratio",
     "missing_skill_ratio",
-    "seniority_gap"
+    "seniority_gap",
+    "semantic_similarity"
   ],
   "target": "binary career match score: 1=relevant candidate profile, 0=not ready/not relevant"
 }

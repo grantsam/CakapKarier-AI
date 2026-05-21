@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import sys
 from pathlib import Path
@@ -113,6 +114,74 @@ def _target_score_adjustment(job: dict[str, Any], target_role: str) -> float:
     return 0.0
 
 
+def _feature_map(values: list[float]) -> dict[str, float]:
+    return dict(zip(NUMERIC_FEATURES, values, strict=True))
+
+
+def _target_alignment_score(alignment: int) -> float:
+    if alignment >= 3:
+        return 1.0
+    if alignment == 2:
+        return 0.85
+    if alignment == 1:
+        return 0.55
+    return 0.0
+
+
+def _calibrated_readiness_score(
+    *,
+    model_probability: float,
+    numeric_features: list[float],
+    target_alignment: int,
+    location_match: bool,
+    job_skill_count: int,
+) -> float:
+    """Blend model probability with interpretable readiness signals.
+
+    The TensorFlow model is trained on weak labels where positive examples are
+    intentionally strong market-fit profiles. Real users usually submit partial
+    profiles, so the raw sigmoid can be too conservative for product-facing
+    readiness. This calibration keeps the model signal but scales the output
+    with skill, experience, education, certification, semantic, and target-role
+    evidence.
+    """
+
+    features = _feature_map(numeric_features)
+    skill_overlap = max(0.0, min(1.0, features["skill_overlap"]))
+    certification_overlap = max(0.0, min(1.0, features["certification_overlap"]))
+    experience_ratio = max(0.0, min(1.0, features["experience_ratio"]))
+    education_match = max(0.0, min(1.0, features["education_match"]))
+    skill_count_ratio = max(0.0, min(1.0, features["skill_count_ratio"]))
+    semantic_similarity = max(0.0, min(1.0, features["semantic_similarity"] * 2.4))
+
+    readiness_signal = (
+        0.42 * math.sqrt(skill_overlap)
+        + 0.16 * experience_ratio
+        + 0.10 * education_match
+        + 0.08 * math.sqrt(certification_overlap)
+        + 0.08 * skill_count_ratio
+        + 0.07 * semantic_similarity
+        + 0.09 * _target_alignment_score(target_alignment)
+    )
+
+    if location_match:
+        readiness_signal += 0.025
+
+    # Avoid over-rewarding jobs that match the title but share very few skills.
+    if skill_overlap < 0.08:
+        readiness_signal = min(readiness_signal, 0.42)
+    elif skill_overlap < 0.18:
+        readiness_signal = min(readiness_signal, 0.58)
+
+    model_signal = math.sqrt(max(0.0, min(1.0, model_probability)))
+    calibrated = 0.72 * readiness_signal + 0.28 * model_signal
+    if job_skill_count <= 2:
+        calibrated = min(calibrated, 0.78)
+    elif job_skill_count <= 4:
+        calibrated = min(calibrated, 0.84)
+    return max(0.0, min(1.0, calibrated))
+
+
 def _readiness_status(score: float) -> str:
     if score >= 85:
         return "Siap"
@@ -131,6 +200,14 @@ def _gap_priority(index: int) -> str:
 
 def _skill_gap_analysis(missing: list[str], role: str | None) -> list[dict[str, str]]:
     role_text = role or "role teratas"
+    if not missing:
+        return [
+            {
+                "name": "portfolio validation",
+                "priority": "Rendah",
+                "description": f"Skill utama untuk {role_text} sudah cukup terdeteksi; lanjutkan dengan bukti portofolio dan studi kasus yang relevan.",
+            }
+        ]
     return [
         {
             "name": skill,
@@ -248,6 +325,8 @@ class CareerMatchService:
                     required_min_experience_years=float(job.get("min_experience_years", 0.0)),
                     candidate_education_level=candidate_education_level,
                     required_education_level=int(job.get("education_level_required", 0)),
+                    candidate_text=candidate_text,
+                    job_text=job.get("job_text", ""),
                 )
             )
 
@@ -259,12 +338,16 @@ class CareerMatchService:
         raw_scores = self.model.predict(inputs, batch_size=128, verbose=0).reshape(-1)
 
         ranked: list[dict[str, Any]] = []
-        for job, score in zip(self.jobs, raw_scores, strict=True):
-            adjusted_score = float(score)
-            if location and location in str(job.get("location", "")).lower():
-                adjusted_score = min(1.0, adjusted_score + 0.025)
+        for job, score, feature_values in zip(self.jobs, raw_scores, numeric_rows, strict=True):
+            location_match = bool(location and location in str(job.get("location", "")).lower())
             target_alignment = _target_alignment(job, target_role_text)
-            adjusted_score = min(1.0, adjusted_score + _target_score_adjustment(job, target_role_text))
+            adjusted_score = _calibrated_readiness_score(
+                model_probability=float(score),
+                numeric_features=feature_values,
+                target_alignment=target_alignment,
+                location_match=location_match,
+                job_skill_count=len(parse_skill_inputs(job.get("skills", []))),
+            )
             gaps = missing_skills(combined_skills, job.get("skills", []), limit=8)
             matches = matched_skills(combined_skills, job.get("skills", []), limit=12)
             ranked.append(
@@ -280,7 +363,11 @@ class CareerMatchService:
                     "required_education": job.get("education_required"),
                     "match_score": round(adjusted_score, 4),
                     "readiness_percentage": round(adjusted_score * 100.0, 2),
+                    "model_probability": round(float(score), 4),
                     "target_alignment": target_alignment,
+                    "readiness_features": {
+                        key: round(value, 4) for key, value in _feature_map(feature_values).items()
+                    },
                     "matched_skills": matches,
                     "missing_skills": gaps,
                 }
