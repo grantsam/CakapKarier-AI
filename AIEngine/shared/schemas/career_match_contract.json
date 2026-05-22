@@ -1,6 +1,6 @@
 {
   "service": "career-match",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "endpoints": {
     "health": "GET /health",
     "genai_health": "GET /genai/health",
@@ -76,7 +76,7 @@
     "readiness_score": "number, 0-100",
     "readiness_status": "Siap|Cukup Siap|Perlu Ditingkatkan",
     "match_confidence": "number, 0-1",
-    "top_matches": "array<object, includes calibrated match_score plus optional model_probability and readiness_features>",
+    "top_matches": "array<object, includes calibrated match_score plus optional model_probability and readiness_features (includes certification_required_overlap and certification_completeness_boost for debugging)>",
     "mastered_skills": "array<string>",
     "mastered_skill_count": "integer",
     "skill_gap": "array<string>",

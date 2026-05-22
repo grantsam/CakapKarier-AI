@@ -1,8 +1,8 @@
               precision    recall  f1-score   support
 
-   not_match       1.00      1.00      1.00       664
-       match       1.00      1.00      1.00       332
+   not_match       1.00      1.00      1.00      1758
+       match       0.99      1.00      1.00       879
 
-    accuracy                           1.00       996
-   macro avg       1.00      1.00      1.00       996
-weighted avg       1.00      1.00      1.00       996
+    accuracy                           1.00      2637
+   macro avg       1.00      1.00      1.00      2637
+weighted avg       1.00      1.00      1.00      2637

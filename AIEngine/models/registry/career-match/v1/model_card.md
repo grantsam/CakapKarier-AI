@@ -7,13 +7,13 @@ Model memprediksi kecocokan profil kandidat terhadap katalog lowongan final dari
 ## Data
 
 - Sumber:
-  - `AIEngine/data/raw/all_data_clean.csv`
-  - `AIEngine/data/raw/Data_Dictionary.xlsx`
-- Jumlah baris dataset final DS: 2.215
-- Jumlah lowongan bersih setelah dedupe model: 2.209
-- Distribusi sumber setelah dedupe: Glints 1.980, LinkedIn 229
-- Pair training sintetis: 6.627 kandidat-lowongan
-- Split: train 4.635, validation 996, test 996
+  - `AIEngine/data/raw/all_data_final.csv`
+  - `AIEngine/data/raw/Data_Dictionary.csv`
+- Jumlah baris dataset final DS: 5.865
+- Jumlah lowongan bersih setelah dedupe model: 5.859
+- Distribusi sumber setelah dedupe: Glints 5.630, LinkedIn 229
+- Pair training sintetis: 17.577 kandidat-lowongan
+- Split: train 12.303, validation 2.637, test 2.637
 
 Dataset final DS berisi data lowongan yang sudah melalui gathering, assessing, cleaning, transforming, feature engineering awal, merging, EDA, dan export final dataset. Karena dataset tetap berupa lowongan, bukan histori kandidat berlabel, label model dibuat dengan weak supervision:
 
@@ -45,20 +45,20 @@ Dataset final DS berisi data lowongan yang sudah melalui gathering, assessing, c
 
 Metric terakhir:
 
-- Train accuracy: 0.9991
-- Train MAE: 0.0081
-- Validation accuracy: 0.9980
-- Validation MAE: 0.0118
-- Test accuracy: 0.9990
-- Test MAE: 0.0107
+- Train accuracy: 0.9976
+- Train MAE: 0.0113
+- Validation accuracy: 0.9989
+- Validation MAE: 0.0045
+- Test accuracy: 0.9977
+- Test MAE: 0.0050
 - Test classification report:
-  - `not_match` precision 1.0000, recall 0.9985, f1-score 0.9992, support 664
-  - `match` precision 0.9970, recall 1.0000, f1-score 0.9985, support 332
+  - `not_match` precision 0.9989, recall 1.0000, f1-score 0.9994, support 1.758
+  - `match` precision 1.0000, recall 0.9977, f1-score 0.9989, support 879
 - Training time:
-  - Epochs run: 6
-  - Total epoch time: 64.59 seconds
-  - Mean epoch time: 10.76 seconds
-  - Last epoch time: 10.73 seconds
+  - Epochs run: 5
+  - Total epoch time: 188.64 seconds
+  - Mean epoch time: 37.73 seconds
+  - Last epoch time: 37.65 seconds
 
 Target checklist:
 

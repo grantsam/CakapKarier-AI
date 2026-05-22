@@ -33,7 +33,7 @@ from career_match.preprocessing import (  # noqa: E402
     strip_scraper_prefix,
 )
 
-DEFAULT_DS_CLEAN_INPUT = AIENGINE_ROOT / "data" / "raw" / "all_data_clean.csv"
+DEFAULT_DS_CLEAN_INPUT = AIENGINE_ROOT / "data" / "raw" / "all_data_final.csv"
 DEFAULT_OUTPUT_DIR = AIENGINE_ROOT / "data" / "processed" / "career-match-v1"
 MAX_DESCRIPTION_CHARS = 3000
 MAX_REQUIREMENTS_CHARS = 2000
@@ -70,6 +70,23 @@ def normalize_missing_strings(frame: pd.DataFrame) -> pd.DataFrame:
             "n/a": "",
         }
     )
+
+
+def normalize_job_detail_key(value: str) -> str:
+    detail = clean_text(value).lower()
+    if detail in {
+        "",
+        "not available",
+        "not_available",
+        "n/a",
+        "na",
+        "none",
+        "null",
+        "-",
+        "--",
+    }:
+        return ""
+    return detail
 
 
 def default_raw_paths() -> list[Path]:
@@ -121,12 +138,12 @@ def load_raw_sources(raw_paths: list[Path]) -> pd.DataFrame:
             raise ValueError(f"Unsupported data source: {path}")
 
     if not frames:
-        raise FileNotFoundError("No dataset found. Expected AIEngine/data/raw/all_data_clean.csv or explicit --input files.")
+        raise FileNotFoundError("No dataset found. Expected AIEngine/data/raw/all_data_final.csv or explicit --input files.")
 
     raw = pd.concat(frames, ignore_index=True).fillna("")
     raw["job_detail"] = raw["job_detail"].astype(str)
     raw["dedupe_key"] = raw.apply(
-        lambda row: clean_text(row["job_detail"]).lower()
+        lambda row: normalize_job_detail_key(row["job_detail"])
         or "|".join(
             [
                 clean_text(row["job_title"]).lower(),
@@ -516,7 +533,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         nargs="*",
         default=None,
-        help="CSV/XLSX input files. Defaults to AIEngine/data/raw/all_data_clean.csv from Data Science.",
+        help="CSV input files. Defaults to AIEngine/data/raw/all_data_final.csv from Data Science.",
     )
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--seed", type=int, default=42)

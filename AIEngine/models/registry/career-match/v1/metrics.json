@@ -1,28 +1,28 @@
 {
   "train": {
-    "loss": 0.0009498536237515509,
-    "binary_accuracy": 0.9991369843482971,
-    "mae": 0.00808030180633068
+    "loss": 0.0027411743067204952,
+    "binary_accuracy": 0.9975615739822388,
+    "mae": 0.01132167037576437
   },
   "validation": {
-    "loss": 0.005972142796963453,
-    "binary_accuracy": 0.9979919791221619,
-    "mae": 0.011818374507129192
+    "loss": 0.0023141440469771624,
+    "binary_accuracy": 0.9988623261451721,
+    "mae": 0.004473348148167133
   },
   "test": {
-    "loss": 0.0034525038208812475,
-    "binary_accuracy": 0.9989959597587585,
-    "mae": 0.010721627622842789
+    "loss": 0.0052447207272052765,
+    "binary_accuracy": 0.997724711894989,
+    "mae": 0.004963076673448086
   },
   "thresholds": {
     "min_accuracy": 0.85,
     "max_mae": 0.02
   },
-  "threshold_callback_reached_epoch": 6,
+  "threshold_callback_reached_epoch": 5,
   "training_time": {
-    "epochs_ran": 6,
-    "total_epoch_seconds": 64.586,
-    "mean_epoch_seconds": 10.764,
-    "last_epoch_seconds": 10.726
+    "epochs_ran": 5,
+    "total_epoch_seconds": 188.636,
+    "mean_epoch_seconds": 37.727,
+    "last_epoch_seconds": 37.647
   }
 }
