@@ -7,11 +7,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-  
-  // Status login real-time dari localStorage
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
 
-  // Sinkronisasi status login jika ada perubahan di storage
   useEffect(() => {
     const checkLogin = () => {
       setIsLoggedIn(localStorage.getItem('isLoggedIn') === 'true');
@@ -27,17 +24,15 @@ const Navbar = () => {
     navigate('/');
   };
 
-  // Proteksi Menu: Jika belum login, hanya Beranda yang bisa diakses
   const handleNavClick = (path) => {
     if (!isLoggedIn && path !== '/') {
       navigate('/signup');
     } else {
       navigate(path);
     }
-    setIsOpen(false); // Tutup menu mobile setelah klik
+    setIsOpen(false);
   };
 
-  // Helper untuk class menu aktif
   const getMenuClass = (path) => {
     const isActive = location.pathname === path;
     return `px-5 py-2 rounded-full cursor-pointer transition-all duration-300 font-semibold text-sm

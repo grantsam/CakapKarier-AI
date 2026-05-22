@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import authBg from '../assets/signup-in.jpg'; 
 import logoImage from '../assets/logo_cakapkarierai.png';
+import { IconEye, IconEyeOff } from '@tabler/icons-react';
 
 const SignIn = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // State untuk menyimpan data input
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
 
-  // State untuk menyimpan pesan error
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -27,8 +27,6 @@ const SignIn = () => {
 
   const validateForm = () => {
     let newErrors = {};
-
-    // Validasi format email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email) {
       newErrors.email = "Email wajib diisi";
@@ -36,7 +34,6 @@ const SignIn = () => {
       newErrors.email = "Format email tidak valid";
     }
 
-    // Validasi Kata Sandi minimal 8 karakter
     if (!formData.password) {
       newErrors.password = "Kata sandi wajib diisi";
     } else if (formData.password.length < 8) {
@@ -49,21 +46,24 @@ const SignIn = () => {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    
     if (!validateForm()) return;
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/login', {
+      const response = await api.post('/auth/login', {
         email: formData.email,
         password: formData.password
       });
 
-      localStorage.setItem('isLoggedIn', 'true');
-      if (response.data.data && response.data.data.token) {
-        localStorage.setItem('token', response.data.data.token);
+      const token = response.data?.token || response.data?.data?.token;
+
+      if (token) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('isLoggedIn', 'true');
+        alert("Selamat datang kembali!");
+        navigate('/profil'); 
+      } else {
+        alert("Token tidak ditemukan dalam respon server.");
       }
-      alert("Selamat datang kembali!");
-      navigate('/');
     } catch (error) {
       const serverMessage = error.response?.data?.message || "Email atau kata sandi salah";
       alert(serverMessage);
@@ -76,12 +76,10 @@ const SignIn = () => {
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6 font-poppins">
       <div className="bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex overflow-hidden max-w-5xl w-full h-full max-h-[600px]">
         
-        {/* Sisi Kiri - Gambar Ilustrasi */}
         <div className="hidden md:block w-1/2 relative">
           <img src={authBg} alt="Auth Background" className="h-full w-full object-cover" />
         </div>
 
-        {/* Sisi Kanan - Form */}
         <div className="w-full md:w-1/2 p-10 md:p-14 flex flex-col justify-center">
           <div className="flex items-center gap-2 mb-8">
             <img src={logoImage} alt="Logo" className="h-7 w-auto" />
@@ -106,14 +104,23 @@ const SignIn = () => {
 
             <div>
               <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Kata Sandi</label>
-              <input 
-                name="password"
-                type="password" 
-                placeholder="Minimal 8 Karakter" 
-                value={formData.password}
-                onChange={handleChange}
-                className={`w-full px-4 py-3.5 rounded-xl border ${errors.password ? 'border-red-500' : 'border-slate-200'} focus:border-[#004A7C] focus:ring-1 focus:ring-[#004A7C] outline-none transition-all text-sm`} 
-              />
+              <div className="relative">
+                <input 
+                  name="password"
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="Minimal 8 Karakter" 
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3.5 rounded-xl border ${errors.password ? 'border-red-500' : 'border-slate-200'} focus:border-[#004A7C] focus:ring-1 focus:ring-[#004A7C] outline-none transition-all text-sm pr-10`} 
+                />
+                <button 
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#004A7C]"
+                >
+                  {showPassword ? <IconEye size={18} /> : <IconEyeOff size={18} />}
+                </button>
+              </div>
               {errors.password && <p className="text-red-500 text-[10px] mt-1 font-semibold">{errors.password}</p>}
             </div>
             

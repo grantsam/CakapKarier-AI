@@ -11,10 +11,12 @@ import {
 } from '@tabler/icons-react';
 
 const initialForm = {
-  pendidikan_terakhir: 's1',
-  skill_yang_dikuasai: 'Python, SQL, Machine Learning, TensorFlow',
-  minat_bakat: 'AI Engineer, Data Analyst, Problem Solving',
-  pengalaman_sertifikasi: '1 tahun project machine learning, sertifikasi TensorFlow Developer',
+  education_level: 's1',
+  skills: 'Python, SQL, Machine Learning, TensorFlow',
+  interests: 'AI Engineer, Data Analyst, Problem Solving',
+  experience_years: 1,
+  experience_text: '1 tahun project machine learning untuk klasifikasi data dan dashboard analitik.',
+  certifications: 'TensorFlow Developer',
   target_role: 'ae',
   top_k: 5,
 };
@@ -86,8 +88,8 @@ const AnalisisRealDataReferencePage = () => {
               <div>
                 <label className="block text-sm font-medium text-slate-800 mb-2">Pendidikan Terakhir</label>
                 <select
-                  name="pendidikan_terakhir"
-                  value={form.pendidikan_terakhir}
+                  name="education_level"
+                  value={form.education_level}
                   onChange={handleChange}
                   className="w-full p-3 rounded-xl border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -102,8 +104,8 @@ const AnalisisRealDataReferencePage = () => {
               <div>
                 <label className="block text-sm font-medium text-slate-800 mb-2">Skill yang Dikuasai</label>
                 <textarea
-                  name="skill_yang_dikuasai"
-                  value={form.skill_yang_dikuasai}
+                  name="skills"
+                  value={form.skills}
                   onChange={handleChange}
                   className="w-full p-3 rounded-xl border border-slate-300 min-h-[96px] text-sm outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -112,21 +114,44 @@ const AnalisisRealDataReferencePage = () => {
               <div>
                 <label className="block text-sm font-medium text-slate-800 mb-2">Minat dan Bakat</label>
                 <textarea
-                  name="minat_bakat"
-                  value={form.minat_bakat}
+                  name="interests"
+                  value={form.interests}
                   onChange={handleChange}
                   className="w-full p-3 rounded-xl border border-slate-300 min-h-[96px] text-sm outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">Pengalaman dan Sertifikasi</label>
+                <label className="block text-sm font-medium text-slate-800 mb-2">Pengalaman Relevan</label>
                 <textarea
-                  name="pengalaman_sertifikasi"
-                  value={form.pengalaman_sertifikasi}
+                  name="experience_text"
+                  value={form.experience_text}
                   onChange={handleChange}
                   className="w-full p-3 rounded-xl border border-slate-300 min-h-[96px] text-sm outline-none focus:ring-2 focus:ring-blue-500"
                 />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-800 mb-2">Tahun Pengalaman</label>
+                  <input
+                    type="number"
+                    name="experience_years"
+                    value={form.experience_years}
+                    onChange={handleChange}
+                    className="w-full p-3 rounded-xl border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-800 mb-2">Sertifikasi</label>
+                  <input
+                    name="certifications"
+                    value={form.certifications}
+                    onChange={handleChange}
+                    className="w-full p-3 rounded-xl border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
