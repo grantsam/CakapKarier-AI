@@ -19,9 +19,6 @@ import {
   IconAlertTriangle
 } from '@tabler/icons-react';
 
-// ==========================================
-// Pindahkan Fungsi Helper ke Luar Komponen (Aman dari Hoisting)
-// ==========================================
 const safeParse = (data) => {
   if (!data) return [];
   if (Array.isArray(data)) return data;
@@ -65,7 +62,9 @@ const safeParseObject = (data) => {
 const AnalisisResultPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { id: historyId } = useParams();
+  const params = useParams();
+  const historyId = params.id || params.historyId || params.analysisId;
+  console.log("=== DEBUG PARAMS UTUH ===", params);
   
   const stateAnalysisData = location.state?.data;
   const [analysisData, setAnalysisData] = useState(null);
@@ -73,65 +72,58 @@ const AnalisisResultPage = () => {
   const [historyDetailError, setHistoryDetailError] = useState('');
 
   useEffect(() => {
-    if (stateAnalysisData) {
-      console.log("=== DEBUG: Data dari Navigation State ===", stateAnalysisData);
-      
-      const rawPayload = stateAnalysisData.response_payload || stateAnalysisData.result || stateAnalysisData;
-      const parsedPayload = typeof rawPayload === 'string' ? safeParseObject(rawPayload) : rawPayload;
-
-      setAnalysisData({
-        ...stateAnalysisData,
-        response_payload: parsedPayload,
-        analysis_id: stateAnalysisData.id || stateAnalysisData.analysis_id,
-        saved_at: stateAnalysisData.created_at || stateAnalysisData.saved_at
-      });
-      setLoadingHistoryDetail(false);
-      return;
-    }
-
-    console.log("=== DEBUG: historyId dari useParams() ===", historyId);
-    if (!historyId) {
-      setLoadingHistoryDetail(false);
-      return;
-    }
-
-    const fetchHistoryDetail = async () => {
+    const handleData = async () => {
       setLoadingHistoryDetail(true);
       setHistoryDetailError('');
 
-      try {
-        const URL_API = `/api/analysis/career-match/history/${historyId}`;
-        console.log("=== DEBUG: Mencoba Hit Endpoint ===", URL_API);
-      
-        const response = await api.get(URL_API);
-        console.log("=== DEBUG: Mentah dari Axios (response.data) ===", response.data);
+      if (location.state?.data) {
+        console.log("=== DEBUG: Menggunakan Data dari Analisis Baru ===", location.state.data);
+        const dataBaru = location.state.data;
+        const rawPayload = dataBaru.response_payload || dataBaru.result || dataBaru;
+        const finalPayload = typeof rawPayload === 'string' ? safeParseObject(rawPayload) : rawPayload;
 
+        setAnalysisData({
+          ...dataBaru,
+          readiness_score: dataBaru.readiness_score ?? finalPayload?.readiness_score,
+          mastered_skill_count: dataBaru.mastered_skill_count ?? finalPayload?.mastered_skill_count,
+          skill_gap_count: dataBaru.skill_gap_count ?? finalPayload?.skill_gap_count,
+          response_payload: finalPayload,
+          analysis_id: dataBaru.id || dataBaru.analysis_id,
+          saved_at: dataBaru.created_at || dataBaru.saved_at,
+        });
+        setLoadingHistoryDetail(false);
+        return; 
+      }
+
+      if (!historyId) {
+        console.warn("=== WARNING ===", "ID riwayat analisis kosong.");
+        setHistoryDetailError("ID riwayat analisis tidak ditemukan. Silakan kembali ke menu riwayat.");
+        setLoadingHistoryDetail(false);
+        return;
+      }
+
+      try {
+        const URL_API = `/analysis/career-match/history/${historyId}`;
+        console.log("=== DEBUG: Mencoba Hit Endpoint ===", URL_API);
+
+        const response = await api.get(URL_API);
         const envelope = response.data;
         const detail = envelope?.data || envelope;
-        console.log("=== DEBUG: Setelah Ekstraksi Properti 'data' ===", detail);
 
-        if (!detail) {
-          throw new Error("Respons kosong dari server");
-        }
+        if (!detail) throw new Error("Respons kosong dari server");
 
-        let finalPayload = {};
-        if (detail.response_payload) {
-          finalPayload = typeof detail.response_payload === 'string' 
-            ? safeParseObject(detail.response_payload) 
-            : detail.response_payload;
-        } else if (detail.result) {
-          finalPayload = typeof detail.result === 'string' ? safeParseObject(detail.result) : detail.result;
-        } else {
-          finalPayload = detail;
-        }
+        const rawPayload = detail.response_payload || detail.result || detail;
+        const finalPayload = typeof rawPayload === 'string' ? safeParseObject(rawPayload) : rawPayload;
 
         setAnalysisData({
           ...detail,
+          readiness_score: detail.readiness_score ?? finalPayload?.readiness_score,
+          mastered_skill_count: detail.mastered_skill_count ?? finalPayload?.mastered_skill_count,
+          skill_gap_count: detail.skill_gap_count ?? finalPayload?.skill_gap_count,
           response_payload: finalPayload,
           analysis_id: detail.id || detail.analysis_id || historyId,
           saved_at: detail.created_at || detail.saved_at,
         });
-
       } catch (err) {
         console.error("=== DEBUG ERROR: Gagal Fetch ===", err);
         if (err.response?.status === 401) {
@@ -145,8 +137,8 @@ const AnalisisResultPage = () => {
       }
     };
 
-    fetchHistoryDetail();
-  }, [historyId, navigate, JSON.stringify(stateAnalysisData)]);
+    handleData();
+  }, [historyId, navigate, location.state?.data]);
 
   if (loadingHistoryDetail) {
     return (

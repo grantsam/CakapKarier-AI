@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/landing/Footer';
@@ -50,24 +50,18 @@ const HistoryPage = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState('');
   
-  const fetchHistory = async ({ offset = 0, append = false } = {}) => {
-    if (append) {
-      setLoadingMore(true);
-    } else {
-      setLoading(true);
-    }
+  const fetchHistory = useCallback(async ({ offset = 0, append = false } = {}) => {
+    if (append) setLoadingMore(true);
+    else setLoading(true);
     setError('');
 
     try {
       const response = await api.get('/analysis/career-match/history', {
-        params: {
-          limit: HISTORY_PAGE_LIMIT,
-          offset
-        }
+        params: { limit: HISTORY_PAGE_LIMIT, offset }
       });
 
       const nextItems = Array.isArray(response.data?.data) ? response.data.data : [];
-      setHistoryItems((previousItems) => (append ? [...previousItems, ...nextItems] : nextItems));
+      setHistoryItems((prev) => (append ? [...prev, ...nextItems] : nextItems));
       setSummary(response.data?.summary || null);
       setPagination(response.data?.pagination || {
         limit: HISTORY_PAGE_LIMIT,
@@ -86,14 +80,21 @@ const HistoryPage = () => {
       setLoading(false);
       setLoadingMore(false);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [fetchHistory]);
 
   const handleDetailClick = (item) => {
-    navigate(`/riwayat/${item.id}`, { state: { data: item } });
+    const uuidValid = item.analysis_id || item.result?.id || item.result?.analysis_id || item.id;
+  
+    console.log("=== DEBUG NAVIGASI ===", {
+      id_integer: item.id,
+      uuid_digunakan: uuidValid
+    });
+    
+    navigate(`/riwayat/${uuidValid}`);
   };
 
   const getStatusStyle = (status) => {
