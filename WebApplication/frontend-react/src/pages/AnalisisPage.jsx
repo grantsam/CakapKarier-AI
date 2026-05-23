@@ -14,8 +14,184 @@ import {
   IconSchool,
   IconBrain,
   IconHeart,
-  IconTarget
+  IconTarget,
+  IconChevronDown
 } from '@tabler/icons-react';
+
+const MASTER_SKILLS = [
+  // Programming & Scripting Languages
+  "JavaScript", "TypeScript", "Python", "Go (Golang)", "Java", "PHP", "Ruby", "Rust", "C++", "C#", "Kotlin", "Swift", "Dart", "R", "Scala", "Shell Scripting",
+  // Front-End Frameworks & Tech
+  "React.js", "Vue.js", "Angular", "Next.js", "Nuxt.js", "Tailwind CSS", "Bootstrap", "HTML5 & CSS3", "SASS/SCSS", "Redux Toolkit", "GraphQL",
+  // Back-End Frameworks & Tech
+  "Node.js", "Express.js", "NestJS", "Laravel", "Symfony", "Django", "Flask", "FastAPI", "Spring Boot", "ASP.NET Core", "Ruby on Rails", "Fiber",
+  // Mobile Development
+  "Flutter", "React Native", "Android Studio", "SwiftUI", "Jetpack Compose",
+  // Database & Caching
+  "MySQL", "PostgreSQL", "MongoDB", "Redis", "SQLite", "MariaDB", "Oracle Database", "Microsoft SQL Server", "Firebase Realtime Database", "Cassandra",
+  // Cloud, DevOps & Infrastructure
+  "Docker", "Kubernetes", "AWS (Amazon Web Services)", "Google Cloud Platform (GCP)", "Microsoft Azure", "CI/CD (GitHub Actions/GitLab)", "Jenkins", "Terraform", "Nginx", "Linux Server Administration", "Git & GitHub",
+  // AI, Data Science & Analytics
+  "Machine Learning", "Deep Learning", "Artificial Intelligence (AI)", "Data Analytics", "TensorFlow", "PyTorch", "Scikit-Learn", "Pandas", "NumPy", "OpenCV", "Tableau", "Power BI", "Apache Spark", "Hadoop", "Natural Language Processing (NLP)",
+  // Cyber Security & Networking
+  "Penetration Testing", "Vulnerability Assessment", "Ethical Hacking", "Network Security", "Cisco Networking", "Wireshark", "SIEM", "Firewall Configuration",
+  // UI/UX & Product Management
+  "Figma", "Adobe XD", "User Research", "Wireframing", "Prototyping", "Product Roadmap", "Agile/Scrum Methodology", "Jira", "Trello",
+  // Quality Assurance & Testing
+  "Manual Testing", "Automation Testing", "Selenium", "Cypress", "Appium", "Postman API Testing", "Jest"
+];
+
+const MASTER_INTERESTS = [
+  "Software Engineering",
+  "Artificial Intelligence & Machine Learning",
+  "Data Science & Big Data",
+  "Cyber Security & Digital Forensics",
+  "Cloud Computing & DevOps",
+  "UI/UX Research & Design",
+  "Mobile Application Development",
+  "Game Development",
+  "Internet of Things (IoT) & Embedded System",
+  "Product Management",
+  "IT Quality Assurance & Software Testing",
+  "Blockchain & Web3",
+  "E-Commerce & Digital Business",
+  "IT Infrastructure & Network Engineering",
+  "Business Intelligence & Analytics"
+];
+
+const MASTER_ROLES = [
+  { id: "fe", label: "Front-End Developer" },
+  { id: "be", label: "Back-End Developer" },
+  { id: "fs", label: "Full-Stack Developer" },
+  { id: "mob", label: "Mobile Developer (Android/iOS)" },
+  { id: "game", label: "Game Developer" },
+  { id: "wp", label: "WordPress/CMS Developer" },
+  { id: "ae", label: "AI Engineer / Prompt Engineer" },
+  { id: "ds", label: "Data Scientist" },
+  { id: "da", label: "Data Analyst" },
+  { id: "mle", label: "Machine Learning Engineer" },
+  { id: "de", label: "Data Engineer" },
+  { id: "bi", label: "Business Intelligence Developer" },
+  { id: "devops", label: "DevOps Engineer" },
+  { id: "cloud", label: "Cloud Engineer / Architect" },
+  { id: "net", label: "Network Engineer" },
+  { id: "sys", label: "System Administrator" },
+  { id: "sec", label: "Cyber Security Analyst / Engineer" },
+  { id: "pentest", label: "Penetration Tester" },
+  { id: "uiux", label: "UI/UX Designer" },
+  { id: "pm", label: "Product Manager" },
+  { id: "po", label: "Product Owner" },
+  { id: "qa", label: "QA Engineer / Automation Tester" },
+  { id: "scrum", label: "Scrum Master / Agile Coach" },
+  { id: "it_support", label: "IT Support & Helpdesk Specialist" },
+  { id: "sys_analyst", label: "System Analyst / Business Analyst" }
+];
+
+const MASTER_LOCATIONS = [
+  "Remote (Kerja dari Rumah)",
+  "Jabodetabek",
+  "Jakarta Pusat",
+  "Jakarta Selatan",
+  "Jakarta Barat",
+  "Jakarta Utara",
+  "Jakarta Timur",
+  "Bandung",
+  "Surabaya",
+  "Gresik",
+  "Yogyakarta",
+  "Semarang",
+  "Malang",
+  "Surakarta",
+  "Medan",
+  "Palembang",
+  "Pekanbaru",
+  "Batam",
+  "Bandar Lampung",
+  "Makassar",
+  "Manado",
+  "Denpasar",
+  "Balikpapan",
+  "Samarinda",
+  "Banjarmasin",
+  "Pontianak",
+  "Serang",
+  "Cilegon",
+  "Bogor",
+  "Depok",
+  "Bekasi",
+  "Tangerang",
+  "Cirebon",
+  "Sukabumi",
+  "Tasikmalaya",
+  "Cimahi",
+  "Purwokerto",
+  "Tegal",
+  "Pekalongan",
+  "Magelang",
+  "Salatiga",
+  "Kediri",
+  "Madiun",
+  "Blitar",
+  "Pasuruan",
+  "Probolinggo",
+  "Kota Batu",
+  "Singaraja",
+  "Banda Aceh",
+  "Sabang",
+  "Binjai",
+  "Pematangsiantar",
+  "Sibolga",
+  "Padang",
+  "Bukittinggi",
+  "Payakumbuh",
+  "Dumai",
+  "Tanjungpinang",
+  "Jambi",
+  "Sungai Penuh",
+  "Bengkulu",
+  "Lubuklinggau",
+  "Prabumulih",
+  "Pagar Alam",
+  "Pangkalpinang",
+  "Metro",
+  "Palopo",
+  "Parepare",
+  "Kendari",
+  "Bau-Bau",
+  "Palu",
+  "Gorontalo",
+  "Bitung",
+  "Tomohon",
+  "Kotamobagu",
+  "Mamuju",
+  "Singkawang",
+  "Palangkaraya",
+  "Banjarbaru",
+  "Bontang",
+  "Tarakan",
+  "Mataram",
+  "Bima",
+  "Kupang",
+  "Ambon",
+  "Tual",
+  "Ternate",
+  "Tidore Kepulauan",
+  "Jayapura",
+  "Sorong",
+  "Manokwari",
+  "Merauke",
+  "Nabire",
+  "Wamena"
+];
+
+const MASTER_EDUCATION = [
+  { id: "sma", label: "SMA/SMK" },
+  { id: "d3", label: "Diploma (D3/D4)" },
+  { id: "s1", label: "Sarjana (S1)" },
+  { id: "s2", label: "Magister (S2)" },
+  { id: "s3", label: "Doktor (S3)" },
+  { id: "non_it", label: "Lulusan Non-IT / Bootcamp / Otodidak" }
+];
 
 const MultiSelectContainer = ({ 
   label, placeholder, items, selectedItems, inputValue, setInputValue, 
@@ -82,8 +258,8 @@ const MultiSelectContainer = ({
       </div>
 
       {showDropdown && (
-        <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-60 overflow-y-auto p-2">
-          {filteredItems.slice(0, 10).map(item => {
+        <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-72 overflow-y-auto p-2 scrollbar-thin">
+          {filteredItems.map(item => {
             const itemValue = typeof item === 'string' ? item : (item.label || item.name);
             return (
               <div
@@ -113,22 +289,87 @@ const MultiSelectContainer = ({
   );
 };
 
-const fallbackSkills = ["Python", "SQL", "Machine Learning", "TensorFlow", "React", "JavaScript", "PHP", "Golang"];
-const fallbackEducation = [
-  { id: "sma", label: "SMA/SMK" },
-  { id: "d3", label: "Diploma (D3)" },
-  { id: "s1", label: "Sarjana (S1)" },
-  { id: "s2", label: "Magister (S2)" },
-  { id: "s3", label: "Doktor (S3)" }
-];
-const fallbackRoles = [
-  { id: "ae", label: "AI Engineer" },
-  { id: "ds", label: "Data Scientist" },
-  { id: "fe", label: "Front-End Developer" },
-  { id: "be", label: "Back-End Developer" }
-];
-const fallbackLocations = ["Jakarta", "Bandung", "Surabaya", "Yogyakarta", "Remote"];
-const fallbackInterests = ["UI/UX Design", "Back-End Developer", "Data Analyst", "AI Engineer", "Mobile Developer"];
+const SearchableSelect = ({ label, placeholder, items, value, onChange, icon: Icon, required = false }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
+
+  const filtered = items.filter(item => {
+    const text = typeof item === 'string' ? item : item.label;
+    return text.toLowerCase().includes(search.toLowerCase());
+  });
+
+  const selectedLabel = items.find(item => {
+    const val = typeof item === 'string' ? item : item.id;
+    return val === value;
+  });
+  
+  const displayValue = selectedLabel ? (typeof selectedLabel === 'string' ? selectedLabel : selectedLabel.label) : "";
+
+  return (
+    <div className="space-y-2 relative" ref={dropdownRef}>
+      <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+        {Icon && <Icon size={18} className="text-slate-600" />}
+        <span>{label} {required && <span className="text-red-500">*</span>}</span>
+      </label>
+
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full p-4 bg-white rounded-xl border border-slate-300 focus-within:ring-2 focus-within:ring-[#004A7C] flex items-center justify-between cursor-pointer shadow-sm transition-all text-sm"
+      >
+        <span className={displayValue ? "text-slate-800" : "text-slate-400"}>
+          {displayValue || placeholder}
+        </span>
+        <IconChevronDown size={18} className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </div>
+
+      {isOpen && (
+        <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl p-2 space-y-2">
+          <input 
+            type="text"
+            placeholder="Cari..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full p-2 text-xs border border-slate-200 rounded-lg outline-none focus:border-[#004A7C]"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <div className="max-h-60 overflow-y-auto space-y-0.5 scrollbar-thin">
+            {filtered.map((item) => {
+              const itemVal = typeof item === 'string' ? item : item.id;
+              const itemLbl = typeof item === 'string' ? item : item.label;
+              return (
+                <div
+                  key={itemVal}
+                  onClick={() => {
+                    onChange(itemVal);
+                    setIsOpen(false);
+                    setSearch("");
+                  }}
+                  className={`px-4 py-2.5 rounded-lg text-sm cursor-pointer transition-colors ${value === itemVal ? 'bg-sky-50 text-[#004A7C] font-semibold' : 'hover:bg-slate-50 text-slate-700'}`}
+                >
+                  {itemLbl}
+                </div>
+              );
+            })}
+            {filtered.length === 0 && (
+              <div className="px-4 py-2 text-xs text-slate-400 italic text-center">Data tidak ditemukan</div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const parseExperienceYears = (text) => {
   const matches = [...String(text || '').matchAll(/(\d+(?:[.,]\d+)?)\s*(tahun|year|years|yr|yrs|bulan|month|months)/gi)];
@@ -148,11 +389,11 @@ const AnalisisPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   
-  const [availableSkills] = useState(fallbackSkills);
-  const [availableEducation] = useState(fallbackEducation);
-  const [availableRoles] = useState(fallbackRoles);
-  const [availableLocations] = useState(fallbackLocations);
-  const [availableInterests] = useState(fallbackInterests);
+  const [availableSkills] = useState(MASTER_SKILLS);
+  const [availableEducation] = useState(MASTER_EDUCATION);
+  const [availableRoles] = useState(MASTER_ROLES);
+  const [availableLocations] = useState(MASTER_LOCATIONS);
+  const [availableInterests] = useState(MASTER_INTERESTS);
 
   const [formData, setFormData] = useState({ 
     pendidikan_terakhir: '', 
@@ -276,14 +517,16 @@ const AnalisisPage = () => {
                   required 
                   value={formData.pendidikan_terakhir}
                   onChange={(e) => setFormData({...formData, pendidikan_terakhir: e.target.value})}
-                  className="w-full p-4 pr-12 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none"
+                  className={`w-full p-4 pr-12 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none transition-all ${
+                    formData.pendidikan_terakhir ? 'text-slate-800' : 'text-slate-400'
+                  }`}
                 >
-                  <option value="">Pilih Jenjang</option>
+                  <option value="" disabled hidden className="text-slate-400">Pilih Jenjang</option>
                   {availableEducation.map((edu) => {
                     const val = edu.id || edu;
                     const lbl = edu.label || edu;
                     return (
-                      <option key={val} value={val}>
+                      <option key={val} value={val} className="text-slate-800 bg-white">
                         {lbl}
                       </option>
                     );
@@ -359,13 +602,12 @@ const AnalisisPage = () => {
               </label>
               <div className="flex gap-2">
                 <div className="relative flex-grow">
-                  <IconCertificate className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input 
                     type="text"
                     placeholder="Contoh: AWS Certified"
                     value={certInput}
                     onChange={(e) => setCertInput(e.target.value)}
-                    className="w-full pl-11 pr-4 py-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm"
+                    className="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm"
                   />
                 </div>
                 <button 
@@ -391,64 +633,24 @@ const AnalisisPage = () => {
             {/* Role & Lokasi */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Target Role */}
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
-                  <IconTarget size={18} className="text-slate-600" />
-                  <span>Target Role yang Dituju</span>
-                </label>
-                <div className="relative">
-                  <select 
-                    value={formData.target_role}
-                    onChange={(e) => setFormData({...formData, target_role: e.target.value})}
-                    className="w-full p-4 pr-12 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none"
-                  >
-                    <option value="">Rekomendasikan yang cocok</option>
-                    {availableRoles.map((role) => {
-                      const val = role.id || role;
-                      const lbl = role.label || role;
-                      return (
-                        <option key={val} value={val}>
-                          {lbl}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  {/* Custom Panah Dropdown */}
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400">
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
+              <SearchableSelect 
+                label="Target Role yang Dituju"
+                placeholder="Rekomendasikan yang cocok"
+                items={availableRoles}
+                value={formData.target_role}
+                onChange={(val) => setFormData({...formData, target_role: val})}
+                icon={IconTarget}
+              />
 
               {/* Lokasi */}
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
-                  <IconMapPin size={18} className="text-slate-600" />
-                  <span>Preferensi Lokasi</span>
-                </label>
-                <div className="relative">
-                  <select 
-                    value={formData.preferred_location}
-                    onChange={(e) => setFormData({...formData, preferred_location: e.target.value})}
-                    className="w-full p-4 pr-12 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm cursor-pointer appearance-none"
-                  >
-                    <option value="">Pilih Lokasi</option>
-                    {availableLocations.map((loc) => (
-                      <option key={loc} value={loc}>
-                        {loc}
-                      </option>
-                    ))}
-                  </select>
-                  {/* Custom Panah Dropdown */}
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400">
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
+              <SearchableSelect 
+                label="Preferensi Lokasi"
+                placeholder="Pilih Lokasi"
+                items={availableLocations}
+                value={formData.preferred_location}
+                onChange={(val) => setFormData({...formData, preferred_location: val})}
+                icon={IconMapPin}
+              />
             </div>
 
             {/* Submit Button */}
