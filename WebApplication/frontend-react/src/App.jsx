@@ -8,6 +8,8 @@ import AnalisisResultPage from './pages/AnalisisResultPage';
 import HistoryPage from './pages/HistoryPage';
 import ProfilPage from './pages/ProfilPage';
 import EditProfilPage from './pages/EditProfilPage';
+import ForgetPassword from './pages/ForgetPasswordPage';
+import ResetPassword from './pages/ResetPasswordPage';
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
         <Route path="/riwayat/:id" element={<AnalisisResultPage />} />
         <Route path="/profil" element={<ProfilPage />} />
         <Route path="/profil/edit" element={<EditProfilPage />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </BrowserRouter>
   );
