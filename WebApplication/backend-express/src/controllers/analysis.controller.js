@@ -15,6 +15,18 @@ export const getCareerMatchHealth = async (req, res, next) => {
   }
 };
 
+export const getCareerMatchGenaiHealth = async (req, res, next) => {
+  try {
+    const health = await aiService.getCareerMatchGenaiHealth();
+    res.status(200).json({
+      status: 'success',
+      data: health,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const createCareerMatchAnalysis = async (req, res, next) => {
   try {
     const evidenceProfile = buildCareerEvidenceProfile(req.body);

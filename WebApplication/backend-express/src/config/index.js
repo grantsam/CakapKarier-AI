@@ -33,9 +33,16 @@ const parsePositiveIntegerEnv = (key, fallback) => {
   return value;
 };
 
+const parseBooleanEnv = (key, fallback = false) => {
+  const rawValue = process.env[key];
+  if (rawValue === undefined || rawValue === '') return fallback;
+  return rawValue.toLowerCase() === 'true';
+};
+
 export const config = {
   port: process.env.PORT || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
+  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
   db: {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -50,5 +57,16 @@ export const config = {
   ai: {
     careerMatchUrl: process.env.AI_CAREER_MATCH_URL || 'http://127.0.0.1:8001',
     requestTimeoutMs: parsePositiveIntegerEnv('AI_REQUEST_TIMEOUT_MS', '30000'),
+  },
+  smtp: {
+    host: process.env.SMTP_HOST || '',
+    port: parsePositiveIntegerEnv('SMTP_PORT', '587'),
+    secure: parseBooleanEnv('SMTP_SECURE', false),
+    user: process.env.SMTP_USER || '',
+    password: process.env.SMTP_PASSWORD || '',
+    from: process.env.SMTP_FROM || '',
+  },
+  passwordReset: {
+    tokenExpiresMinutes: parsePositiveIntegerEnv('PASSWORD_RESET_TOKEN_EXPIRES_MINUTES', '30'),
   }
 };

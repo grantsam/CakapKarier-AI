@@ -1,7 +1,7 @@
 # Laporan Integrasi AIEngine ke WebApplication
 
 Tanggal review awal: 2026-05-13  
-Terakhir diperbarui: 2026-05-16  
+Terakhir diperbarui: 2026-05-22  
 Reviewer: Backend integration handoff  
 Area yang direview: `AIEngine/` dan `WebApplication/`
 
@@ -25,13 +25,14 @@ Status saat ini:
 
 | Artefak | Fungsi |
 | --- | --- |
-| `AIEngine/services/career-match/src/career_match/app.py` | FastAPI app dengan endpoint `/health`, `/predict`, dan `/predict/web`. |
+| `AIEngine/services/career-match/src/career_match/app.py` | FastAPI app dengan endpoint `/health`, `/genai/health`, `/predict`, dan `/predict/web`. |
 | `AIEngine/services/career-match/src/career_match/schemas.py` | Schema Pydantic untuk request dan response. |
 | `AIEngine/services/career-match/src/career_match/inference.py` | Loader model, katalog lowongan, ranking job, readiness score, skill gap, roadmap. |
 | `AIEngine/shared/schemas/career_match_contract.json` | Kontrak resmi request/response untuk integrasi lintas tim. |
 | `AIEngine/models/registry/career-match/v1/career_match_model.keras` | Model Keras utama untuk inference. |
 | `AIEngine/models/registry/career-match/v1/jobs_catalog.json` | Katalog lowongan yang dipakai untuk matching. |
 | `AIEngine/tests/integration/smoke_inference.py` | Smoke test inference langsung tanpa HTTP. |
+| `AIEngine/tests/integration/smoke_genai.py` | Smoke test GenAI summary dan deterministic fallback. |
 | `AIEngine/requirements.txt` | Dependency Python untuk menjalankan service. |
 
 ## Cara Menjalankan AI Service
@@ -126,7 +127,23 @@ Response utama dari AI:
   "readiness_score": 82.45,
   "readiness_status": "Cukup Siap",
   "match_confidence": 0.8245,
-  "top_matches": [],
+  "top_matches": [
+    {
+      "job_id": "job-123",
+      "job_title": "Machine Learning Engineer",
+      "match_score": 0.8245,
+      "readiness_percentage": 82.45,
+      "model_probability": 0.79,
+      "readiness_features": {
+        "skill_overlap": 0.72,
+        "semantic_similarity": 0.31,
+        "certification_required_overlap": 0.5,
+        "certification_completeness_boost": 0.2
+      },
+      "matched_skills": ["python", "sql"],
+      "missing_skills": ["pytorch", "docker"]
+    }
+  ],
   "mastered_skills": ["python", "sql"],
   "mastered_skill_count": 2,
   "skill_gap": ["pytorch", "docker"],
@@ -190,6 +207,7 @@ Route history:
 ```http
 GET /api/analysis/career-match/history?limit=20&offset=0
 GET /api/analysis/career-match/history/:id
+GET /api/analysis/career-match/genai/health
 Authorization: Bearer <jwt>
 ```
 
@@ -268,12 +286,12 @@ Gunakan timeout eksplisit. Jangan biarkan request menggantung karena inference T
 - Jalankan AI service sebagai proses terpisah dari Express. Jangan import Python/model dari Node.js.
 - Untuk local development, jalankan Express di port `3000` dan AI service di port `8001`.
 - Untuk deployment, gunakan internal network URL, bukan `127.0.0.1`, kecuali Express dan AI service berada dalam container/proses host yang sama.
-- `use_genai=false` disarankan untuk MVP. Jika `true`, perlu env `GENAI_API_URL`, `GENAI_API_KEY`, dan `GENAI_MODEL` di environment AI service.
+- `use_genai=false` tetap aman untuk flow utama. Jika `true`, AIEngine memakai provider OpenAI-compatible seperti Ollama via `GENAI_API_URL`, `GENAI_MODEL`, `GENAI_TIMEOUT_SECONDS`, dan opsional `GENAI_API_KEY`. Jika provider tidak tersedia, AIEngine memakai deterministic fallback untuk `ai_summary`.
 
 ## Risiko dan Gap
 
 1. Dataset training memakai weak/synthetic supervision dari data lowongan, bukan histori kandidat nyata. Skor cocok untuk MVP, tetapi belum bisa dianggap validasi final produksi.
-2. Backend smart evidence masih memakai keyword/alias extraction, bukan semantic job description matching.
+2. Backend smart evidence masih memakai keyword/alias extraction; AIEngine 1.4.1 sudah menambahkan `semantic_similarity`, tetapi durasi/kualitas pengalaman masih belum dimodelkan per skill.
 3. Durasi pengalaman masih level profil global, belum dibagi per skill atau per pengalaman terstruktur.
 4. `requirements.txt` memakai versi dependency yang sangat baru. Pastikan environment deployment mendukung versi Python dan wheel TensorFlow yang kompatibel.
 5. Metadata model menyimpan path absolut dari environment lama, tetapi loader runtime sudah memakai path relatif/`CAKAP_MODEL_DIR`, jadi ini bukan blocker.

@@ -24,4 +24,5 @@
 | `work_mode` | `string` | remote, hybrid, onsite, or unknown. |
 | `role_family` | `string` | Rule-based role family used for stratification and analysis. |
 | `job_text` | `string` | Combined production text input for the TensorFlow job encoder. |
+| `semantic_similarity` | `float` | Unsupervised hashed text-embedding cosine similarity between candidate profile and job text. |
 | `label` | `float` | Training pair target: 1 match, 0 not match. |

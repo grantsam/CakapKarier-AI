@@ -5,10 +5,13 @@ import Footer from '../components/landing/Footer';
 import api from '../utils/api';
 import {
   IconAlertCircle,
+  IconArrowRight,
   IconBolt,
   IconCalendar,
+  IconChevronDown,
   IconCircleCheck,
   IconClipboardCheck,
+  IconRefresh,
   IconStars,
   IconTrendingUp
 } from '@tabler/icons-react';
@@ -39,6 +42,43 @@ const formatMetric = (value, suffix = '') => {
   const numberValue = toFiniteNumber(value);
   if (numberValue === null) return 'Belum tersedia';
   return `${numberValue}${suffix}`;
+};
+
+const formatRoundedMetric = (value, suffix = '') => {
+  const numberValue = toFiniteNumber(value);
+  if (numberValue === null) return 'Belum tersedia';
+  return `${Math.round(numberValue)}${suffix}`;
+};
+
+const formatDelta = (value) => {
+  const numberValue = toFiniteNumber(value);
+  if (numberValue === null) return 'Belum tersedia';
+  const rounded = Math.round(numberValue * 100) / 100;
+  return `${rounded > 0 ? '+' : ''}${rounded}`;
+};
+
+const getScoreDeltaInsight = (scoreDelta, totalAnalysis) => {
+  if (toFiniteNumber(totalAnalysis) !== null && Number(totalAnalysis) < 2) {
+    return 'Butuh minimal dua analisis untuk melihat perubahan.';
+  }
+  if (scoreDelta === null) return 'Belum cukup data untuk membaca tren skor.';
+  if (scoreDelta > 0) return 'Skor meningkat dari analisis sebelumnya.';
+  if (scoreDelta < 0) return 'Skor turun dari analisis sebelumnya. Buka detail terbaru untuk melihat gap utama.';
+  return 'Skor relatif stabil dari analisis sebelumnya.';
+};
+
+const getRoleDisplay = (item) => {
+  const targetRole = item.target_role || item.result?.target_role;
+  if (targetRole) {
+    return { label: 'Target', title: targetRole };
+  }
+
+  const predictedRole = item.predicted_role || item.result?.predicted_role;
+  if (predictedRole) {
+    return { label: 'Role prediksi', title: predictedRole };
+  }
+
+  return { label: 'Role', title: 'Belum tersedia' };
 };
 
 const HistoryPage = () => {
@@ -83,16 +123,15 @@ const HistoryPage = () => {
   }, [navigate]);
 
   useEffect(() => {
-    fetchHistory();
+    const timeoutId = window.setTimeout(() => {
+      fetchHistory();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [fetchHistory]);
 
   const handleDetailClick = (item) => {
     const uuidValid = item.analysis_id || item.result?.id || item.result?.analysis_id || item.id;
-  
-    console.log("=== DEBUG NAVIGASI ===", {
-      id_integer: item.id,
-      uuid_digunakan: uuidValid
-    });
     
     navigate(`/riwayat/${uuidValid}`);
   };
@@ -106,8 +145,12 @@ const HistoryPage = () => {
   };
 
   const latestSkillCount = summary?.latest_mastered_skill_count;
+  const masteredSkillDelta = toFiniteNumber(summary?.mastered_skill_delta);
   const scoreDelta = toFiniteNumber(summary?.score_delta);
   const totalAnalysis = loading && !summary ? null : (summary?.total_analysis ?? pagination.total);
+  const latestItem = historyItems[0] || null;
+  const latestRoleDisplay = latestItem ? getRoleDisplay(latestItem) : null;
+  const scoreDeltaInsight = getScoreDeltaInsight(scoreDelta, totalAnalysis);
 
   return (
     <div className="min-h-screen bg-slate-50 font-poppins flex flex-col">
@@ -137,11 +180,11 @@ const HistoryPage = () => {
                 </h3>
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-extrabold text-[#004A7C]">
-                    {scoreDelta !== null ? `${scoreDelta > 0 ? '+' : ''}${scoreDelta}` : 'Belum tersedia'}
+                    {formatDelta(scoreDelta)}
                   </span>
                   {scoreDelta !== null && <span className="text-slate-400 font-medium text-sm">poin</span>}
                 </div>
-                <p className="text-[10px] text-slate-400 mt-2 font-regular">Dari dua analisis terakhir</p>
+                <p className="text-[10px] text-slate-400 mt-2 font-regular">{scoreDeltaInsight}</p>
               </div>
 
               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
@@ -167,19 +210,60 @@ const HistoryPage = () => {
                   </span>
                   {toFiniteNumber(latestSkillCount) !== null && <span className="text-slate-400 font-medium text-sm">skill</span>}
                 </div>
-                <p className="text-[10px] text-slate-400 mt-2 font-regular">Terdeteksi di analisis terbaru</p>
+                <p className="text-[10px] text-slate-400 mt-2 font-regular">
+                  {masteredSkillDelta !== null
+                    ? `${masteredSkillDelta > 0 ? '+' : ''}${masteredSkillDelta} skill dibanding analisis sebelumnya`
+                    : 'Terdeteksi di analisis terbaru'}
+                </p>
               </div>
             </div>
+
+            {latestItem && (
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Analisis terbaru</p>
+                  <h3 className="font-bold text-slate-800 text-base mt-1 break-words">
+                    {latestRoleDisplay?.label}: <span className="text-[#004A7C]">{latestRoleDisplay?.title}</span>
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Buka detail untuk melihat gap utama dan roadmap dari hasil terbaru.
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleDetailClick(latestItem)}
+                  className="motion-cue px-4 py-2.5 bg-[#004A7C] text-white rounded-xl font-bold text-xs hover:bg-[#00365d] transition-all shrink-0 flex items-center justify-center gap-2"
+                >
+                  Lihat Analisis Terbaru <IconArrowRight size={15} />
+                </button>
+              </div>
+            )}
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-100 text-red-600 rounded-2xl p-4 text-sm flex items-center gap-2">
-              <IconAlertCircle size={18} />
-              <span>{error}</span>
+            <div className="bg-red-50 border border-red-100 text-red-600 rounded-2xl p-4 text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <IconAlertCircle size={18} />
+                <span>{error}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => fetchHistory()}
+                className="motion-cue px-4 py-2 rounded-xl bg-white text-red-600 border border-red-100 font-bold text-xs hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+              >
+                <IconRefresh size={14} /> Coba Lagi
+              </button>
             </div>
           )}
 
           <div className="space-y-4">
+            {!loading && historyItems.length > 0 && (
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
+                <h2 className="font-bold text-slate-800">Daftar Riwayat</h2>
+                <p className="text-xs text-slate-400 font-medium">
+                  Menampilkan {historyItems.length} dari {formatMetric(totalAnalysis)} analisis
+                </p>
+              </div>
+            )}
             {loading ? (
               <div className="bg-white rounded-[1.5rem] border border-slate-200 shadow-sm p-8 text-sm text-slate-500 text-center">
                 Memuat riwayat analisis...
@@ -190,9 +274,12 @@ const HistoryPage = () => {
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="space-y-3">
                       <div className="flex flex-wrap items-center gap-3">
-                        <h3 className="font-bold text-slate-800 text-lg">
-                          {item.target_role || item.predicted_role || item.result?.target_role || 'Target belum tersedia'}
-                        </h3>
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{getRoleDisplay(item).label}</p>
+                          <h3 className="font-bold text-slate-800 text-lg break-words">
+                            {getRoleDisplay(item).title}
+                          </h3>
+                        </div>
                         {item.readiness_status && (
                           <span className={`px-4 py-0.5 rounded-full text-[10px] font-medium border ${getStatusStyle(item.readiness_status)}`}>
                             {item.readiness_status}
@@ -211,11 +298,12 @@ const HistoryPage = () => {
                           <IconBolt size={14} /> {formatMetric(item.skill_gap_count ?? item.result?.skill_gap_count, ' skill gap')}
                         </div>
                       </div>
+                      <p className="text-[11px] text-slate-400">Buka detail untuk melihat gap utama dari analisis ini.</p>
                     </div>
 
                     <div className="md:text-right">
                       <div className="text-4xl font-bold text-[#004A7C]">
-                        {formatMetric(item.readiness_score ?? item.result?.readiness_score)}
+                        {formatRoundedMetric(item.readiness_score ?? item.result?.readiness_score)}
                       </div>
                       <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Skor Kesiapan</div>
                     </div>
@@ -223,9 +311,9 @@ const HistoryPage = () => {
 
                   <button
                     onClick={() => handleDetailClick(item)}
-                    className="w-full mt-6 bg-[#004A7C] text-white py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#00365d] transition-all active:scale-[0.98]"
+                    className="motion-cue w-full mt-6 bg-[#004A7C] text-white py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#00365d] transition-all active:scale-[0.98]"
                   >
-                    Lihat Detail
+                    Lihat Detail <IconArrowRight size={16} />
                   </button>
                 </div>
               ))
@@ -236,9 +324,9 @@ const HistoryPage = () => {
                 <p className="text-sm text-slate-500">Riwayat akan muncul setelah Anda menjalankan analisis karier.</p>
                 <button
                   onClick={() => navigate('/analisis')}
-                  className="px-5 py-2.5 bg-[#004A7C] text-white rounded-xl font-medium text-sm hover:bg-[#00365d] transition-all"
+                  className="motion-cue px-5 py-2.5 bg-[#004A7C] text-white rounded-xl font-medium text-sm hover:bg-[#00365d] transition-all flex items-center justify-center gap-2 mx-auto"
                 >
-                  Mulai Analisis
+                  Mulai Analisis <IconArrowRight size={16} />
                 </button>
               </div>
             )}
@@ -248,9 +336,9 @@ const HistoryPage = () => {
             <button
               onClick={() => fetchHistory({ offset: pagination.offset + pagination.limit, append: true })}
               disabled={loadingMore}
-              className="w-full py-3 rounded-xl border border-slate-200 bg-white text-[#004A7C] font-bold text-sm hover:bg-slate-50 disabled:text-slate-400"
+              className="motion-cue w-full py-3 rounded-xl border border-slate-200 bg-white text-[#004A7C] font-bold text-sm hover:bg-slate-50 disabled:text-slate-400 flex items-center justify-center gap-2"
             >
-              {loadingMore ? 'Memuat...' : 'Muat Riwayat Lainnya'}
+              {loadingMore ? 'Memuat...' : 'Muat Riwayat Lainnya'} {!loadingMore && <IconChevronDown size={16} />}
             </button>
           )}
         </div>

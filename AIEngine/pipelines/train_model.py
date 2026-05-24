@@ -169,29 +169,6 @@ def save_classification_artifacts(
     predictions["match_probability"] = y_score
     predictions.to_csv(model_dir / "test_predictions.csv", index=False)
 
-    numeric_report = report_rows.copy()
-    for column in ["precision", "recall", "f1-score"]:
-        if column in numeric_report:
-            numeric_report[column] = numeric_report[column].map(lambda value: "" if pd.isna(value) else f"{float(value):.3f}")
-    if "support" in numeric_report:
-        numeric_report["support"] = numeric_report["support"].map(lambda value: "" if pd.isna(value) else f"{float(value):.0f}")
-
-    fig, ax = plt.subplots(figsize=(8, 3.8))
-    ax.axis("off")
-    table = ax.table(
-        cellText=numeric_report.fillna("").values,
-        colLabels=numeric_report.columns,
-        loc="center",
-        cellLoc="center",
-    )
-    table.auto_set_font_size(False)
-    table.set_fontsize(9)
-    table.scale(1, 1.35)
-    ax.set_title("Classification Report - Test Set", fontweight="bold", pad=14)
-    fig.tight_layout()
-    fig.savefig(model_dir / "classification_report.png", dpi=180, bbox_inches="tight")
-    plt.close(fig)
-
     matrix = confusion_matrix(y_true, y_pred, labels=[0, 1])
     disp = ConfusionMatrixDisplay(confusion_matrix=matrix, display_labels=target_names)
     fig, ax = plt.subplots(figsize=(5, 4))
@@ -203,7 +180,7 @@ def save_classification_artifacts(
 
     return {
         "classification_report_csv": str(model_dir / "classification_report.csv"),
-        "classification_report_png": str(model_dir / "classification_report.png"),
+        "classification_report_txt": str(model_dir / "classification_report.txt"),
         "confusion_matrix_png": str(model_dir / "confusion_matrix.png"),
         "test_predictions_csv": str(model_dir / "test_predictions.csv"),
     }
@@ -349,7 +326,7 @@ def run_training(args: argparse.Namespace) -> dict[str, Any]:
         "model_name": "cakapkarier_career_matcher",
         "version": "v1",
         "framework": "TensorFlow/Keras",
-        "architecture": "Functional API dual text encoder plus numeric readiness features",
+        "architecture": "Functional API dual text encoder plus numeric readiness and semantic similarity features",
         "custom_components": [
             "CosineSimilarityLayer",
             "AbsoluteDifferenceLayer",

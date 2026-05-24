@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from fastapi import FastAPI, HTTPException
 
-from .genai import generate_summary
+from .genai import genai_health, generate_summary
 from .inference import CareerMatchService
 from .schemas import CandidateProfile, HealthResponse, PredictionResponse, WebAnalysisRequest
 
-app = FastAPI(title="CakapKarier AI Career Match API", version="1.2.0")
+app = FastAPI(title="CakapKarier AI Career Match API", version="1.4.1")
 _service: CareerMatchService | None = None
 
 
@@ -24,6 +24,11 @@ def health() -> HealthResponse:
     except FileNotFoundError:
         return HealthResponse(status="model_not_found", model_loaded=False, catalog_size=0)
     return HealthResponse(status="ok", model_loaded=True, catalog_size=len(service.jobs))
+
+
+@app.get("/genai/health")
+def health_genai() -> dict:
+    return genai_health()
 
 
 @app.post("/predict", response_model=PredictionResponse)

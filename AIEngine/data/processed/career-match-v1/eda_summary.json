@@ -6,64 +6,72 @@
     "Seberapa siap profil kandidat terhadap lowongan berdasarkan skill, pengalaman, dan sertifikasi?"
   ],
   "raw_sources": [
-    "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\data\\raw\\all_data_clean.csv"
+    "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\data\\raw\\all_data_final.csv"
   ],
   "source_distribution": {
-    "glints": 1980,
+    "glints": 5630,
     "linkedin": 229
   },
-  "source_rows": 2209,
-  "unique_job_titles": 1330,
+  "source_rows": 5859,
+  "unique_job_titles": 2600,
   "pair_counts": {
-    "train": 4635,
-    "val": 996,
-    "test": 996
+    "train": 12303,
+    "val": 2637,
+    "test": 2637
   },
   "role_family_distribution": {
-    "it-support-network": 499,
-    "software-engineering": 365,
-    "other-it": 333,
-    "qa-security": 310,
-    "data-ai": 258,
-    "sales-account": 223,
-    "product-project-business": 101,
-    "admin-operations": 90,
-    "design-content": 30
+    "other-it": 1069,
+    "it-support-network": 1031,
+    "software-engineering": 926,
+    "qa-security": 726,
+    "sales-account": 716,
+    "data-ai": 709,
+    "admin-operations": 441,
+    "product-project-business": 188,
+    "design-content": 53
   },
   "work_mode_distribution": {
-    "unknown": 1958,
-    "onsite": 122,
-    "remote": 96,
-    "hybrid": 33
+    "unknown": 5240,
+    "onsite": 323,
+    "remote": 203,
+    "hybrid": 93
   },
   "top_locations": {
-    "Jakarta Selatan, Dki Jakarta": 572,
-    "Jakarta Pusat, Dki Jakarta": 170,
-    "Jakarta Barat, Dki Jakarta": 137,
-    "Surabaya, Jawa Timur": 132,
-    "Jakarta Utara, Dki Jakarta": 102,
-    "Tangerang, Banten": 77,
-    "Tangerang Selatan, Banten": 67,
-    "Bandung, Jawa Barat": 61,
-    "Jakarta Timur, Dki Jakarta": 59,
-    "Kab. Tangerang, Banten": 54,
-    "Jakarta, Indonesia": 49,
-    "Kab. Sleman, Di Yogyakarta": 46,
-    "Kab. Sidoarjo, Jawa Timur": 45,
-    "Indonesia": 44,
-    "Jakarta Metropolitan Area": 41
+    "Jakarta Selatan, Dki Jakarta": 1392,
+    "Jakarta Pusat, Dki Jakarta": 443,
+    "Jakarta Barat, Dki Jakarta": 421,
+    "Surabaya, Jawa Timur": 387,
+    "Jakarta Utara, Dki Jakarta": 279,
+    "Tangerang, Banten": 219,
+    "Kab. Tangerang, Banten": 210,
+    "Bandung, Jawa Barat": 200,
+    "Kab. Sidoarjo, Jawa Timur": 196,
+    "Tangerang Selatan, Banten": 160,
+    "Jakarta Timur, Dki Jakarta": 157,
+    "Kab. Sleman, Di Yogyakarta": 111,
+    "Kab. Bekasi, Jawa Barat": 108,
+    "Bekasi, Jawa Barat": 88,
+    "Yogyakarta, Di Yogyakarta": 87
   },
   "experience_distribution": {
-    "0.0": 703,
-    "1.0": 870,
-    "3.0": 505,
-    "5.0": 115,
-    "7.0": 1,
+    "0.0": 1100,
+    "1.0": 2801,
+    "2.0": 10,
+    "3.0": 1408,
+    "5.0": 328,
+    "7.0": 3,
     "10.0": 1,
+    "13.0": 2,
     "15.0": 1,
-    "18.0": 9,
-    "20.0": 3,
-    "25.0": 1
+    "18.0": 97,
+    "19.0": 14,
+    "20.0": 56,
+    "21.0": 11,
+    "22.0": 10,
+    "23.0": 3,
+    "24.0": 5,
+    "25.0": 7,
+    "27.0": 2
   },
   "mandatory_parameters": [
     "experience_years",
@@ -79,7 +87,8 @@
     "education_match",
     "skill_count_ratio",
     "missing_skill_ratio",
-    "seniority_gap"
+    "seniority_gap",
+    "semantic_similarity"
   ],
   "target": "binary career match score: 1=relevant candidate profile, 0=not ready/not relevant"
 }
