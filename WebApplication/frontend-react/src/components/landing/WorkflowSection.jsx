@@ -47,10 +47,10 @@ const WorkflowSection = () => {
               }}
             >
               <div className="flex items-center gap-3 mb-4">
-                <span className="w-8 h-8 rounded-full bg-[#004A7C] text-white flex items-center justify-center text-sm font-medium">
+                <span className="w-8 h-8 rounded-full bg-[#004A7C] text-white flex items-center justify-center text-sm font-semibold">
                   {step.no}
                 </span>
-                <h3 className="text-lg font-medium text-[#004A7C]">{step.title}</h3>
+                <h3 className="text-lg font-semibold text-[#004A7C]">{step.title}</h3>
               </div>
               <p className="text-sm text-slate-800 leading-relaxed mb-6 flex-grow">{step.desc}</p>
               

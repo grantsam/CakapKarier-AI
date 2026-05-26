@@ -34,7 +34,14 @@ const Navbar = () => {
   };
 
   const getMenuClass = (path) => {
-    const isActive = location.pathname === path;
+    let isActive = false;
+
+    if (path === '/') {
+      isActive = location.pathname === '/';
+    } else {
+      isActive = location.pathname.startsWith(path);
+    }
+
     return `px-5 py-2 rounded-full cursor-pointer transition-all duration-300 font-semibold text-sm
       ${isActive 
         ? 'bg-[#004A7C] text-white shadow-md scale-105' 
@@ -60,7 +67,7 @@ const Navbar = () => {
           {isOpen ? <IconX size={28} /> : <IconMenu2 size={28} />}
         </button>
 
-        {/* Menu Navigasi (Desktop & Mobile) */}
+        {/* Menu Navigasi */}
         <ul className={`
           fixed lg:static top-[80px] left-4 right-4 lg:top-auto lg:left-auto lg:right-auto
           flex flex-col lg:flex-row gap-4 lg:gap-2 items-center
@@ -75,7 +82,7 @@ const Navbar = () => {
           <li onClick={() => handleNavClick('/riwayat')} className={getMenuClass('/riwayat')}>Riwayat</li>
           <li onClick={() => handleNavClick('/profil')} className={getMenuClass('/profil')}>Profil</li>
 
-          {/* Tombol Keluar (Hanya tampil di mobile saat login) */}
+          {/* Tombol Keluar */}
           {isLoggedIn && (
             <button 
               onClick={handleLogout}

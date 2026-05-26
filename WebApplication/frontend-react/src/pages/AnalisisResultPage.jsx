@@ -305,7 +305,7 @@ const AnalisisResultPage = () => {
               </h1>
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm font-medium mt-2">
                 <p className="text-slate-600">
-                  {target_role ? 'Target Anda' : 'Target'}: <span className="text-[#004A7C] font-semibold">{targetRoleLabel}</span>
+                  {target_role ? 'Target Anda' : 'Target'}: <span className="text-teal-600 font-semibold">{targetRoleLabel}</span>
                 </p>
                 <span className="hidden md:inline text-slate-300">|</span>
                 <p className="text-slate-600">Role paling cocok saat ini: <span className="text-teal-600 font-semibold">{predicted_role || emptyValueLabel}</span></p>
@@ -328,81 +328,62 @@ const AnalisisResultPage = () => {
             </div>
           )}
 
-          <div className="bg-white rounded-[1.5rem] border border-slate-200 shadow-sm p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-              <div className="space-y-2">
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Kesimpulan</p>
-                <h2 className="text-xl font-bold text-slate-800 leading-snug">
-                  {predicted_role ? (
-                    <>
-                      Profil Anda paling dekat dengan <span className="text-[#004A7C]">{predicted_role}</span>.
-                    </>
-                  ) : (
-                    'Role paling cocok belum tersedia dari backend.'
-                  )}
-                </h2>
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  {primaryGapName ? (
-                    <>
-                      Prioritas utama saat ini adalah memperkuat <span className="font-semibold text-red-500">{primaryGapName}</span>.
-                    </>
-                  ) : (
-                    'Belum ada prioritas gap yang dikirim backend.'
-                  )}
-                </p>
+          {/* LAYER 1: RINGKASAN UNTUK USER */}
+          <div className="bg-[#004A7C] rounded-[1.5rem] shadow-md p-6 text-white mb-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+              <div className="w-full md:w-auto min-w-[150px] flex flex-col">
+                <span className="text-[11px] font-bold text-white/70 uppercase tracking-wider mb-1">
+                  SKOR
+                </span>
+                <div className="flex items-baseline">
+                  <span className="text-4xl md:text-5xl font-extrabold tracking-tight">
+                    {roundedReadinessScore !== null ? roundedReadinessScore : emptyValueLabel}
+                  </span>
+                  <span className="text-white/60 text-sm font-semibold ml-1">/ 100</span>
+                </div>
+                <div className="w-full bg-white/20 h-1.5 rounded-full overflow-hidden mt-3">
+                  <div 
+                    className="bg-[#FFFFFF] h-full transition-all duration-500" 
+                    style={{ width: `${clampedConfidencePercent}%` }}
+                  ></div>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-3 min-w-full lg:min-w-[260px]">
-                <div className="rounded-2xl bg-teal-50 border border-teal-100 p-4">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-teal-700">Skor</p>
-                  <p className="text-2xl font-extrabold text-teal-700 mt-1">
-                    {roundedReadinessScore !== null ? `${roundedReadinessScore}/100` : emptyValueLabel}
+              <div className="hidden md:block h-16 w-[1px] bg-white/20 mx-2" />
+              <div className="space-y-2 flex-1 w-full">
+                <div className="block">
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium border inline-flex items-center ${
+                    (() => {
+                      const s = readiness_status?.toLowerCase();
+                      if (s === 'siap' || s === 'ready') return 'bg-teal-50 text-teal-600 border-teal-100';
+                      if (s === 'cukup siap' || s === 'moderately ready') return 'bg-orange-50 text-orange-600 border-orange-100';
+                      if (!s) return 'bg-slate-50 text-slate-500 border-slate-100';
+                      return 'bg-red-50 text-red-600 border-red-100';
+                    })()
+                  }`}>
+                    {readiness_status || emptyValueLabel}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-white/60">
+                    LOWONGAN PALING COCOK
                   </p>
-                </div>
-                <div className="rounded-2xl bg-slate-50 border border-slate-200 p-4">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Status</p>
-                  <p className="text-sm font-bold text-slate-800 mt-2">{readiness_status || emptyValueLabel}</p>
+                  <h2 className="text-xl md:text-2xl font-semibold tracking-wide text-white mt-0.5">
+                    {predicted_role ? predicted_role : 'Role paling cocok belum tersedia dari backend.'}
+                  </h2>
                 </div>
               </div>
+            </div>
+            <div className="mt-5 pt-4 border-t border-white/10 flex items-center gap-2 text-sm text-white/90">
+              <IconBolt className="text-amber-400 shrink-0" size={16} />
+              <p>
+                Kuatkan skill <span className="font-bold text-amber-300">{primaryGapName || 'python'}</span> untuk meningkatkan peluang Anda secara signifikan.
+              </p>
             </div>
           </div>
 
-          {/* LAYER 1: RINGKASAN UNTUK USER */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Kecocokan Lowongan */}
-            <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-sm">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="font-semibold text-slate-800 text-sm">Kecocokan Lowongan</h3>
-                  <p className="text-[10px] text-slate-400">Terhadap lowongan teratas dari katalog</p>
-                </div>
-                <IconChartBar className="text-teal-500" size={24} />
-              </div>
-              <div className="flex items-baseline gap-1 mb-3">
-                {confidencePercent !== null ? (
-                  <>
-                    <span className="text-4xl font-extrabold text-teal-600">{confidencePercent}</span>
-                    <span className="text-slate-400 font-bold text-sm">%</span>
-                  </>
-                ) : (
-                  <span className="text-sm font-semibold text-slate-500">{emptyValueLabel}</span>
-                )}
-              </div>
-              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-3">
-                <div className="bg-teal-600 h-full transition-all duration-500" style={{ width: `${clampedConfidencePercent}%` }}></div>
-              </div>
-              <p className="text-[11px] text-slate-500 leading-relaxed">
-                {predicted_role ? (
-                  <>
-                    Lowongan teratas: <span className="font-bold text-slate-700">{predicted_role}</span>.
-                  </>
-                ) : (
-                  'Data lowongan teratas belum dikirim backend.'
-                )}
-              </p>
-            </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Skill Dikuasai */}
-            <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-sm">
+            <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-md">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="font-semibold text-slate-800 text-sm">Skill Terdeteksi</h3>
                 <IconCircleCheck className="text-teal-500" size={24} />
@@ -424,7 +405,7 @@ const AnalisisResultPage = () => {
             </div>
 
             {/* Skill Gap Count */}
-            <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-sm">
+            <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-md">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="font-semibold text-slate-800 text-sm">Kekurangan Skill (Gap)</h3>
                 <IconBolt className="text-red-500" size={24} />
@@ -439,11 +420,11 @@ const AnalisisResultPage = () => {
           </div>
 
           {/* Skill Gap Analysis */}
-          <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-[2rem] border border-slate-200 shadow-md overflow-hidden">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <IconBolt className="text-[#004A7C]" size={22} />
-                <h2 className="font-bold text-[#004A7C] text-base">Analisis Kesenjangan Skill Prioritas</h2>
+                <h2 className="font-bold text-black text-base">Analisis Kesenjangan Skill Prioritas</h2>
               </div>
               <span className="text-xs text-slate-400 font-medium">Menampilkan 3 Prioritas Tertinggi</span>
             </div>
@@ -457,7 +438,7 @@ const AnalisisResultPage = () => {
                   return (
                     <div key={idx} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-all gap-4">
                       <div>
-                        <h4 className="font-bold text-slate-800 text-sm">{skillName || emptyValueLabel}</h4>
+                        <h4 className="font-semibold text-slate-800 text-sm">{skillName || emptyValueLabel}</h4>
                         {skillReason && <p className="text-[11px] text-slate-500">{skillReason}</p>}
                       </div>
                       {skillPriority && (
@@ -477,11 +458,11 @@ const AnalisisResultPage = () => {
           </div>
 
           {/* Roadmap Pengembangan */}
-          <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-[2rem] border border-slate-200 shadow-md overflow-hidden">
             <div className="p-6 border-b border-slate-100 flex items-start gap-3">
               <IconMap className="text-[#004A7C] mt-0.5" size={22} />
               <div>
-                <h2 className="font-bold text-[#004A7C] text-base">Fase Roadmap Pengembangan Keterampilan</h2>
+                <h2 className="font-bold text-black text-base">Fase Roadmap Pengembangan Keterampilan</h2>
                 <p className="text-xs text-slate-400 mt-1">Gunakan fase dari AI ini sebagai urutan rencana belajar, lalu mulai dari fase pertama.</p>
               </div>
             </div>
@@ -489,7 +470,11 @@ const AnalisisResultPage = () => {
               <div className="relative border-l-2 border-[#004A7C] ml-3 space-y-12">
                 {displayRoadmap.length > 0 ? (
                   displayRoadmap.slice(0, 3).map((step, idx) => {
-                    const phase = typeof step === 'object' && step !== null ? (step?.phase || `Fase ${idx + 1}`) : `Fase ${idx + 1}`;
+                    const rawPhase = typeof step === 'object' && step !== null ? (step?.phase || '') : '';
+                    const cleanPhaseText = rawPhase
+                      ? rawPhase.replace(/^(fase|phase)\s*\d+\s*:\s*/i, '').replace(/^(fase|phase)\s*\d+/i, '').trim()
+                      : '';
+                    const finalPhaseTitle = cleanPhaseText ? `Fase ${idx + 1}: ${cleanPhaseText}` : `Fase ${idx + 1}`;
                     const items = typeof step === 'object' && step !== null && Array.isArray(step?.items) ? step.items.filter(Boolean) : [];
                     const description = typeof step === 'object' && step !== null ? step?.description : step;
 
@@ -498,8 +483,8 @@ const AnalisisResultPage = () => {
                         <div className="absolute -left-[9px] top-0">
                           <IconCircleDot className="text-[#004A7C] bg-white rounded-full" size={16} />
                         </div>
-                        <h3 className="font-bold text-slate-800 text-sm mb-3">
-                          <span className="text-[#004A7C]">#{idx + 1}</span> {phase}
+                        <h3 className="font-semibold text-slate-800 text-sm mb-3">
+                          {finalPhaseTitle}
                         </h3>
                         <ul className="space-y-2">
                           {items.length > 0 ? (
@@ -524,7 +509,7 @@ const AnalisisResultPage = () => {
           </div>
 
           {displayTips.length > 0 && (
-            <div className="bg-sky-50/60 border border-sky-100 rounded-[1.5rem] p-6">
+            <div className="bg-[#E4F0FF] border border-sky-100 rounded-[1.5rem] p-6">
               <h3 className="font-bold text-[#004A7C] mb-4 text-sm flex items-center gap-2">
                 <IconCircleCheckFilled size={18} /> Rekomendasi Langkah Sukses
               </h3>

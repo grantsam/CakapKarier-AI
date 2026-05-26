@@ -13,7 +13,8 @@ import {
   IconClipboardCheck,
   IconRefresh,
   IconStars,
-  IconTrendingUp
+  IconTrendingUp,
+  IconHistory
 } from '@tabler/icons-react';
 
 const HISTORY_PAGE_LIMIT = 20;
@@ -174,7 +175,7 @@ const HistoryPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-md relative overflow-hidden">
                 <h3 className="text-slate-600 font-medium text-sm flex items-center gap-2 mb-4">
                   <IconTrendingUp size={18} className="text-[#004A7C]" /> Perubahan Skor
                 </h3>
@@ -187,7 +188,7 @@ const HistoryPage = () => {
                 <p className="text-[10px] text-slate-400 mt-2 font-regular">{scoreDeltaInsight}</p>
               </div>
 
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-md">
                 <h3 className="text-slate-600 font-medium text-sm flex items-center gap-2 mb-4">
                   <IconClipboardCheck size={18} className="text-[#004A7C]" /> Total Analisis
                 </h3>
@@ -200,7 +201,7 @@ const HistoryPage = () => {
                 <p className="text-[10px] text-slate-400 mt-2 font-regular">Sesi analisis tersimpan</p>
               </div>
 
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-md">
                 <h3 className="text-slate-600 font-medium text-sm flex items-center gap-2 mb-4">
                   <IconStars size={18} className="text-[#004A7C]" /> Skill Sesi Terbaru
                 </h3>
@@ -219,7 +220,7 @@ const HistoryPage = () => {
             </div>
 
             {latestItem && (
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-md flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Analisis terbaru</p>
                   <h3 className="font-bold text-slate-800 text-base mt-1 break-words">
@@ -257,10 +258,13 @@ const HistoryPage = () => {
 
           <div className="space-y-4">
             {!loading && historyItems.length > 0 && (
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
-                <h2 className="font-bold text-slate-800">Daftar Riwayat</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <IconHistory className="text-[#004A7C]" size={22} />
+                  <h2 className="font-bold text-slate-800 text-lg">Daftar Riwayat</h2>
+                </div>
                 <p className="text-xs text-slate-400 font-medium">
-                  Menampilkan {historyItems.length} dari {formatMetric(totalAnalysis)} analisis
+                    Menampilkan {historyItems.length} dari {formatMetric(totalAnalysis)} analisis
                 </p>
               </div>
             )}
@@ -276,7 +280,7 @@ const HistoryPage = () => {
                       <div className="flex flex-wrap items-center gap-3">
                         <div>
                           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{getRoleDisplay(item).label}</p>
-                          <h3 className="font-bold text-slate-800 text-lg break-words">
+                          <h3 className="font-bold text-slate-800 text-md">
                             {getRoleDisplay(item).title}
                           </h3>
                         </div>

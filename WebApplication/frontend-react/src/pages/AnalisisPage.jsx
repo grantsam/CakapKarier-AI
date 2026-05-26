@@ -325,7 +325,7 @@ const SearchableSelect = ({ label, placeholder, items, value, onChange, icon: Ic
 
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-4 bg-white rounded-xl border border-slate-300 focus-within:ring-2 focus-within:ring-[#004A7C] flex items-center justify-between cursor-pointer shadow-sm transition-all text-sm"
+        className="w-full p-4 bg-white rounded-xl border border-slate-300 focus-within:ring-2 focus-within:ring-[#004A7C] flex items-center justify-between cursor-pointer shadow-md transition-all text-sm"
       >
         <span className={displayValue ? "text-slate-800" : "text-slate-400"}>
           {displayValue || placeholder}
