@@ -60,31 +60,11 @@ const MASTER_INTERESTS = [
 ];
 
 const MASTER_ROLES = [
+  { id: "", label: "Rekomendasikan yang cocok (Kosongkan)" },
   { id: "fe", label: "Front-End Developer" },
   { id: "be", label: "Back-End Developer" },
-  { id: "fs", label: "Full-Stack Developer" },
-  { id: "mob", label: "Mobile Developer (Android/iOS)" },
-  { id: "game", label: "Game Developer" },
-  { id: "wp", label: "WordPress/CMS Developer" },
-  { id: "ae", label: "AI Engineer / Prompt Engineer" },
-  { id: "ds", label: "Data Scientist" },
-  { id: "da", label: "Data Analyst" },
-  { id: "mle", label: "Machine Learning Engineer" },
-  { id: "de", label: "Data Engineer" },
-  { id: "bi", label: "Business Intelligence Developer" },
-  { id: "devops", label: "DevOps Engineer" },
-  { id: "cloud", label: "Cloud Engineer / Architect" },
-  { id: "net", label: "Network Engineer" },
-  { id: "sys", label: "System Administrator" },
-  { id: "sec", label: "Cyber Security Analyst / Engineer" },
-  { id: "pentest", label: "Penetration Tester" },
-  { id: "uiux", label: "UI/UX Designer" },
-  { id: "pm", label: "Product Manager" },
-  { id: "po", label: "Product Owner" },
-  { id: "qa", label: "QA Engineer / Automation Tester" },
-  { id: "scrum", label: "Scrum Master / Agile Coach" },
-  { id: "it_support", label: "IT Support & Helpdesk Specialist" },
-  { id: "sys_analyst", label: "System Analyst / Business Analyst" }
+  { id: "ds", label: "Data Scientist / Data Analyst" },
+  { id: "ae", label: "AI Engineer / Prompt Engineer" }
 ];
 
 const MASTER_LOCATIONS = [
