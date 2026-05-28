@@ -316,7 +316,7 @@ const AnalisisResultPage = () => {
             </div>
             <button
               onClick={() => navigate(historyId ? '/riwayat' : '/analisis')}
-              className="motion-cue flex items-center justify-center gap-2 px-5 py-2.5 border-2 border-slate-200 hover:bg-slate-100 text-slate-700 font-bold rounded-xl text-xs transition-all shrink-0"
+              className="motion-cue flex items-center justify-center gap-2 px-5 py-2.5 border-2 border-slate-200 hover:bg-slate-100 text-slate-700 font-bold rounded-full text-xs transition-all shrink-0"
             >
               <IconEdit size={16} /> {historyId ? 'Kembali ke Riwayat' : 'Coba Analisis Lagi'}
             </button>
@@ -364,7 +364,7 @@ const AnalisisResultPage = () => {
                   </span>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-white/60">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-white-100">
                     LOWONGAN PALING COCOK
                   </p>
                   <h2 className="text-xl md:text-2xl font-semibold tracking-wide text-white mt-0.5">
@@ -571,7 +571,7 @@ const AnalisisResultPage = () => {
                       <p className="font-bold text-slate-700">
                         {displayExperienceYears !== null ? `${displayExperienceYears} Tahun` : emptyValueLabel}
                       </p>
-                      {displayExperienceText && <p className="text-slate-500 text-[11px] mt-0.5 line-clamp-3">{displayExperienceText}</p>}
+                      {displayExperienceText && <p className="text-slate-500 text-[10px] mt-0.5 line-clamp-3">{displayExperienceText}</p>}
                     </div>
                   </div>
 
@@ -582,7 +582,7 @@ const AnalisisResultPage = () => {
                       <div className="flex flex-wrap gap-1 mt-1">
                         {displayCertifications.length > 0 ? (
                           displayCertifications.map((c, i) => (
-                            <span key={i} className="px-1.5 py-0.5 bg-amber-100 text-amber-800 text-[9px] rounded font-medium border border-amber-200">{c}</span>
+                            <span key={i} className="px-1.5 py-0.5 bg-amber-100 text-amber-800 text-[10px] rounded font-medium border border-amber-200">{c}</span>
                           ))
                         ) : (
                           <span className="text-slate-400 italic">{emptyValueLabel}</span>

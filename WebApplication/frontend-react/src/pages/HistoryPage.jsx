@@ -232,9 +232,9 @@ const HistoryPage = () => {
                 </div>
                 <button
                   onClick={() => handleDetailClick(latestItem)}
-                  className="motion-cue px-4 py-2.5 bg-[#004A7C] text-white rounded-xl font-bold text-xs hover:bg-[#00365d] transition-all shrink-0 flex items-center justify-center gap-2"
+                  className="motion-cue px-4 py-2.5 bg-[#004A7C] text-white rounded-full font-bold text-xs hover:bg-[#00365d] transition-all shrink-0 flex items-center justify-center gap-2"
                 >
-                  Lihat Analisis Terbaru <IconArrowRight size={15} />
+                  Lihat Analisis Terbaru <IconArrowRight size={16} />
                 </button>
               </div>
             )}
@@ -315,7 +315,7 @@ const HistoryPage = () => {
 
                   <button
                     onClick={() => handleDetailClick(item)}
-                    className="motion-cue w-full mt-6 bg-[#004A7C] text-white py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#00365d] transition-all active:scale-[0.98]"
+                    className="motion-cue w-full mt-6 bg-[#004A7C] text-white py-2.5 rounded-full font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#00365d] transition-all active:scale-[0.98]"
                   >
                     Lihat Detail <IconArrowRight size={16} />
                   </button>
@@ -328,7 +328,7 @@ const HistoryPage = () => {
                 <p className="text-sm text-slate-500">Riwayat akan muncul setelah Anda menjalankan analisis karier.</p>
                 <button
                   onClick={() => navigate('/analisis')}
-                  className="motion-cue px-5 py-2.5 bg-[#004A7C] text-white rounded-xl font-medium text-sm hover:bg-[#00365d] transition-all flex items-center justify-center gap-2 mx-auto"
+                  className="motion-cue px-5 py-2.5 bg-[#004A7C] text-white rounded-full font-medium text-sm hover:bg-[#00365d] transition-all flex items-center justify-center gap-2 mx-auto"
                 >
                   Mulai Analisis <IconArrowRight size={16} />
                 </button>

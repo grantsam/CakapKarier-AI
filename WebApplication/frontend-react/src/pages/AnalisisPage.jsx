@@ -638,14 +638,14 @@ const AnalisisPage = () => {
               <button 
                 type="button" 
                 onClick={() => navigate('/')}
-                className="flex-1 py-4 rounded-[2rem] border-2 border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-all text-sm active:scale-95"
+                className="flex-1 py-4 rounded-full border-2 border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-all text-sm active:scale-95"
               >
                 Batal
               </button>
               <button 
                 type="submit" 
                 disabled={loading}
-                className="flex-1 py-4 rounded-[2rem] bg-[#004A7C] text-white font-bold flex items-center justify-center gap-2 hover:bg-[#00365d] transition-all shadow-lg text-sm active:scale-95 disabled:bg-slate-400"
+                className="flex-1 py-4 rounded-full bg-[#004A7C] text-white font-bold flex items-center justify-center gap-2 hover:bg-[#00365d] transition-all shadow-lg text-sm active:scale-95 disabled:bg-slate-400"
               >
                 {loading ? "Proses..." : <><IconBolt size={20} /> Mulai Analisis</>}
               </button>
