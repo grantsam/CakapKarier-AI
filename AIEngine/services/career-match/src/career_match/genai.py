@@ -6,9 +6,11 @@ import urllib.error
 import urllib.request
 from typing import Any
 
-DEFAULT_OLLAMA_API_URL = "http://localhost:11434/v1/chat/completions"
-DEFAULT_OLLAMA_MODEL = "llama3.1"
+DEFAULT_GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
 DEFAULT_TIMEOUT_SECONDS = 8.0
+DEFAULT_TEMPERATURE = 0.2
+DEFAULT_MAX_TOKENS = 180
 
 
 def deterministic_summary(prediction: dict[str, Any]) -> str:
@@ -22,21 +24,25 @@ def deterministic_summary(prediction: dict[str, Any]) -> str:
 
 
 def genai_config() -> dict[str, Any]:
-    provider = os.getenv("GENAI_PROVIDER", "ollama").strip().lower()
-
-    if provider == "ollama":
-        api_url = os.getenv("GENAI_API_URL", DEFAULT_OLLAMA_API_URL)
-        api_key = os.getenv("GENAI_API_KEY", "")
-        model = os.getenv("GENAI_MODEL", DEFAULT_OLLAMA_MODEL)
-    else:
-        api_url = os.getenv("GENAI_API_URL", "")
-        api_key = os.getenv("GENAI_API_KEY", "")
-        model = os.getenv("GENAI_MODEL", "")
+    provider = "gemini"
+    api_url = os.getenv("GENAI_API_URL", DEFAULT_GEMINI_API_URL)
+    api_key = os.getenv("GENAI_API_KEY", "")
+    model = os.getenv("GENAI_MODEL", DEFAULT_GEMINI_MODEL)
 
     try:
         timeout_seconds = float(os.getenv("GENAI_TIMEOUT_SECONDS", str(DEFAULT_TIMEOUT_SECONDS)))
     except ValueError:
         timeout_seconds = DEFAULT_TIMEOUT_SECONDS
+
+    try:
+        temperature = float(os.getenv("GENAI_TEMPERATURE", str(DEFAULT_TEMPERATURE)))
+    except ValueError:
+        temperature = DEFAULT_TEMPERATURE
+
+    try:
+        max_tokens = int(os.getenv("GENAI_MAX_TOKENS", str(DEFAULT_MAX_TOKENS)))
+    except ValueError:
+        max_tokens = DEFAULT_MAX_TOKENS
 
     return {
         "provider": provider,
@@ -44,6 +50,8 @@ def genai_config() -> dict[str, Any]:
         "api_key_configured": bool(api_key),
         "model": model,
         "timeout_seconds": timeout_seconds,
+        "temperature": max(0.0, min(1.0, temperature)),
+        "max_tokens": max(16, min(1024, max_tokens)),
     }
 
 
@@ -110,8 +118,8 @@ def generate_summary(profile: dict[str, Any], prediction: dict[str, Any]) -> str
             },
             {"role": "user", "content": json.dumps(prompt, ensure_ascii=False)},
         ],
-        "temperature": 0.2,
-        "max_tokens": 180,
+        "temperature": config["temperature"],
+        "max_tokens": config["max_tokens"],
     }
     request = urllib.request.Request(
         api_url,

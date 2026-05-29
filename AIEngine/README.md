@@ -32,7 +32,7 @@ Service juga menyediakan adapter `/predict/web` untuk kebutuhan integrasi `WebAp
 | Kode inference sederhana | Selesai | `services/career-match/src/career_match/inference.py` |
 | FastAPI REST API | Selesai | `services/career-match/src/career_match/app.py` |
 | Custom training loop `tf.GradientTape` | Selesai | `pipelines/train_model.py` |
-| Generative AI optional summary | Selesai | Ollama/OpenAI-compatible API di `services/career-match/src/career_match/genai.py` |
+| Generative AI optional summary | Selesai | Gemini API (OpenAI-compatible endpoint) di `services/career-match/src/career_match/genai.py` |
 | TensorBoard log | Selesai | `models/registry/career-match/v1/tensorboard/` |
 | Classification report | Selesai | `models/registry/career-match/v1/classification_report.txt` |
 | Confusion matrix visual | Selesai | `models/registry/career-match/v1/confusion_matrix.png` |
@@ -90,19 +90,17 @@ REST API:
 uvicorn career_match.app:app --app-dir services/career-match/src --host 127.0.0.1 --port 8001
 ```
 
-GenAI lokal dengan Ollama:
-
-```bash
-ollama pull llama3.1
-ollama serve
-```
+GenAI cloud dengan Gemini API:
 
 PowerShell:
 
 ```powershell
-$env:GENAI_PROVIDER="ollama"
-$env:GENAI_API_URL="http://localhost:11434/v1/chat/completions"
-$env:GENAI_MODEL="llama3.1"
+$env:GENAI_API_KEY="YOUR_GEMINI_API_KEY"
+$env:GENAI_API_URL="https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+$env:GENAI_MODEL="gemini-2.5-flash"
+$env:GENAI_TIMEOUT_SECONDS="8"
+$env:GENAI_TEMPERATURE="0.2"
+$env:GENAI_MAX_TOKENS="180"
 ```
 
 Cek status GenAI:

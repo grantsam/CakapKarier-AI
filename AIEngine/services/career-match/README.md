@@ -5,7 +5,7 @@ FastAPI microservice untuk melayani model CakapKarier AI.
 ## Endpoint
 
 - `GET /health`: cek model dan katalog lowongan.
-- `GET /genai/health`: cek koneksi GenAI provider, default Ollama lokal.
+- `GET /genai/health`: cek koneksi GenAI provider (Gemini API).
 - `POST /predict`: prediksi role terbaik, readiness score, skill gap, dan rekomendasi.
 - `POST /predict/web`: adapter untuk form `WebApplication` halaman analisis.
 
@@ -63,38 +63,20 @@ cd AIEngine
 uvicorn career_match.app:app --app-dir services/career-match/src --host 127.0.0.1 --port 8001
 ```
 
-## GenAI Summary dengan Ollama
+## GenAI Summary dengan Gemini
 
-Fitur `use_genai=true` sudah diarahkan untuk memakai Ollama lokal secara default melalui OpenAI-compatible Chat Completions API.
-
-Install Ollama dari:
-
-```text
-https://ollama.com/download
-```
-
-Pull model:
-
-```bash
-ollama pull llama3.1
-```
-
-Jalankan Ollama:
-
-```bash
-ollama serve
-```
+Fitur `use_genai=true` sudah diarahkan untuk memakai Gemini API melalui OpenAI-compatible Chat Completions endpoint.
 
 Konfigurasi PowerShell:
 
 ```powershell
-$env:GENAI_PROVIDER="ollama"
-$env:GENAI_API_URL="http://localhost:11434/v1/chat/completions"
-$env:GENAI_MODEL="llama3.1"
+$env:GENAI_API_KEY="YOUR_GEMINI_API_KEY"
+$env:GENAI_API_URL="https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+$env:GENAI_MODEL="gemini-2.5-flash"
 $env:GENAI_TIMEOUT_SECONDS="8"
+$env:GENAI_TEMPERATURE="0.2"
+$env:GENAI_MAX_TOKENS="180"
 ```
-
-`GENAI_API_KEY` tidak wajib untuk Ollama lokal.
 
 Cek koneksi:
 
@@ -116,12 +98,4 @@ Contoh request dengan GenAI aktif:
 }
 ```
 
-Jika Ollama berjalan, response akan berisi `ai_summary` dari LLM lokal. Jika Ollama belum terpasang atau belum berjalan, service otomatis memakai ringkasan deterministik sehingga inference tetap berjalan.
-
-Provider OpenAI-compatible lain tetap bisa dipakai dengan environment:
-
-```bash
-GENAI_API_URL=https://provider.example/v1/chat/completions
-GENAI_API_KEY=...
-GENAI_MODEL=...
-```
+Jika koneksi Gemini tersedia, response akan berisi `ai_summary` dari model cloud. Jika API key belum diset, limit tercapai, atau request timeout, service otomatis memakai ringkasan deterministik sehingga inference tetap berjalan.
