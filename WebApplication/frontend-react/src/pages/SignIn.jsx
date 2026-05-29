@@ -108,7 +108,7 @@ const SignIn = () => {
                 <input 
                   name="password"
                   type={showPassword ? "text" : "password"} 
-                  placeholder="Minimal 8 Karakter" 
+                  placeholder="••••••••" 
                   value={formData.password}
                   onChange={handleChange}
                   className={`w-full px-4 py-3.5 rounded-xl border ${errors.password ? 'border-red-500' : 'border-slate-200'} focus:border-[#004A7C] focus:ring-1 focus:ring-[#004A7C] outline-none transition-all text-sm pr-10`} 
@@ -128,7 +128,7 @@ const SignIn = () => {
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" className="w-4 h-4 rounded border-slate-300 accent-[#004A7C]" /> Ingat saya?
               </label>
-              <span className="hover:underline cursor-pointer">Lupa kata sandi?</span>
+              <Link to="/forget-password" className="hover:underline cursor-pointer">Lupa kata sandi</Link>
             </div>
 
             <button 

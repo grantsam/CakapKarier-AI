@@ -16,7 +16,9 @@ import {
   IconEdit,
   IconCertificate,
   IconSchool,
-  IconAlertTriangle
+  IconAlertTriangle,
+  IconChevronDown,
+  IconArrowRight
 } from '@tabler/icons-react';
 
 const safeParse = (data) => {
@@ -27,8 +29,8 @@ const safeParse = (data) => {
     if (trimmed.startsWith('[')) {
       try { 
         return JSON.parse(trimmed); 
-      } catch (e) { 
-        console.error("Gagal parse JSON Array, fallback ke text split", e);
+      } catch {
+        // Fall back to plain text parsing below when backend sends malformed JSON.
       }
     }
     
@@ -52,7 +54,11 @@ const safeParseObject = (data) => {
   if (typeof data === 'string') {
     const trimmed = data.trim();
     if (trimmed.startsWith('{')) {
-      try { return JSON.parse(trimmed); } catch (e) { }
+      try {
+        return JSON.parse(trimmed);
+      } catch {
+        return { info_text: trimmed, education_label: trimmed, pendidikan: trimmed };
+      }
     }
     return { info_text: trimmed, education_label: trimmed, pendidikan: trimmed };
   }
@@ -64,12 +70,11 @@ const AnalisisResultPage = () => {
   const navigate = useNavigate();
   const params = useParams();
   const historyId = params.id || params.historyId || params.analysisId;
-  console.log("=== DEBUG PARAMS UTUH ===", params);
   
-  const stateAnalysisData = location.state?.data;
   const [analysisData, setAnalysisData] = useState(null);
   const [loadingHistoryDetail, setLoadingHistoryDetail] = useState(true);
   const [historyDetailError, setHistoryDetailError] = useState('');
+  const [showTransparency, setShowTransparency] = useState(false);
 
   useEffect(() => {
     const handleData = async () => {
@@ -77,7 +82,6 @@ const AnalisisResultPage = () => {
       setHistoryDetailError('');
 
       if (location.state?.data) {
-        console.log("=== DEBUG: Menggunakan Data dari Analisis Baru ===", location.state.data);
         const dataBaru = location.state.data;
         const rawPayload = dataBaru.response_payload || dataBaru.result || dataBaru;
         const finalPayload = typeof rawPayload === 'string' ? safeParseObject(rawPayload) : rawPayload;
@@ -96,7 +100,6 @@ const AnalisisResultPage = () => {
       }
 
       if (!historyId) {
-        console.warn("=== WARNING ===", "ID riwayat analisis kosong.");
         setHistoryDetailError("ID riwayat analisis tidak ditemukan. Silakan kembali ke menu riwayat.");
         setLoadingHistoryDetail(false);
         return;
@@ -104,7 +107,6 @@ const AnalisisResultPage = () => {
 
       try {
         const URL_API = `/analysis/career-match/history/${historyId}`;
-        console.log("=== DEBUG: Mencoba Hit Endpoint ===", URL_API);
 
         const response = await api.get(URL_API);
         const envelope = response.data;
@@ -125,7 +127,6 @@ const AnalisisResultPage = () => {
           saved_at: detail.created_at || detail.saved_at,
         });
       } catch (err) {
-        console.error("=== DEBUG ERROR: Gagal Fetch ===", err);
         if (err.response?.status === 401) {
           alert('Sesi Anda berakhir. Silakan login kembali.');
           navigate('/signin');
@@ -166,9 +167,9 @@ const AnalisisResultPage = () => {
           </p>
           <button 
             onClick={() => navigate(historyId ? '/riwayat' : '/analisis')}
-            className="w-full py-3 bg-[#004A7C] text-white font-bold rounded-xl text-sm transition-colors hover:bg-[#00365c]"
+            className="motion-cue w-full py-3 bg-[#004A7C] text-white font-bold rounded-xl text-sm transition-colors hover:bg-[#00365c] flex items-center justify-center gap-2"
           >
-            {historyId ? 'Kembali ke Riwayat' : 'Kembali ke Form Analisis'}
+            {historyId ? 'Kembali ke Riwayat' : 'Kembali ke Form Analisis'} <IconArrowRight size={16} />
           </button>
         </main>
         <Footer />
@@ -209,8 +210,7 @@ const AnalisisResultPage = () => {
     explicit_skills,
     experience_derived_skills,
     certification_derived_skills,
-    risk_flags,
-    info_text
+    risk_flags
   } = input_interpretation || {};
 
   const isFiniteNumber = (value) => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
@@ -232,8 +232,12 @@ const AnalisisResultPage = () => {
   const displayTips = Array.isArray(tips) ? tips.filter(Boolean) : [];
   
   const readinessScoreValue = isFiniteNumber(readiness_score) ? Number(readiness_score) : null;
+  const roundedReadinessScore = readinessScoreValue !== null ? Math.round(readinessScoreValue) : null;
   const matchConfidenceValue = isFiniteNumber(match_confidence) ? Number(match_confidence) : null;
   const confidencePercent = matchConfidenceValue !== null ? Math.round(matchConfidenceValue * 100) : null;
+  const clampedConfidencePercent = confidencePercent !== null
+    ? Math.min(100, Math.max(0, confidencePercent))
+    : 0;
   
   const masteredSkillCountValue = isFiniteNumber(mastered_skill_count)
     ? Number(mastered_skill_count)
@@ -243,7 +247,7 @@ const AnalisisResultPage = () => {
     ? Number(skill_gap_count)
     : (displaySkillGapAnalysis.length > 0 ? displaySkillGapAnalysis.length : null);
 
-  const validTopMatches = Array.isArray(top_matches)
+  const validTopMatchesRaw = Array.isArray(top_matches)
     ? top_matches
         .map((job) => ({
           ...job,
@@ -253,7 +257,19 @@ const AnalisisResultPage = () => {
         .filter((job) => job.displayTitle)
     : [];
 
+  const validTopMatches = validTopMatchesRaw.filter((job, index, array) => {
+    const uniqueKey = `${job.displayTitle}|${job.company || ''}|${job.location || ''}`;
+    return array.findIndex((candidate) => (
+      `${candidate.displayTitle}|${candidate.company || ''}|${candidate.location || ''}` === uniqueKey
+    )) === index;
+  });
+
   const hasCoreResult = Boolean(predicted_role) && readinessScoreValue !== null && Boolean(readiness_status);
+  const targetRoleLabel = target_role || 'Target belum dipilih';
+  const primaryGap = displaySkillGapAnalysis[0];
+  const primaryGapName = typeof primaryGap === 'object' && primaryGap !== null
+    ? (primaryGap?.name || primaryGap?.skill)
+    : primaryGap;
 
   const getGapBadgeColor = (priority) => {
     const p = priority?.toLowerCase();
@@ -288,16 +304,21 @@ const AnalisisResultPage = () => {
                 Hasil Analisis Kesiapan Karier
               </h1>
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm font-medium mt-2">
-                <p className="text-slate-600">Target Anda: <span className="text-[#004A7C] font-semibold">{target_role || emptyValueLabel}</span></p>
+                <p className="text-slate-600">
+                  {target_role ? 'Target Anda' : 'Target'}: <span className="text-teal-600 font-semibold">{targetRoleLabel}</span>
+                </p>
                 <span className="hidden md:inline text-slate-300">|</span>
-                <p className="text-slate-600">Match Katalog Terkuat: <span className="text-teal-600 font-semibold">{predicted_role || emptyValueLabel}</span></p>
+                <p className="text-slate-600">Role paling cocok saat ini: <span className="text-teal-600 font-semibold">{predicted_role || emptyValueLabel}</span></p>
               </div>
+              {!target_role && (
+                <p className="text-xs text-slate-400 mt-1">AI memilih role terdekat dari katalog berdasarkan profil Anda.</p>
+              )}
             </div>
             <button
               onClick={() => navigate(historyId ? '/riwayat' : '/analisis')}
-              className="flex items-center justify-center gap-2 px-5 py-2.5 border-2 border-slate-200 hover:bg-slate-100 text-slate-700 font-bold rounded-xl text-xs transition-all shrink-0"
+              className="motion-cue flex items-center justify-center gap-2 px-5 py-2.5 border-2 border-slate-200 hover:bg-slate-100 text-slate-700 font-bold rounded-full text-xs transition-all shrink-0"
             >
-              <IconEdit size={16} /> {historyId ? 'Kembali ke Riwayat' : 'Perbaiki Input Data'}
+              <IconEdit size={16} /> {historyId ? 'Kembali ke Riwayat' : 'Coba Analisis Lagi'}
             </button>
           </div>
 
@@ -308,47 +329,61 @@ const AnalisisResultPage = () => {
           )}
 
           {/* LAYER 1: RINGKASAN UNTUK USER */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Skor Kesiapan */}
-            <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-sm">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="font-semibold text-slate-800 text-sm">Estimasi Kesiapan</h3>
-                  <p className="text-[10px] text-slate-400">Berdasarkan profil yang Anda isi</p>
+          <div className="bg-[#004A7C] rounded-[1.5rem] shadow-md p-6 text-white mb-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+              <div className="w-full md:w-auto min-w-[150px] flex flex-col">
+                <span className="text-[11px] font-bold text-white/70 uppercase tracking-wider mb-1">
+                  SKOR
+                </span>
+                <div className="flex items-baseline">
+                  <span className="text-4xl md:text-5xl font-extrabold tracking-tight">
+                    {roundedReadinessScore !== null ? roundedReadinessScore : emptyValueLabel}
+                  </span>
+                  <span className="text-white/60 text-sm font-semibold ml-1">/ 100</span>
                 </div>
-                <IconChartBar className="text-teal-500" size={24} />
+                <div className="w-full bg-white/20 h-1.5 rounded-full overflow-hidden mt-3">
+                  <div 
+                    className="bg-[#FFFFFF] h-full transition-all duration-500" 
+                    style={{ width: `${clampedConfidencePercent}%` }}
+                  ></div>
+                </div>
               </div>
-              <div className="flex items-baseline gap-1 mb-3">
-                {readinessScoreValue !== null ? (
-                  <>
-                    <span className="text-4xl font-extrabold text-teal-600">{readinessScoreValue}</span>
-                    <span className="text-slate-400 font-bold text-sm">/ 100</span>
-                  </>
-                ) : (
-                  <span className="text-sm font-semibold text-slate-500">{emptyValueLabel}</span>
-                )}
+              <div className="hidden md:block h-16 w-[1px] bg-white/20 mx-2" />
+              <div className="space-y-2 flex-1 w-full">
+                <div className="block">
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium border inline-flex items-center ${
+                    (() => {
+                      const s = readiness_status?.toLowerCase();
+                      if (s === 'siap' || s === 'ready') return 'bg-teal-50 text-teal-600 border-teal-100';
+                      if (s === 'cukup siap' || s === 'moderately ready') return 'bg-orange-50 text-orange-600 border-orange-100';
+                      if (!s) return 'bg-slate-50 text-slate-500 border-slate-100';
+                      return 'bg-red-50 text-red-600 border-red-100';
+                    })()
+                  }`}>
+                    {readiness_status || emptyValueLabel}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-white-100">
+                    LOWONGAN PALING COCOK
+                  </p>
+                  <h2 className="text-xl md:text-2xl font-semibold tracking-wide text-white mt-0.5">
+                    {predicted_role ? predicted_role : 'Role paling cocok belum tersedia dari backend.'}
+                  </h2>
+                </div>
               </div>
-              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-3">
-                <div className="bg-teal-600 h-full transition-all duration-500" style={{ width: `${readinessScoreValue ?? 0}%` }}></div>
-              </div>
-              <p className="text-[11px] text-slate-500 leading-relaxed">
-                {readiness_status ? (
-                  <>
-                    Status: <span className="font-bold text-slate-700">{readiness_status}</span>.
-                  </>
-                ) : (
-                  'Status kesiapan belum tersedia.'
-                )}
-                {confidencePercent !== null && (
-                  <>
-                    {' '}Tingkat kecocokan model sebesar <span className="font-bold text-teal-600">{confidencePercent}%</span> terhadap standar role.
-                  </>
-                )}
+            </div>
+            <div className="mt-5 pt-4 border-t border-white/10 flex items-center gap-2 text-sm text-white/90">
+              <IconBolt className="text-amber-400 shrink-0" size={16} />
+              <p>
+                Kuatkan skill <span className="font-bold text-amber-300">{primaryGapName || 'python'}</span> untuk meningkatkan peluang Anda secara signifikan.
               </p>
             </div>
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Skill Dikuasai */}
-            <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-sm">
+            <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-md">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="font-semibold text-slate-800 text-sm">Skill Terdeteksi</h3>
                 <IconCircleCheck className="text-teal-500" size={24} />
@@ -356,7 +391,7 @@ const AnalisisResultPage = () => {
               <div className={`${masteredSkillCountValue !== null ? 'text-4xl' : 'text-sm'} font-extrabold text-teal-600 mb-4`}>
                 {masteredSkillCountValue ?? emptyValueLabel}
               </div>
-              <div className="flex flex-wrap gap-1.5 max-h-[72px] overflow-y-auto pr-1">
+              <div className="scroll-cue flex flex-wrap gap-1.5 max-h-[72px] overflow-y-auto pr-1">
                 {displayMasteredSkills.length > 0 ? (
                   displayMasteredSkills.map((skill, index) => (
                     <span key={index} className="px-2.5 py-1 bg-teal-50 text-teal-600 rounded-full text-[10px] font-bold border border-teal-100 whitespace-nowrap">
@@ -364,13 +399,13 @@ const AnalisisResultPage = () => {
                     </span>
                   ))
                 ) : (
-                  <span className="text-xs text-slate-400 italic">Data skill belum tersedia</span>
+                  <span className="text-xs text-slate-400 italic">Backend belum mengirim daftar skill terdeteksi.</span>
                 )}
               </div>
             </div>
 
             {/* Skill Gap Count */}
-            <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-sm">
+            <div className="bg-white p-6 rounded-[1.5rem] border border-slate-200 shadow-md">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="font-semibold text-slate-800 text-sm">Kekurangan Skill (Gap)</h3>
                 <IconBolt className="text-red-500" size={24} />
@@ -385,11 +420,11 @@ const AnalisisResultPage = () => {
           </div>
 
           {/* Skill Gap Analysis */}
-          <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-[2rem] border border-slate-200 shadow-md overflow-hidden">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <IconBolt className="text-[#004A7C]" size={22} />
-                <h2 className="font-bold text-[#004A7C] text-base">Analisis Kesenjangan Skill Prioritas</h2>
+                <h2 className="font-bold text-black text-base">Analisis Kesenjangan Skill Prioritas</h2>
               </div>
               <span className="text-xs text-slate-400 font-medium">Menampilkan 3 Prioritas Tertinggi</span>
             </div>
@@ -403,7 +438,7 @@ const AnalisisResultPage = () => {
                   return (
                     <div key={idx} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-all gap-4">
                       <div>
-                        <h4 className="font-bold text-slate-800 text-sm">{skillName || emptyValueLabel}</h4>
+                        <h4 className="font-semibold text-slate-800 text-sm">{skillName || emptyValueLabel}</h4>
                         {skillReason && <p className="text-[11px] text-slate-500">{skillReason}</p>}
                       </div>
                       {skillPriority && (
@@ -416,23 +451,30 @@ const AnalisisResultPage = () => {
                 })
               ) : (
                 <p className="text-sm text-slate-500 italic text-center py-4">
-                  {skillGapCountValue === 0 ? 'Tidak ada gap skill yang dikirim backend.' : 'Data skill gap belum tersedia.'}
+                  {skillGapCountValue === 0 ? 'Tidak ada gap skill yang dikirim backend.' : 'Backend belum mengirim analisis gap skill.'}
                 </p>
               )}
             </div>
           </div>
 
           {/* Roadmap Pengembangan */}
-          <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-100 flex items-center gap-2">
-              <IconMap className="text-[#004A7C]" size={22} />
-              <h2 className="font-bold text-[#004A7C] text-base">Fase Roadmap Pengembangan Keterampilan</h2>
+          <div className="bg-white rounded-[2rem] border border-slate-200 shadow-md overflow-hidden">
+            <div className="p-6 border-b border-slate-100 flex items-start gap-3">
+              <IconMap className="text-[#004A7C] mt-0.5" size={22} />
+              <div>
+                <h2 className="font-bold text-black text-base">Fase Roadmap Pengembangan Keterampilan</h2>
+                <p className="text-xs text-slate-400 mt-1">Gunakan fase dari AI ini sebagai urutan rencana belajar, lalu mulai dari fase pertama.</p>
+              </div>
             </div>
             <div className="p-8">
               <div className="relative border-l-2 border-[#004A7C] ml-3 space-y-12">
                 {displayRoadmap.length > 0 ? (
                   displayRoadmap.slice(0, 3).map((step, idx) => {
-                    const phase = typeof step === 'object' && step !== null ? step?.phase : `Fase ${idx + 1}`;
+                    const rawPhase = typeof step === 'object' && step !== null ? (step?.phase || '') : '';
+                    const cleanPhaseText = rawPhase
+                      ? rawPhase.replace(/^(fase|phase)\s*\d+\s*:\s*/i, '').replace(/^(fase|phase)\s*\d+/i, '').trim()
+                      : '';
+                    const finalPhaseTitle = cleanPhaseText ? `Fase ${idx + 1}: ${cleanPhaseText}` : `Fase ${idx + 1}`;
                     const items = typeof step === 'object' && step !== null && Array.isArray(step?.items) ? step.items.filter(Boolean) : [];
                     const description = typeof step === 'object' && step !== null ? step?.description : step;
 
@@ -441,7 +483,9 @@ const AnalisisResultPage = () => {
                         <div className="absolute -left-[9px] top-0">
                           <IconCircleDot className="text-[#004A7C] bg-white rounded-full" size={16} />
                         </div>
-                        {phase && <h3 className="font-bold text-slate-800 text-sm mb-3">{phase}</h3>}
+                        <h3 className="font-semibold text-slate-800 text-sm mb-3">
+                          {finalPhaseTitle}
+                        </h3>
                         <ul className="space-y-2">
                           {items.length > 0 ? (
                             items.map((li, i) => (
@@ -451,27 +495,62 @@ const AnalisisResultPage = () => {
                               </li>
                             ))
                           ) : (
-                            description && <li className="text-[12px] text-slate-600">{description}</li>
+                            <li className="text-[12px] text-slate-600">{description || 'Detail fase belum tersedia.'}</li>
                           )}
                         </ul>
                       </div>
                     );
                   })
                 ) : (
-                  <p className="text-sm text-slate-500 italic pl-4">Data roadmap belum tersedia.</p>
+                  <p className="text-sm text-slate-500 italic pl-4">Backend belum mengirim roadmap pengembangan.</p>
                 )}
               </div>
             </div>
           </div>
 
+          {displayTips.length > 0 && (
+            <div className="bg-[#E4F0FF] border border-sky-100 rounded-[1.5rem] p-6">
+              <h3 className="font-bold text-[#004A7C] mb-4 text-sm flex items-center gap-2">
+                <IconCircleCheckFilled size={18} /> Rekomendasi Langkah Sukses
+              </h3>
+              <ul className="space-y-3">
+                {displayTips.map((tip, idx) => (
+                  <li key={idx} className="flex items-start gap-3 text-[12px] text-slate-700 leading-relaxed">
+                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[#004A7C] shrink-0"></span>
+                    <span>{tip}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {/* LAYER 2: DETAIL DAN TRANSPARANSI DATA */}
           <div className="border-t border-dashed border-slate-300 pt-6">
-            <div className="flex items-center gap-2 mb-6">
-              <IconEye className="text-slate-500" size={20} />
-              <h2 className="font-bold text-slate-700 text-lg">Transparansi Data & Interpretasi Model</h2>
-            </div>
+            <button
+              type="button"
+              onClick={() => setShowTransparency((current) => !current)}
+              className="motion-cue w-full flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-left shadow-sm hover:bg-slate-50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <IconEye className="text-slate-500" size={20} />
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="font-bold text-slate-700 text-base">Kenapa hasil ini muncul?</h2>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold border border-slate-200">
+                      Profil AI + lowongan pembanding
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-0.5">Lihat profil yang terbaca AI dan lowongan pembanding dari katalog.</p>
+                </div>
+              </div>
+              <IconChevronDown
+                className={`text-slate-400 transition-transform ${showTransparency ? 'rotate-180' : ''}`}
+                size={20}
+              />
+            </button>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {showTransparency && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
               {/* Kolom Interpretasi Masukan User */}
               <div className="md:col-span-1 bg-slate-100/70 p-5 rounded-2xl border border-slate-200/60 space-y-4">
                 <h4 className="text-xs font-bold text-slate-400 tracking-wider uppercase">Profil yang Terbaca AI</h4>
@@ -492,7 +571,7 @@ const AnalisisResultPage = () => {
                       <p className="font-bold text-slate-700">
                         {displayExperienceYears !== null ? `${displayExperienceYears} Tahun` : emptyValueLabel}
                       </p>
-                      {displayExperienceText && <p className="text-slate-500 text-[11px] mt-0.5 line-clamp-3">{displayExperienceText}</p>}
+                      {displayExperienceText && <p className="text-slate-500 text-[10px] mt-0.5 line-clamp-3">{displayExperienceText}</p>}
                     </div>
                   </div>
 
@@ -503,7 +582,7 @@ const AnalisisResultPage = () => {
                       <div className="flex flex-wrap gap-1 mt-1">
                         {displayCertifications.length > 0 ? (
                           displayCertifications.map((c, i) => (
-                            <span key={i} className="px-1.5 py-0.5 bg-amber-100 text-amber-800 text-[9px] rounded font-medium border border-amber-200">{c}</span>
+                            <span key={i} className="px-1.5 py-0.5 bg-amber-100 text-amber-800 text-[10px] rounded font-medium border border-amber-200">{c}</span>
                           ))
                         ) : (
                           <span className="text-slate-400 italic">{emptyValueLabel}</span>
@@ -539,8 +618,11 @@ const AnalisisResultPage = () => {
                     <div className="border-t border-slate-200 pt-3 space-y-2">
                       <div className="flex items-center gap-1 text-amber-700">
                         <IconAlertTriangle size={14} />
-                        <p className="font-bold text-[11px]">Catatan Transparansi</p>
+                        <p className="font-bold text-[11px]">Catatan validasi skill</p>
                       </div>
+                      <p className="text-[10px] text-slate-500 leading-relaxed">
+                        Beberapa skill membutuhkan bukti tambahan dari pengalaman atau proyek.
+                      </p>
                       <div className="space-y-1.5">
                         {displayRiskFlags.slice(0, 3).map((flag, index) => (
                           <p key={`${flag?.code || 'flag'}-${index}`} className="text-[10px] text-slate-500 leading-relaxed">
@@ -562,42 +644,52 @@ const AnalisisResultPage = () => {
 
                 <div className="space-y-2">
                   {validTopMatches.length > 0 ? (
-                    validTopMatches.slice(0, 3).map((job, idx) => (
-                      <div key={idx} className="flex justify-between items-center p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs">
-                        <div>
-                          <p className="font-bold text-slate-800">{job.displayTitle}</p>
-                          {job?.company && <p className="text-slate-500 text-[11px]">{job.company}</p>}
+                    validTopMatches.slice(0, 3).map((job, idx) => {
+                      const matchedSkills = Array.isArray(job?.matched_skills) ? job.matched_skills.slice(0, 2) : [];
+                      const missingSkills = Array.isArray(job?.missing_skills) ? job.missing_skills.slice(0, 2) : [];
+
+                      return (
+                        <div key={idx} className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs space-y-2">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                            <div className="min-w-0">
+                              <p className="font-bold text-slate-800 break-words">{job.displayTitle}</p>
+                              <div className="flex flex-wrap gap-x-2 gap-y-0.5 text-slate-500 text-[11px] mt-0.5">
+                                {job?.company && <span>{job.company}</span>}
+                                {job?.location && <span>{job.location}</span>}
+                              </div>
+                            </div>
+                            {job.displayScore !== null && (
+                              <span className="px-2.5 py-1 bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold shrink-0">
+                                Match: {Math.round(job.displayScore * 100)}%
+                              </span>
+                            )}
+                          </div>
+
+                          {(matchedSkills.length > 0 || missingSkills.length > 0) && (
+                            <div className="flex flex-wrap gap-1.5 pt-1">
+                              {matchedSkills.map((skill, skillIdx) => (
+                                <span key={`matched-${skill}-${skillIdx}`} className="px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-100 text-[10px] font-semibold">
+                                  Cocok: {skill}
+                                </span>
+                              ))}
+                              {missingSkills.map((skill, skillIdx) => (
+                                <span key={`missing-${skill}-${skillIdx}`} className="px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-100 text-[10px] font-semibold">
+                                  Gap: {skill}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        {job.displayScore !== null && (
-                          <span className="px-2.5 py-1 bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold">
-                            Match: {Math.round(job.displayScore * 100)}%
-                          </span>
-                        )}
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
-                    <div className="text-center py-4 text-slate-400 italic text-xs">Data lowongan pembanding belum tersedia.</div>
+                    <div className="text-center py-4 text-slate-400 italic text-xs">Backend belum mengirim lowongan pembanding.</div>
                   )}
                 </div>
               </div>
             </div>
+            )}
           </div>
-
-          {displayTips.length > 0 && (
-            <div className="bg-sky-50/60 border border-sky-100 rounded-[1.5rem] p-6">
-              <h3 className="font-bold text-[#004A7C] mb-4 text-sm flex items-center gap-2">
-                <IconCircleCheckFilled size={18} /> Rekomendasi Langkah Sukses
-              </h3>
-              <ul className="space-y-3">
-                {displayTips.map((tip, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-[12px] text-slate-700 leading-relaxed">
-                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[#004A7C] shrink-0"></span>
-                    <span>{tip}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
 
         </div>
       </main>

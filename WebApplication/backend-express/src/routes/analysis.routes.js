@@ -13,6 +13,7 @@ const router = Router();
 router.use(protect);
 
 router.get('/career-match/health', analysisController.getCareerMatchHealth);
+router.get('/career-match/genai/health', analysisController.getCareerMatchGenaiHealth);
 router.get(
   '/career-match/history',
   validate(careerMatchHistoryQuerySchema),

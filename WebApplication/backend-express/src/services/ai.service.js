@@ -86,6 +86,45 @@ export const getCareerMatchHealth = async () => {
   }
 };
 
+export const getCareerMatchGenaiHealth = async () => {
+  const baseUrl = normalizeBaseUrl(config.ai.careerMatchUrl);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), getAiTimeoutMs());
+
+  try {
+    const response = await fetch(`${baseUrl}/genai/health`, {
+      headers: {
+        Accept: 'application/json',
+      },
+      signal: controller.signal,
+    });
+    const text = await response.text();
+    const payload = parseJsonSafely(text);
+
+    if (!response.ok) {
+      throw mapAiStatusToAppError(response.status, payload);
+    }
+
+    if (!payload) {
+      throw new AppError('Response health GenAI tidak valid', 502);
+    }
+
+    return payload;
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new AppError('Cek health GenAI melewati batas waktu', 504);
+    }
+
+    if (error instanceof AppError) {
+      throw error;
+    }
+
+    throw new AppError('Layanan GenAI sedang tidak tersedia', 503);
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
 export const predictCareerMatch = async (analysisPayload) => {
   const baseUrl = normalizeBaseUrl(config.ai.careerMatchUrl);
   const controller = new AbortController();

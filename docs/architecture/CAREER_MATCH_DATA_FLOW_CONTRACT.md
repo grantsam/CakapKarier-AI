@@ -1,6 +1,7 @@
 # Kontrak Data Flow Career Match Per Layer
 
 Tanggal: 2026-05-16  
+Terakhir diperbarui: 2026-05-22  
 Scope: Frontend analisis karier, Backend Express gateway, AIEngine `career-match`  
 Tujuan: menjelaskan format input, output, logic tiap layer, dan batasan pemrosesan field pengalaman relevan.
 
@@ -231,7 +232,7 @@ Batasan AIEngine saat ini:
 
 ## AIEngine Output
 
-AIEngine mengembalikan struktur utama berikut:
+AIEngine 1.4.1 mengembalikan struktur utama berikut. Field `model_probability` dan `readiness_features` pada `top_matches` bersifat opsional untuk audit/debug skor.
 
 ```json
 {
@@ -249,6 +250,20 @@ AIEngine mengembalikan struktur utama berikut:
       "location": "Jakarta",
       "match_score": 0.825,
       "readiness_percentage": 82.5,
+      "model_probability": 0.79,
+      "readiness_features": {
+        "skill_overlap": 0.72,
+        "certification_overlap": 0.2,
+        "experience_ratio": 1,
+        "education_match": 1,
+        "skill_count_ratio": 0.8,
+        "missing_skill_ratio": 0.28,
+        "seniority_gap": 0,
+        "semantic_similarity": 0.31,
+        "certification_required_overlap": 0.5,
+        "certification_completeness_boost": 0.2,
+        "certification_signal": 0.32
+      },
       "matched_skills": [
         "python",
         "sql",
@@ -278,7 +293,8 @@ AIEngine mengembalikan struktur utama berikut:
   "mastered_skill_count": 3,
   "roadmap": [],
   "recommendations": [],
-  "tips": []
+  "tips": [],
+  "ai_summary": null
 }
 ```
 
@@ -287,6 +303,7 @@ Frontend result page harus membaca:
 - `top_matches[].job_title`, bukan hanya `title`.
 - `top_matches[].match_score`, bukan hanya `score`.
 - `skill_gap_analysis[].description`, bukan hanya `reason`.
+- `top_matches[].readiness_features` hanya untuk transparansi/audit; frontend tidak perlu mengirim field ini kembali ke backend.
 
 ## Backend Ke Frontend
 
@@ -299,6 +316,7 @@ Backend mengembalikan AI output yang sudah diperkaya metadata penyimpanan dan tr
     "analysis_id": "946cca29-97ac-4225-893a-b8310883c57d",
     "saved_at": "2026-05-16T06:43:24.727Z",
     "predicted_role": "Backend Developer",
+    "role_family": "software-engineering",
     "target_role": "back end developer",
     "readiness_score": 82.5,
     "readiness_status": "Cukup Siap",
@@ -307,7 +325,9 @@ Backend mengembalikan AI output yang sudah diperkaya metadata penyimpanan dan tr
     "skill_gap_analysis": [],
     "mastered_skills": [],
     "roadmap": [],
+    "recommendations": [],
     "tips": [],
+    "ai_summary": null,
     "input_interpretation": {
       "education_level": "s1",
       "education_label": "Sarjana (S1)",
@@ -477,7 +497,7 @@ Frontend detail history mengambil `data.result`, lalu menambahkan metadata tampi
 
 ## Known Limitation
 
-Selama AIEngine belum diubah, `experience_text` belum bisa dipakai secara penuh sebagai bukti pengalaman relevan terhadap job description.
+AIEngine 1.4.1 sudah menambahkan `semantic_similarity` sebagai salah satu readiness feature untuk membandingkan teks kandidat dengan teks job. Namun fitur ini belum menggantikan kebutuhan evidence eksplisit dari skill, tahun pengalaman, pendidikan, dan sertifikasi.
 
 Contoh:
 
@@ -485,7 +505,7 @@ Contoh:
 "Pernah membangun REST API, CI/CD pipeline, dan deployment Docker"
 ```
 
-Backend saat ini sudah melakukan ekstraksi keyword terbatas dari narasi tersebut menjadi `experience_derived_skills`, lalu mengirim skill hasil ekstraksi ke AIEngine melalui `skill_yang_dikuasai`.
+Backend saat ini tetap melakukan ekstraksi keyword terbatas dari narasi tersebut menjadi `experience_derived_skills`, lalu mengirim skill hasil ekstraksi ke AIEngine melalui `skill_yang_dikuasai`.
 
 Namun batasannya masih jelas:
 

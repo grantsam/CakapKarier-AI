@@ -61,7 +61,7 @@ const AboutSection = () => {
                   {item.icon}
                 </div>
                 <div>
-                  <h4 className="font-medium text-[#004A7C] text-lg">{item.title}</h4>
+                  <h4 className="font-semibold text-[#004A7C] text-lg">{item.title}</h4>
                   <p className="text-slate-700 text-sm font-regular">{item.desc}</p>
                 </div>
               </div>

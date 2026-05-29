@@ -60,6 +60,33 @@ export const openApiSpec = {
           password: { type: 'string', minLength: 8, example: 'password123' },
         },
       },
+      AuthForgotPasswordRequest: {
+        type: 'object',
+        required: ['email'],
+        properties: {
+          email: { type: 'string', format: 'email', example: 'budi@example.com' },
+        },
+      },
+      AuthResetPasswordRequest: {
+        type: 'object',
+        required: ['token', 'password'],
+        properties: {
+          token: {
+            type: 'string',
+            minLength: 32,
+            description: 'Token mentah dari link email reset password.',
+            example: '0b24d2a4b3b8f6bbf3e743ff8f7e9e32cbd4f4f09b2c0dfc5a4f50c72efcf7c8',
+          },
+          password: { type: 'string', minLength: 8, example: 'passwordBaru123' },
+        },
+      },
+      MessageResponse: {
+        type: 'object',
+        properties: {
+          success: { type: 'boolean', example: true },
+          message: { type: 'string', example: 'Operasi berhasil.' },
+        },
+      },
       AuthResponse: {
         type: 'object',
         properties: {
@@ -227,16 +254,52 @@ export const openApiSpec = {
         },
         additionalProperties: true,
       },
+      ReadinessFeatures: {
+        type: 'object',
+        description:
+          'Debug/calibration signals dari AIEngine 1.4.1. Field ini opsional dan dipakai untuk audit skor, bukan untuk input ulang ke model.',
+        properties: {
+          skill_overlap: { type: 'number', example: 0.72 },
+          certification_overlap: { type: 'number', example: 0.2 },
+          experience_ratio: { type: 'number', example: 1 },
+          education_match: { type: 'number', example: 1 },
+          skill_count_ratio: { type: 'number', example: 0.8 },
+          missing_skill_ratio: { type: 'number', example: 0.28 },
+          seniority_gap: { type: 'number', example: 0 },
+          semantic_similarity: { type: 'number', example: 0.31 },
+          certification_overlap_model_feature: { type: 'number', example: 0.2 },
+          certification_required_overlap: { type: 'number', example: 0.5 },
+          certification_completeness_boost: { type: 'number', example: 0.2 },
+          certification_signal: { type: 'number', example: 0.32 },
+        },
+        additionalProperties: { type: 'number' },
+      },
       TopMatch: {
         type: 'object',
         properties: {
           job_id: { type: 'string', example: 'job-123' },
           job_title: { type: 'string', example: 'Backend Developer' },
-          role: { type: 'string', example: 'AI Engineer' },
-          match_score: { type: 'number', example: 0.87 },
-          score: { type: 'number', example: 0.87 },
           company: { type: 'string', example: 'PT Teknologi Nusantara' },
           location: { type: 'string', example: 'Jakarta' },
+          job_detail: { type: 'string', nullable: true, example: 'Membangun dan memelihara REST API.' },
+          role_family: { type: 'string', nullable: true, example: 'software-engineering' },
+          work_mode: { type: 'string', nullable: true, example: 'hybrid' },
+          required_experience_years: { type: 'number', nullable: true, example: 2 },
+          required_education: { type: 'string', nullable: true, example: 'Sarjana (S1)' },
+          match_score: { type: 'number', example: 0.87 },
+          readiness_percentage: { type: 'number', example: 87 },
+          model_probability: { type: 'number', nullable: true, example: 0.81 },
+          readiness_features: { allOf: [{ $ref: '#/components/schemas/ReadinessFeatures' }], nullable: true },
+          matched_skills: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['python', 'sql', 'rest api'],
+          },
+          missing_skills: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['docker', 'kubernetes'],
+          },
         },
         additionalProperties: true,
       },
@@ -309,8 +372,10 @@ export const openApiSpec = {
           saved_at: { type: 'string', format: 'date-time' },
           predicted_role: { type: 'string', example: 'AI Engineer' },
           target_role: { type: 'string', nullable: true, example: 'ae' },
+          role_family: { type: 'string', nullable: true, example: 'data-ai' },
           readiness_score: { type: 'number', example: 82.4 },
-          readiness_status: { type: 'string', example: 'Siap Berkembang' },
+          readiness_status: { type: 'string', example: 'Cukup Siap' },
+          match_confidence: { type: 'number', example: 0.824 },
           mastered_skills: {
             type: 'array',
             items: { type: 'string' },
@@ -336,9 +401,19 @@ export const openApiSpec = {
             items: { type: 'string' },
             example: ['Fokus pada skill prioritas tinggi terlebih dahulu.'],
           },
+          recommendations: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['Bangun portofolio project yang mendemonstrasikan skill baru.'],
+          },
           top_matches: {
             type: 'array',
             items: { $ref: '#/components/schemas/TopMatch' },
+          },
+          ai_summary: {
+            type: 'string',
+            nullable: true,
+            example: 'Profil paling dekat dengan AI Engineer dengan readiness 82.4%.',
           },
           input_interpretation: { $ref: '#/components/schemas/CareerInputInterpretation' },
         },
@@ -409,7 +484,21 @@ export const openApiSpec = {
         additionalProperties: true,
         example: {
           status: 'ok',
-          model_ready: true,
+          model_loaded: true,
+          catalog_size: 1280,
+        },
+      },
+      GenAiHealth: {
+        type: 'object',
+        additionalProperties: true,
+        example: {
+          provider: 'ollama',
+          api_url: 'http://localhost:11434/v1/chat/completions',
+          api_key_configured: false,
+          model: 'llama3.1',
+          timeout_seconds: 8,
+          available: false,
+          error: 'URLError: <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>',
         },
       },
       CareerMatchResultPayload: {
@@ -417,8 +506,10 @@ export const openApiSpec = {
         properties: {
           predicted_role: { type: 'string', example: 'AI Engineer' },
           target_role: { type: 'string', nullable: true, example: 'ae' },
+          role_family: { type: 'string', nullable: true, example: 'data-ai' },
           readiness_score: { type: 'number', nullable: true, example: 82.4 },
-          readiness_status: { type: 'string', nullable: true, example: 'Siap Berkembang' },
+          readiness_status: { type: 'string', nullable: true, example: 'Cukup Siap' },
+          match_confidence: { type: 'number', nullable: true, example: 0.824 },
           mastered_skills: {
             type: 'array',
             items: { type: 'string' },
@@ -444,9 +535,19 @@ export const openApiSpec = {
             items: { type: 'string' },
             example: ['Fokus pada skill prioritas tinggi terlebih dahulu.'],
           },
+          recommendations: {
+            type: 'array',
+            items: { type: 'string' },
+            example: ['Bangun portofolio project yang mendemonstrasikan skill baru.'],
+          },
           top_matches: {
             type: 'array',
             items: { $ref: '#/components/schemas/TopMatch' },
+          },
+          ai_summary: {
+            type: 'string',
+            nullable: true,
+            example: 'Profil paling dekat dengan AI Engineer dengan readiness 82.4%.',
           },
           input_interpretation: { $ref: '#/components/schemas/CareerInputInterpretation' },
         },
@@ -548,6 +649,97 @@ export const openApiSpec = {
           },
           401: {
             description: 'Email atau password salah',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ApiError' },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/api/auth/forgot-password': {
+      post: {
+        tags: ['Auth'],
+        summary: 'Minta link pemulihan kata sandi',
+        description:
+          'Mengirim link reset password ke email user jika email terdaftar. Response sukses dibuat generik agar tidak membocorkan status pendaftaran email.',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/AuthForgotPasswordRequest' },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Permintaan reset password diterima',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/MessageResponse' },
+                example: {
+                  success: true,
+                  message: 'Jika email terdaftar, link pemulihan kata sandi telah dikirim.',
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Format email tidak valid',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ApiError' },
+              },
+            },
+          },
+          502: {
+            description: 'Email pemulihan gagal dikirim',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ApiError' },
+              },
+            },
+          },
+          503: {
+            description: 'Konfigurasi SMTP belum lengkap',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ApiError' },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/api/auth/reset-password': {
+      post: {
+        tags: ['Auth'],
+        summary: 'Reset kata sandi dengan token email',
+        description: 'Memperbarui password user menggunakan token reset password one-time use dari email.',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/AuthResetPasswordRequest' },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Kata sandi berhasil diperbarui',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/MessageResponse' },
+                example: {
+                  success: true,
+                  message: 'Kata sandi berhasil diperbarui.',
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Token tidak valid, expired, atau payload tidak valid',
             content: {
               'application/json': {
                 schema: { $ref: '#/components/schemas/ApiError' },
@@ -693,6 +885,63 @@ export const openApiSpec = {
           },
           504: {
             description: 'Cek health AI melewati batas waktu',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ApiError' },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/api/analysis/career-match/genai/health': {
+      get: {
+        tags: ['Career Match Analysis'],
+        summary: 'Cek health GenAI provider melalui backend',
+        description:
+          'Memanggil endpoint /genai/health di AIEngine untuk memeriksa konfigurasi provider GenAI opsional seperti Ollama.',
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: {
+            description: 'Status provider GenAI berhasil dibaca',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: { type: 'string', example: 'success' },
+                    data: { $ref: '#/components/schemas/GenAiHealth' },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description: 'Token tidak ada, tidak valid, expired, atau user token tidak ditemukan',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ApiError' },
+              },
+            },
+          },
+          502: {
+            description: 'Response health GenAI tidak valid atau AIEngine mengalami gangguan',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ApiError' },
+              },
+            },
+          },
+          503: {
+            description: 'AIEngine atau GenAI health tidak tersedia',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ApiError' },
+              },
+            },
+          },
+          504: {
+            description: 'Cek health GenAI melewati batas waktu',
             content: {
               'application/json': {
                 schema: { $ref: '#/components/schemas/ApiError' },

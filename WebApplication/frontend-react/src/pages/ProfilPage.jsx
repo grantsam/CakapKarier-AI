@@ -82,9 +82,9 @@ const ProfilPage = () => {
         <div className="max-w-4xl mx-auto space-y-8">
           
           {/* Section 1: Profil Header & Informasi Pribadi */}
-          <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-[2rem] border border-slate-200 shadow-md overflow-hidden">
             <div className="bg-[#E0F2FE]/40 p-8 flex items-center gap-5 border-b border-slate-100">
-              <div className="bg-white p-1 rounded-full shadow-sm">
+              <div className="bg-white p-1 rounded-full shadow-md">
                 <IconUserCircle size={80} className="text-[#004A7C]" stroke={1.5} />
               </div>
               <div>
@@ -133,7 +133,7 @@ const ProfilPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button 
                 onClick={() => navigate('/analisis')}
-                className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-[#004A7C] transition-all group text-left"
+                className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-200 shadow-md hover:border-[#004A7C] transition-all group text-left"
               >
                 <div className="bg-[#E0F2FE] p-3 rounded-xl text-[#004A7C] group-hover:bg-[#004A7C] group-hover:text-white transition-colors">
                   <IconChartBar size={24} />
@@ -147,7 +147,7 @@ const ProfilPage = () => {
 
               <button 
                 onClick={() => navigate('/riwayat')}
-                className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-[#004A7C] transition-all group text-left"
+                className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-200 shadow-md hover:border-[#004A7C] transition-all group text-left"
               >
                 <div className="bg-[#E0F2FE] p-3 rounded-xl text-[#004A7C] group-hover:bg-[#004A7C] group-hover:text-white transition-colors">
                   <IconHistory size={24} />

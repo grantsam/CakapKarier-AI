@@ -18,7 +18,7 @@ const InsightCard = ({ icon, title, desc, index }) => {
       </div>
       
       {/* Judul */}
-      <h3 className="text-xl font-medium text-[#004A7C] mb-3 tracking-tight">
+      <h3 className="text-xl font-semibold text-[#004A7C] mb-3 tracking-tight">
         {title}
       </h3>
       
