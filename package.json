@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "cakapkarier-ai-monorepo",
+  "workspaces": [
+    "WebApplication/backend-express",
+    "WebApplication/frontend-react"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace WebApplication/frontend-react",
+    "dev:backend": "npm run dev --workspace WebApplication/backend-express",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:frontend": "npm run build --workspace WebApplication/frontend-react",
+    "lint:backend": "npm run lint --workspace WebApplication/backend-express",
+    "lint:frontend": "npm run lint --workspace WebApplication/frontend-react",
+    "test:backend": "npm test --workspace WebApplication/backend-express",
+    "migrate": "node infrastructure/database/migrate.js"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

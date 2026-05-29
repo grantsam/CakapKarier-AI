@@ -1,0 +1,60 @@
+{
+  "model_name": "cakapkarier_career_matcher",
+  "version": "v1",
+  "framework": "TensorFlow/Keras",
+  "architecture": "Functional API dual text encoder plus numeric readiness and semantic similarity features",
+  "custom_components": [
+    "CosineSimilarityLayer",
+    "AbsoluteDifferenceLayer",
+    "CareerMatchLoss",
+    "QualityThresholdCallback",
+    "tf.GradientTape custom training loop"
+  ],
+  "numeric_features": [
+    "skill_overlap",
+    "certification_overlap",
+    "experience_ratio",
+    "education_match",
+    "skill_count_ratio",
+    "missing_skill_ratio",
+    "seniority_gap",
+    "semantic_similarity"
+  ],
+  "model_path": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\career_match_model.keras",
+  "saved_model_dir": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\saved_model",
+  "tensorboard_dir": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\tensorboard",
+  "evaluation_artifacts": {
+    "classification_report_csv": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\classification_report.csv",
+    "classification_report_txt": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\classification_report.txt",
+    "confusion_matrix_png": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\confusion_matrix.png",
+    "test_predictions_csv": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\test_predictions.csv"
+  },
+  "metrics": {
+    "train": {
+      "loss": 0.0027411743067204952,
+      "binary_accuracy": 0.9975615739822388,
+      "mae": 0.01132167037576437
+    },
+    "validation": {
+      "loss": 0.0023141440469771624,
+      "binary_accuracy": 0.9988623261451721,
+      "mae": 0.004473348148167133
+    },
+    "test": {
+      "loss": 0.0052447207272052765,
+      "binary_accuracy": 0.997724711894989,
+      "mae": 0.004963076673448086
+    },
+    "thresholds": {
+      "min_accuracy": 0.85,
+      "max_mae": 0.02
+    },
+    "threshold_callback_reached_epoch": 5,
+    "training_time": {
+      "epochs_ran": 5,
+      "total_epoch_seconds": 188.636,
+      "mean_epoch_seconds": 37.727,
+      "last_epoch_seconds": 37.647
+    }
+  }
+}

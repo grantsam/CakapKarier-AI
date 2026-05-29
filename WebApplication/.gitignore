@@ -1,0 +1,18 @@
+node_modules/
+
+# Environment and local secrets
+.env
+.env.*
+!.env.example
+
+# Build and test artifacts
+dist/
+build/
+coverage/
+
+# Logs and local editor/OS files
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

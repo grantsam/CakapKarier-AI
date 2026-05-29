@@ -1,0 +1,59 @@
+# =========================
+# Dependencies
+# =========================
+node_modules/
+**/node_modules/
+WebApplication/frontend-react/node_modules/
+WebApplication/backend-express/node_modules/
+
+
+# =========================
+# Environment Variables
+# =========================
+.env
+**/.env
+
+
+# =========================
+# Build Output
+# =========================
+dist/
+build/
+
+
+# =========================
+# Python Cache
+# =========================
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+
+# =========================
+# Python Virtual Environments
+# =========================
+venv/
+.venv/
+**/venv/
+**/.venv/
+AIEngine/venv/
+AIEngine/.venv/
+
+
+# =========================
+# Logs
+# =========================
+AIEngine/services/*/uvicorn*.log
+*.log
+
+
+# =========================
+# OS / System Files
+# =========================
+.DS_Store
+
+
+# =========================
+# AI / Local Instruction Files
+# =========================
+GEMINI.md

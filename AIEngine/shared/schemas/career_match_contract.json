@@ -1,0 +1,123 @@
+{
+  "service": "career-match",
+  "version": "1.4.1",
+  "endpoints": {
+    "health": "GET /health",
+    "genai_health": "GET /genai/health",
+    "predict": "POST /predict",
+    "predict_web": "POST /predict/web"
+  },
+  "request": {
+    "skills": {
+      "type": "array<string>|string",
+      "required": true,
+      "description": "Daftar skill kandidat. Untuk /predict disarankan array; /predict/web boleh string dipisah koma."
+    },
+    "experience_years": {
+      "type": "number",
+      "required": "true for /predict, optional for /predict/web",
+      "min": 0,
+      "max": 60
+    },
+    "education_level": {
+      "type": "string|integer",
+      "required": false,
+      "examples": ["sma", "d3", "s1", "diploma", "bachelor", "master", 3]
+    },
+    "certifications": {
+      "type": "array<string>|string",
+      "required": "true for /predict, optional for /predict/web",
+      "description": "Daftar sertifikasi kandidat. Kirim array kosong jika kandidat belum memiliki sertifikasi."
+    },
+    "interests": {
+      "type": "array<string>|string|null",
+      "required": false,
+      "description": "Minat dan bakat dari form web."
+    },
+    "experience_text": {
+      "type": "string|null",
+      "required": false,
+      "description": "Teks gabungan pengalaman dan sertifikasi dari form web; service mengekstrak tahun pengalaman dan sertifikasi."
+    },
+    "target_role": {
+      "type": "string|null",
+      "required": false,
+      "examples": ["fe", "be", "ds", "ae", "Front-End Developer", "AI Engineer"]
+    },
+    "preferred_location": {
+      "type": "string|null",
+      "required": false
+    },
+    "top_k": {
+      "type": "integer",
+      "required": false,
+      "default": 5,
+      "min": 1,
+      "max": 20
+    },
+    "use_genai": {
+      "type": "boolean",
+      "required": false,
+      "default": false
+    }
+  },
+  "web_request_aliases": {
+    "pendidikan_terakhir": "education_level",
+    "skill_yang_dikuasai": "skills",
+    "minat_bakat": "interests",
+    "pengalaman_sertifikasi": "experience_text",
+    "sertifikasi": "certifications",
+    "target_skill_role": "target_role"
+  },
+  "response": {
+    "predicted_role": "string",
+    "target_role": "string|null",
+    "role_family": "string",
+    "readiness_score": "number, 0-100",
+    "readiness_status": "Siap|Cukup Siap|Perlu Ditingkatkan",
+    "match_confidence": "number, 0-1",
+    "top_matches": "array<object, includes calibrated match_score plus optional model_probability and readiness_features (includes certification_required_overlap and certification_completeness_boost for debugging)>",
+    "mastered_skills": "array<string>",
+    "mastered_skill_count": "integer",
+    "skill_gap": "array<string>",
+    "skill_gap_count": "integer",
+    "skill_gap_analysis": "array<{name:string,priority:string,description:string}>",
+    "roadmap": "array<{phase:string,items:array<string>}>",
+    "recommendations": "array<string>",
+    "tips": "array<string>",
+    "ai_summary": "string|null",
+    "ai_summary_source": "provider|deterministic_fallback|null",
+    "genai_provider": "string|null",
+    "genai_model": "string|null",
+    "genai_available": "boolean|null",
+    "genai_error_type": "string|null"
+  },
+  "model_contract": {
+    "input_tensors": {
+      "candidate_text": "tf.string scalar batch",
+      "job_text": "tf.string scalar batch",
+      "numeric_features": [
+        "skill_overlap",
+        "certification_overlap",
+        "experience_ratio",
+        "education_match",
+        "skill_count_ratio",
+        "missing_skill_ratio",
+        "seniority_gap",
+        "semantic_similarity"
+      ]
+    },
+    "output": {
+      "match_score": "sigmoid probability for career readiness match"
+    }
+  },
+  "genai_contract": {
+    "provider_default": "gemini",
+    "api_style": "OpenAI-compatible Chat Completions",
+    "default_url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+    "default_model": "gemini-2.5-flash-lite",
+    "output_field": "ai_summary",
+    "metadata_fields": ["ai_summary_source", "genai_provider", "genai_model", "genai_available", "genai_error_type"],
+    "fallback": "deterministic_summary when Gemini/provider is unavailable"
+  }
+}

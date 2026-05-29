@@ -7,11 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "audit:security": "npm audit --audit-level=high"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.41.1",
-    "axios": "^1.15.2",
+    "aos": "^2.3.4",
+    "axios": "^1.16.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.8.0",
     "react": "^19.2.5",
