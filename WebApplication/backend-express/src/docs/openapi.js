@@ -134,7 +134,7 @@ export const openApiSpec = {
         properties: {
           education_level: {
             oneOf: [
-              { type: 'string', enum: ['sma', 'smk', 'd3', 's1', 's2', 's3'] },
+              { type: 'string', enum: ['none', 'sma', 'smk', 'd3', 's1', 's1_non_it', 's2', 's3'] },
               { type: 'string', minLength: 1 },
             ],
             example: 's1',
@@ -151,7 +151,7 @@ export const openApiSpec = {
                   required: ['name'],
                   properties: {
                     name: { type: 'string', minLength: 1, example: 'PHP' },
-                    level: { type: 'string', example: 'intermediate' },
+                    level: { type: 'string', enum: ['Basic', 'Intermediate', 'Advanced'], example: 'Intermediate' },
                   },
                 },
               },
@@ -208,8 +208,20 @@ export const openApiSpec = {
           },
           target_role: {
             type: 'string',
-            enum: ['', 'fe', 'be', 'ds', 'ae'],
-            example: 'ae',
+            enum: [
+              '',
+              'fe',
+              'be',
+              'ds',
+              'ae',
+              'front end developer',
+              'back end developer',
+              'data scientist',
+              'data analyst',
+              'ai engineer',
+              'machine learning engineer',
+            ],
+            example: 'ai engineer',
           },
           preferred_location: {
             type: 'string',
@@ -309,6 +321,8 @@ export const openApiSpec = {
           pendidikan: { type: 'string', example: 'Sarjana (S1)' },
           education_level: { type: 'string', example: 's1' },
           education_label: { type: 'string', example: 'Sarjana (S1)' },
+          original_education_level: { type: 'string', nullable: true, example: 'non_it' },
+          original_education_label: { type: 'string', nullable: true, example: 'Lulusan Non-IT / Bootcamp / Otodidak' },
           experience_years: { type: 'number', example: 1 },
           experience_text: { type: 'string', example: '1 tahun sebagai PHP Developer membangun modul backend dan query SQL.' },
           certifications: {
@@ -320,6 +334,17 @@ export const openApiSpec = {
             type: 'array',
             items: { type: 'string' },
             example: ['PHP', 'SQL', 'Golang'],
+          },
+          skill_levels: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                name: { type: 'string', example: 'React' },
+                level: { type: 'string', example: 'Advanced' },
+              },
+            },
+            example: [{ name: 'React', level: 'Advanced' }],
           },
           pengalaman_tahun: { type: 'number', example: 1 },
           pengalaman_text: { type: 'string', example: '1 tahun sebagai PHP Developer membangun modul backend dan query SQL.' },
@@ -333,6 +358,11 @@ export const openApiSpec = {
             items: { type: 'string' },
             example: ['PHP', 'SQL', 'Golang'],
           },
+          target_role_original: { type: 'string', nullable: true, example: 'ae' },
+          target_role_normalized: { type: 'string', nullable: true, example: 'ai engineer' },
+          target_role_label: { type: 'string', nullable: true, example: 'AI Engineer' },
+          genai_requested: { type: 'boolean', example: true },
+          frontend_contract_version: { type: 'string', example: 'career-match-web-v2' },
           experience_derived_skills: {
             type: 'array',
             items: { type: 'string' },
@@ -371,7 +401,7 @@ export const openApiSpec = {
           analysis_id: { type: 'string', format: 'uuid', example: 'f40fd6e1-b7db-45cc-a0b5-bc0c91ce6407' },
           saved_at: { type: 'string', format: 'date-time' },
           predicted_role: { type: 'string', example: 'AI Engineer' },
-          target_role: { type: 'string', nullable: true, example: 'ae' },
+          target_role: { type: 'string', nullable: true, example: 'ai engineer' },
           role_family: { type: 'string', nullable: true, example: 'data-ai' },
           readiness_score: { type: 'number', example: 82.4 },
           readiness_status: { type: 'string', example: 'Cukup Siap' },
@@ -415,6 +445,26 @@ export const openApiSpec = {
             nullable: true,
             example: 'Profil paling dekat dengan AI Engineer dengan readiness 82.4%.',
           },
+          ai_summary_source: { type: 'string', nullable: true, example: 'provider' },
+          genai_provider: { type: 'string', nullable: true, example: 'gemini' },
+          genai_model: { type: 'string', nullable: true, example: 'gemini-2.5-flash-lite' },
+          genai_available: { type: 'boolean', nullable: true, example: true },
+          genai_error_type: { type: 'string', nullable: true, example: null },
+          analysis_metadata: {
+            type: 'object',
+            additionalProperties: true,
+            example: {
+              frontend_contract_version: 'career-match-web-v2',
+              genai_requested: true,
+              genai_provider: 'gemini',
+              genai_model: 'gemini-2.5-flash-lite',
+              genai_available: true,
+              ai_summary_source: 'provider',
+              target_role_normalized: 'ai engineer',
+              target_role_label: 'AI Engineer',
+              skill_levels_count: 1,
+            },
+          },
           input_interpretation: { $ref: '#/components/schemas/CareerInputInterpretation' },
         },
         additionalProperties: true,
@@ -424,7 +474,7 @@ export const openApiSpec = {
         properties: {
           id: { type: 'string', format: 'uuid' },
           predicted_role: { type: 'string', nullable: true, example: 'AI Engineer' },
-          target_role: { type: 'string', nullable: true, example: 'ae' },
+          target_role: { type: 'string', nullable: true, example: 'ai engineer' },
           readiness_score: { type: 'number', nullable: true, example: 82.4 },
           readiness_status: { type: 'string', nullable: true, example: 'Siap Berkembang' },
           mastered_skill_count: { type: 'integer', nullable: true, example: 3 },
@@ -505,7 +555,7 @@ export const openApiSpec = {
         type: 'object',
         properties: {
           predicted_role: { type: 'string', example: 'AI Engineer' },
-          target_role: { type: 'string', nullable: true, example: 'ae' },
+          target_role: { type: 'string', nullable: true, example: 'ai engineer' },
           role_family: { type: 'string', nullable: true, example: 'data-ai' },
           readiness_score: { type: 'number', nullable: true, example: 82.4 },
           readiness_status: { type: 'string', nullable: true, example: 'Cukup Siap' },
@@ -549,6 +599,11 @@ export const openApiSpec = {
             nullable: true,
             example: 'Profil paling dekat dengan AI Engineer dengan readiness 82.4%.',
           },
+          ai_summary_source: { type: 'string', nullable: true, example: 'provider' },
+          genai_provider: { type: 'string', nullable: true, example: 'gemini' },
+          genai_model: { type: 'string', nullable: true, example: 'gemini-2.5-flash-lite' },
+          genai_available: { type: 'boolean', nullable: true, example: true },
+          genai_error_type: { type: 'string', nullable: true, example: null },
           input_interpretation: { $ref: '#/components/schemas/CareerInputInterpretation' },
         },
         additionalProperties: true,
@@ -899,7 +954,7 @@ export const openApiSpec = {
         tags: ['Career Match Analysis'],
         summary: 'Cek health GenAI provider melalui backend',
         description:
-          'Memanggil endpoint /genai/health di AIEngine untuk memeriksa konfigurasi provider GenAI opsional seperti Ollama.',
+          'Memanggil endpoint /genai/health di AIEngine untuk memeriksa konfigurasi provider GenAI opsional seperti Gemini atau provider lain yang aktif.',
         security: [{ bearerAuth: [] }],
         responses: {
           200: {

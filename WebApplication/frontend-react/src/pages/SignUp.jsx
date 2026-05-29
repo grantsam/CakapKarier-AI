@@ -4,12 +4,15 @@ import api from '../utils/api'; // Pastikan sudah menggunakan wrapper api
 import authBg from '../assets/signup-in.jpg'; 
 import logoImage from '../assets/logo_cakapkarierai.png';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formMessage, setFormMessage] = useState('');
   
   const [formData, setFormData] = useState({
     username: '',
@@ -22,6 +25,7 @@ const SignUp = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormMessage('');
     if (errors[e.target.name]) {
       setErrors({ ...errors, [e.target.name]: '' });
     }
@@ -60,6 +64,7 @@ const SignUp = () => {
     e.preventDefault();
     if (!validateForm()) return;
     setLoading(true);
+    setFormMessage('');
     try {
       await api.post('/auth/signup', {
         nama: formData.username,
@@ -67,11 +72,10 @@ const SignUp = () => {
         password: formData.password
       });
 
-      alert("Akun berhasil dibuat! Silakan masuk.");
-      navigate('/signin');
+      navigate('/signin', { state: { success: 'Akun berhasil dibuat. Silakan masuk dengan email dan kata sandi Anda.' } });
     } catch (error) {
       const serverMessage = error.response?.data?.message || "Gagal mendaftar, silakan coba lagi.";
-      alert(serverMessage);
+      setFormMessage(serverMessage);
     } finally {
       setLoading(false);
     }
@@ -79,7 +83,7 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6 font-poppins">
-      <div className="bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex overflow-hidden max-w-5xl w-full h-full max-h-[600px]">
+      <Card className="rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex overflow-hidden max-w-5xl w-full h-full max-h-[600px]">
         
         <div className="hidden md:block w-1/2 relative">
           <img src={authBg} alt="Auth Background" className="h-full w-full object-cover" />
@@ -93,10 +97,17 @@ const SignUp = () => {
           <h2 className="text-3xl font-bold text-[#004A7C] mb-1 tracking-tight">Buat Akun</h2>
           <p className="text-slate-500 mb-6 text-sm font-medium">Mari temukan potensi terbaik Anda</p>
 
-          <form onSubmit={handleSignUp} className="space-y-4">
+          {formMessage && (
+            <div role="alert" className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {formMessage}
+            </div>
+          )}
+
+          <form onSubmit={handleSignUp} className="space-y-4" noValidate>
             <div>
-              <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Nama Lengkap</label>
+              <label htmlFor="signup-name" className="block text-[13px] font-medium text-slate-700 mb-1.5">Nama Lengkap</label>
               <input 
+                id="signup-name"
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
@@ -108,8 +119,9 @@ const SignUp = () => {
             </div>
 
             <div>
-              <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Email</label>
+              <label htmlFor="signup-email" className="block text-[13px] font-medium text-slate-700 mb-1.5">Email</label>
               <input 
+                id="signup-email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
@@ -120,12 +132,13 @@ const SignUp = () => {
               {errors.email && <p className="text-red-500 text-[10px] mt-1 font-semibold">{errors.email}</p>}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Password */}
               <div className="relative">
-                <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Kata Sandi</label>
+                <label htmlFor="signup-password" className="block text-[13px] font-medium text-slate-700 mb-1.5">Kata Sandi</label>
                 <div className="relative">
                   <input 
+                    id="signup-password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
@@ -137,6 +150,7 @@ const SignUp = () => {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#004A7C]"
+                    aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
                   >
                     {showPassword ? <IconEye size={18} /> : <IconEyeOff size={18} />}
                   </button>
@@ -146,9 +160,10 @@ const SignUp = () => {
 
               {/* Confirm Password */}
               <div className="relative">
-                <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Konfirmasi Sandi</label>
+                <label htmlFor="signup-confirm-password" className="block text-[13px] font-medium text-slate-700 mb-1.5">Konfirmasi Sandi</label>
                 <div className="relative">
                   <input 
+                    id="signup-confirm-password"
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
@@ -160,6 +175,7 @@ const SignUp = () => {
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#004A7C]"
+                    aria-label={showConfirmPassword ? 'Sembunyikan konfirmasi sandi' : 'Tampilkan konfirmasi sandi'}
                   >
                     {showConfirmPassword ? <IconEye size={18} /> : <IconEyeOff size={18} />}
                   </button>
@@ -168,20 +184,21 @@ const SignUp = () => {
               </div>
             </div>
 
-            <button 
-              type="submit" 
-              disabled={loading}
-              className={`w-full ${loading ? 'bg-slate-400' : 'bg-[#004A7C]'} text-white py-3.5 rounded-full font-medium text-md mt-4 hover:bg-[#00365d] transition-all shadow-md active:scale-95`}
+            <Button
+              type="submit"
+              fullWidth
+              loading={loading}
+              className="mt-4"
             >
-              {loading ? 'Sedang Memproses...' : 'Daftar'}
-            </button>
+              Daftar
+            </Button>
           </form>
 
-          <p className="text-center mt-6 text-slate-600 text-[13px] font-reguler">
+          <p className="text-center mt-6 text-slate-600 text-[13px] font-normal">
             Sudah punya akun? <Link to="/signin" className="text-[#004A7C] font-medium hover:underline">Masuk di sini</Link>
           </p>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

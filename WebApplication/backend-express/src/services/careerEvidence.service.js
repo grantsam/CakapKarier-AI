@@ -1,10 +1,63 @@
 const educationLabels = {
+  none: 'Bootcamp / Otodidak',
   sma: 'SMA/SMK',
   smk: 'SMA/SMK',
   d3: 'Diploma (D3)',
   s1: 'Sarjana (S1)',
+  s1_non_it: 'Sarjana Non-IT',
   s2: 'Magister (S2)',
   s3: 'Doktor (S3)',
+  non_it: 'Lulusan Non-IT / Bootcamp / Otodidak',
+};
+
+const educationAliasesForAi = {
+  non_it: 'none',
+  'non it': 'none',
+  bootcamp: 'none',
+  otodidak: 'none',
+  autodidak: 'none',
+  none: 'none',
+  s1_non_it: 's1',
+  's1 non it': 's1',
+};
+
+const targetRoleAliases = {
+  fe: 'front end developer',
+  frontend: 'front end developer',
+  'front-end': 'front end developer',
+  'front end': 'front end developer',
+  'front end developer': 'front end developer',
+  'frontend developer': 'front end developer',
+  be: 'back end developer',
+  backend: 'back end developer',
+  'back-end': 'back end developer',
+  'back end': 'back end developer',
+  'back end developer': 'back end developer',
+  'backend developer': 'back end developer',
+  ds: 'data scientist',
+  'data scientist': 'data scientist',
+  'data science': 'data scientist',
+  'data analyst': 'data analyst',
+  ae: 'ai engineer',
+  'ai engineer': 'ai engineer',
+  'artificial intelligence engineer': 'ai engineer',
+  'ml engineer': 'machine learning engineer',
+  'machine learning engineer': 'machine learning engineer',
+};
+
+const targetRoleLabels = {
+  'front end developer': 'Front-End Developer',
+  'back end developer': 'Back-End Developer',
+  'data scientist': 'Data Scientist',
+  'data analyst': 'Data Analyst',
+  'ai engineer': 'AI Engineer',
+  'machine learning engineer': 'Machine Learning Engineer',
+};
+
+const skillLevelLabels = {
+  basic: 'Basic',
+  intermediate: 'Intermediate',
+  advanced: 'Advanced',
 };
 
 const knownSkillAliases = [
@@ -93,6 +146,64 @@ const normalizeArray = (value) => {
       .map(normalizeWhitespace)
       .filter(Boolean);
   }
+  return [];
+};
+
+const normalizeEducationForAi = (value) => {
+  const normalized = normalizeForMatch(value);
+  if (!normalized) return '';
+  return educationAliasesForAi[normalized] || normalized;
+};
+
+const normalizeTargetRoleForAi = (value) => {
+  const normalized = normalizeForMatch(value);
+  if (!normalized) return '';
+  return targetRoleAliases[normalized] || normalized;
+};
+
+const normalizeSkillLevel = (value) => {
+  const normalized = normalizeForMatch(value);
+  return skillLevelLabels[normalized] || null;
+};
+
+const uniqueSkillEntries = (entries) => {
+  const result = [];
+  const seen = new Set();
+  entries.forEach((entry) => {
+    const name = normalizeWhitespace(entry?.name);
+    const key = name.toLowerCase();
+    if (!name || seen.has(key)) return;
+    seen.add(key);
+    result.push({
+      name,
+      level: normalizeSkillLevel(entry?.level),
+    });
+  });
+  return result;
+};
+
+const normalizeSkillEntries = (value) => {
+  if (!value) return [];
+
+  if (Array.isArray(value)) {
+    return uniqueSkillEntries(
+      value.map((item) => {
+        if (typeof item === 'string') return { name: item, level: null };
+        if (item && typeof item === 'object') {
+          return {
+            name: item.name || item.label || item.title || '',
+            level: item.level || item.proficiency || null,
+          };
+        }
+        return { name: '', level: null };
+      }),
+    );
+  }
+
+  if (typeof value === 'string') {
+    return uniqueSkillEntries(normalizeArray(value).map((name) => ({ name, level: null })));
+  }
+
   return [];
 };
 
@@ -208,14 +319,20 @@ const computedExperienceYears = (experiences) => {
 const buildAiSkillString = (skills) => uniqueByLower(skills).join(', ');
 
 export const buildCareerEvidenceProfile = (payload) => {
-  const education = payload.education_level || payload.pendidikan_terakhir || '';
-  const explicitSkills = uniqueByLower(normalizeArray(payload.skills || payload.skill_yang_dikuasai));
+  const originalEducation = payload.education_level || payload.pendidikan_terakhir || '';
+  const education = normalizeEducationForAi(originalEducation);
+  const explicitSkillEntries = normalizeSkillEntries(payload.skills || payload.skill_yang_dikuasai);
+  const explicitSkills = uniqueByLower(explicitSkillEntries.map((skill) => skill.name));
+  const skillLevels = explicitSkillEntries
+    .filter((skill) => skill.level)
+    .map((skill) => ({ name: skill.name, level: skill.level }));
   const interests = uniqueByLower(normalizeArray(payload.interests || payload.minat_bakat));
   const experienceText = normalizeWhitespace(payload.experience_text || payload.pengalaman_sertifikasi || '');
   const experienceYears = Number(payload.experience_years ?? payload.pengalaman_tahun);
   const certifications = uniqueByLower(normalizeArray(payload.certifications || payload.sertifikasi));
   const experiences = normalizeExperiences(payload.experiences);
-  const targetRole = normalizeWhitespace(payload.target_role);
+  const targetRoleOriginal = normalizeWhitespace(payload.target_role);
+  const targetRole = normalizeTargetRoleForAi(targetRoleOriginal);
   const preferredLocation = normalizeWhitespace(payload.preferred_location);
 
   const structuredExperienceSkills = uniqueByLower(experiences.flatMap((experience) => experience.skills_used || []));
@@ -285,6 +402,9 @@ export const buildCareerEvidenceProfile = (payload) => {
   const educationLabel = normalizedProfile.education_level
     ? educationLabels[String(normalizedProfile.education_level).toLowerCase()] || normalizedProfile.education_level
     : null;
+  const targetRoleLabel = normalizedProfile.target_role
+    ? targetRoleLabels[normalizedProfile.target_role] || normalizedProfile.target_role
+    : null;
 
   return {
     normalizedProfile,
@@ -303,15 +423,24 @@ export const buildCareerEvidenceProfile = (payload) => {
     inputInterpretation: {
       education_level: normalizedProfile.education_level,
       education_label: educationLabel,
+      original_education_level: normalizeWhitespace(originalEducation) || null,
+      original_education_label:
+        educationLabels[String(originalEducation).toLowerCase()] || normalizeWhitespace(originalEducation) || null,
       experience_years: normalizedProfile.experience_years,
       experience_text: normalizedProfile.experience_text,
       certifications: normalizedProfile.certifications,
       skills: explicitSkills,
+      skill_levels: skillLevels,
       pendidikan: educationLabel,
       pengalaman_tahun: normalizedProfile.experience_years,
       pengalaman_text: normalizedProfile.experience_text,
       sertifikasi: normalizedProfile.certifications,
+      target_role_original: targetRoleOriginal || null,
+      target_role_normalized: normalizedProfile.target_role,
+      target_role_label: targetRoleLabel,
       preferred_location: normalizedProfile.preferred_location,
+      genai_requested: normalizedProfile.use_genai,
+      frontend_contract_version: 'career-match-web-v2',
       explicit_skills: explicitSkills,
       experience_derived_skills: experienceDerivedSkills,
       certification_derived_skills: certificationDerivedSkills,

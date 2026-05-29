@@ -6,14 +6,13 @@ import db from '../database/db.js';
 import * as authRepository from '../repositories/auth.repository.js';
 import * as mailService from './mail.service.js';
 import AppError from '../utils/AppError.js';
+import { normalizeEmail } from '../utils/normalize.js';
 
 const signToken = (id) => {
   return jwt.sign({ id }, config.jwt.secret, {
     expiresIn: config.jwt.expiresIn,
   });
 };
-
-const normalizeEmail = (email) => email.trim().toLowerCase();
 
 const hashResetToken = (token) => {
   return crypto.createHash('sha256').update(token).digest('hex');
@@ -28,7 +27,8 @@ const buildResetUrl = (token) => {
 const genericForgotPasswordMessage = 'Jika email terdaftar, link pemulihan kata sandi telah dikirim.';
 
 export const register = async (userData) => {
-  const { nama, email, password } = userData;
+  const { nama, password } = userData;
+  const email = normalizeEmail(userData.email);
 
   // 1. Cek apakah user sudah ada
   const existingUser = await authRepository.findUserByEmail(email);
@@ -78,7 +78,8 @@ export const register = async (userData) => {
 };
 
 export const login = async (credentials) => {
-  const { email, password } = credentials;
+  const { password } = credentials;
+  const email = normalizeEmail(credentials.email);
 
   // 1. Cek apakah user ada
   const user = await authRepository.findUserByEmail(email);

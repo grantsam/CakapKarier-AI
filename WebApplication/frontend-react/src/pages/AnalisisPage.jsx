@@ -3,6 +3,8 @@ import api from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/landing/Footer';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
 import { 
   IconInfoCircle, 
   IconBolt, 
@@ -61,10 +63,12 @@ const MASTER_INTERESTS = [
 
 const MASTER_ROLES = [
   { id: "", label: "Rekomendasikan yang cocok (Kosongkan)" },
-  { id: "fe", label: "Front-End Developer" },
-  { id: "be", label: "Back-End Developer" },
-  { id: "ds", label: "Data Scientist / Data Analyst" },
-  { id: "ae", label: "AI Engineer / Prompt Engineer" }
+  { id: "front end developer", label: "Front-End Developer" },
+  { id: "back end developer", label: "Back-End Developer" },
+  { id: "data scientist", label: "Data Scientist" },
+  { id: "data analyst", label: "Data Analyst" },
+  { id: "ai engineer", label: "AI Engineer" },
+  { id: "machine learning engineer", label: "Machine Learning Engineer" }
 ];
 
 const MASTER_LOCATIONS = [
@@ -168,9 +172,10 @@ const MASTER_EDUCATION = [
   { id: "sma", label: "SMA/SMK" },
   { id: "d3", label: "Diploma (D3/D4)" },
   { id: "s1", label: "Sarjana (S1)" },
+  { id: "s1_non_it", label: "Sarjana Non-IT" },
   { id: "s2", label: "Magister (S2)" },
   { id: "s3", label: "Doktor (S3)" },
-  { id: "non_it", label: "Lulusan Non-IT / Bootcamp / Otodidak" }
+  { id: "none", label: "Bootcamp / Otodidak" }
 ];
 
 const MultiSelectContainer = ({ 
@@ -178,6 +183,8 @@ const MultiSelectContainer = ({
   showDropdown, setShowDropdown, onAdd, onRemove, type, containerRef, required = true, icon: Icon 
 }) => {
   const safeItems = Array.isArray(items) ? items : [];
+  const fieldId = `${type}-combobox`;
+  const listboxId = `${type}-listbox`;
   
   const filteredItems = safeItems.filter(i => {
     const itemString = typeof i === 'string' ? i : (i.label || i.name || '');
@@ -193,7 +200,7 @@ const MultiSelectContainer = ({
 
   return (
     <div className="space-y-2 relative" ref={containerRef}>
-      <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+      <label htmlFor={fieldId} className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
         {Icon && <Icon size={18} className="text-slate-600" />}
         <span>{label} {required && <span className="text-red-500">*</span>}</span>
       </label>
@@ -219,14 +226,25 @@ const MultiSelectContainer = ({
                   <option value="Advanced">Advanced</option>
                 </select>
               )}
-              <button type="button" onClick={(e) => { e.stopPropagation(); onRemove(item, type); }}>
+              <button
+                type="button"
+                aria-label={`Hapus ${itemName}`}
+                onClick={(e) => { e.stopPropagation(); onRemove(item, type); }}
+                className="rounded-full p-0.5 text-[#004A7C] hover:text-red-500"
+              >
                 <IconX size={14} className="hover:text-red-500 transition-colors" />
               </button>
             </div>
           );
         })}
         <input
+          id={fieldId}
           type="text"
+          role="combobox"
+          aria-expanded={showDropdown}
+          aria-controls={listboxId}
+          aria-autocomplete="list"
+          aria-required={required}
           className="flex-grow outline-none text-sm p-1 min-w-[120px] bg-transparent"
           placeholder={selectedItems.length === 0 ? placeholder : ""}
           value={inputValue}
@@ -234,21 +252,41 @@ const MultiSelectContainer = ({
             setInputValue(e.target.value);
             if (!showDropdown) setShowDropdown(true);
           }}
+          onFocus={() => setShowDropdown(true)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setShowDropdown(false);
+              return;
+            }
+            if (e.key === 'Enter' && showDropdown) {
+              e.preventDefault();
+              const nextItem = filteredItems[0];
+              if (nextItem) {
+                const itemValue = typeof nextItem === 'string' ? nextItem : (nextItem.label || nextItem.name);
+                onAdd(type === 'skill' ? { name: itemValue, level: 'Basic' } : itemValue, type);
+              } else if (inputValue.trim()) {
+                onAdd(type === 'skill' ? { name: inputValue.trim(), level: 'Basic' } : inputValue.trim(), type);
+              }
+            }
+          }}
         />
       </div>
 
       {showDropdown && (
-        <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-72 overflow-y-auto p-2 scrollbar-thin">
+        <div id={listboxId} role="listbox" className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-72 overflow-y-auto p-2 scrollbar-thin">
           {filteredItems.map(item => {
             const itemValue = typeof item === 'string' ? item : (item.label || item.name);
             return (
-              <div
+              <button
+                type="button"
+                role="option"
+                aria-selected="false"
                 key={itemValue}
                 onClick={() => onAdd(type === 'skill' ? { name: itemValue, level: 'Basic' } : itemValue, type)}
-                className="px-4 py-2 hover:bg-slate-50 rounded-lg cursor-pointer text-sm text-slate-700 transition-colors"
+                className="w-full text-left px-4 py-2 hover:bg-slate-50 rounded-lg cursor-pointer text-sm text-slate-700 transition-colors"
               >
                 {itemValue}
-              </div>
+              </button>
             );
           })}
           {filteredItems.length === 0 && !inputValue && (
@@ -273,6 +311,8 @@ const SearchableSelect = ({ label, placeholder, items, value, onChange, icon: Ic
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const dropdownRef = useRef(null);
+  const fieldId = `${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-select`;
+  const listboxId = `${fieldId}-listbox`;
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
@@ -298,47 +338,72 @@ const SearchableSelect = ({ label, placeholder, items, value, onChange, icon: Ic
 
   return (
     <div className="space-y-2 relative" ref={dropdownRef}>
-      <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+      <label id={`${fieldId}-label`} className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
         {Icon && <Icon size={18} className="text-slate-600" />}
         <span>{label} {required && <span className="text-red-500">*</span>}</span>
       </label>
 
-      <div 
+      <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-4 bg-white rounded-xl border border-slate-300 focus-within:ring-2 focus-within:ring-[#004A7C] flex items-center justify-between cursor-pointer shadow-md transition-all text-sm"
+        onKeyDown={(event) => {
+          if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            setIsOpen(true);
+          }
+          if (event.key === 'Escape') setIsOpen(false);
+        }}
+        aria-labelledby={`${fieldId}-label`}
+        aria-expanded={isOpen}
+        aria-controls={listboxId}
+        className="w-full p-4 bg-white rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] flex items-center justify-between cursor-pointer shadow-sm transition-all text-sm"
       >
         <span className={displayValue ? "text-slate-800" : "text-slate-400"}>
           {displayValue || placeholder}
         </span>
         <IconChevronDown size={18} className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-      </div>
+      </button>
 
       {isOpen && (
         <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl p-2 space-y-2">
           <input 
             type="text"
             placeholder="Cari..."
+            aria-label={`Cari ${label}`}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full p-2 text-xs border border-slate-200 rounded-lg outline-none focus:border-[#004A7C]"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setIsOpen(false);
+              if (e.key === 'Enter' && filtered[0]) {
+                e.preventDefault();
+                const itemVal = typeof filtered[0] === 'string' ? filtered[0] : filtered[0].id;
+                onChange(itemVal);
+                setIsOpen(false);
+                setSearch("");
+              }
+            }}
           />
-          <div className="max-h-60 overflow-y-auto space-y-0.5 scrollbar-thin">
+          <div id={listboxId} role="listbox" className="max-h-60 overflow-y-auto space-y-0.5 scrollbar-thin">
             {filtered.map((item) => {
               const itemVal = typeof item === 'string' ? item : item.id;
               const itemLbl = typeof item === 'string' ? item : item.label;
               return (
-                <div
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={value === itemVal}
                   key={itemVal}
                   onClick={() => {
                     onChange(itemVal);
                     setIsOpen(false);
                     setSearch("");
                   }}
-                  className={`px-4 py-2.5 rounded-lg text-sm cursor-pointer transition-colors ${value === itemVal ? 'bg-sky-50 text-[#004A7C] font-semibold' : 'hover:bg-slate-50 text-slate-700'}`}
+                  className={`w-full text-left px-4 py-2.5 rounded-lg text-sm cursor-pointer transition-colors ${value === itemVal ? 'bg-sky-50 text-[#004A7C] font-semibold' : 'hover:bg-slate-50 text-slate-700'}`}
                 >
                   {itemLbl}
-                </div>
+                </button>
               );
             })}
             {filtered.length === 0 && (
@@ -368,6 +433,7 @@ const parseExperienceYears = (text) => {
 const AnalisisPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState('');
   
   const [availableSkills] = useState(MASTER_SKILLS);
   const [availableEducation] = useState(MASTER_EDUCATION);
@@ -377,10 +443,12 @@ const AnalisisPage = () => {
 
   const [formData, setFormData] = useState({ 
     pendidikan_terakhir: '', 
+    experience_years: '',
     pengalaman_text: '', 
     target_role: '', 
     preferred_location: '', 
-    sertifikasi: [] 
+    sertifikasi: [],
+    use_genai: false
   });
   
   const [certInput, setCertInput] = useState("");
@@ -432,15 +500,27 @@ const AnalisisPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (selectedSkills.length === 0) return alert("Mohon isi skill minimal satu.");
+    setFormError('');
+    if (selectedSkills.length === 0) {
+      setFormError("Tambahkan minimal satu skill agar sistem bisa menghitung kesiapan karier.");
+      skillRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
 
     setLoading(true);
     try {
-      const calculatedYears = parseExperienceYears(formData.pengalaman_text);
+      const manualYears = Number(formData.experience_years);
+      const calculatedYears =
+        formData.experience_years !== '' && Number.isFinite(manualYears)
+          ? manualYears
+          : parseExperienceYears(formData.pengalaman_text);
 
       const payload = {
         education_level: formData.pendidikan_terakhir, 
-        skills: selectedSkills.map(s => s.name),
+        skills: selectedSkills.map((skill) => ({
+          name: skill.name,
+          level: skill.level || 'Basic'
+        })),
         interests: selectedInterests,
         experience_text: formData.pengalaman_text,
         experience_years: calculatedYears,
@@ -448,17 +528,16 @@ const AnalisisPage = () => {
         target_role: formData.target_role,
         preferred_location: formData.preferred_location,
         top_k: 5,
-        use_genai: false
+        use_genai: Boolean(formData.use_genai)
       };
 
       const response = await api.post('/analysis/career-match', payload);
       navigate('/analisis/hasil', { state: { data: response.data.data } }); 
     } catch (error) {
       if (error.response?.status === 401) {
-        alert("Sesi Anda berakhir. Silakan login kembali.");
-        navigate('/signin');
+        navigate('/signin', { state: { message: 'Sesi Anda berakhir. Silakan masuk kembali.' } });
       } else {
-        alert(error.response?.data?.message || "Gagal melakukan analisis.");
+        setFormError(error.response?.data?.message || "Gagal melakukan analisis. Periksa input Anda lalu coba lagi.");
       }
     } finally {
       setLoading(false);
@@ -469,11 +548,11 @@ const AnalisisPage = () => {
     <div className="min-h-screen bg-slate-50 font-poppins flex flex-col">
       <Navbar />
       <main className="flex-grow pt-28 pb-16 px-6">
-        <div className="max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-sm border border-slate-200 p-8 md:p-12">
-          
+        <Card className="max-w-4xl mx-auto p-8 md:p-12 rounded-[2.5rem]">
+
           <div className="mb-8">
             <h1 className="text-2xl md:text-3xl font-bold text-[#004A7C] mb-2">Analisis Kesiapan Karier</h1>
-            <p className="text-slate-500 text-sm md:text-base">Lengkapi data untuk mendapatkan roadmap karier berbasis AI.</p>
+            <p className="text-slate-500 text-sm md:text-base">Lengkapi data untuk mendapatkan estimasi kesiapan dan roadmap pengembangan awal.</p>
           </div>
 
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex gap-4 mb-10 items-center">
@@ -481,19 +560,31 @@ const AnalisisPage = () => {
               <IconInfoCircle size={24} />
             </div>
             <p className="text-[13px] text-slate-700 leading-relaxed">
-              <span className="font-bold text-amber-700">Peringatan Akurasi:</span> Kualitas roadmap Anda bergantung pada kejujuran data. Masukan yang tidak akurat akan menghasilkan rekomendasi yang tidak relevan.
+              <span className="font-bold text-amber-700">Agar hasil lebih relevan:</span> Isi skill, level, durasi pengalaman, dan contoh proyek sejujur mungkin. Jika ada skill penting, sebutkan juga di narasi pengalaman agar sistem punya konteks yang cukup.
             </p>
           </div>
 
+          {formError && (
+            <div role="alert" className="mb-6 rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm text-red-700">
+              {formError}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="border-b border-slate-100 pb-3">
+              <h2 className="text-base font-bold text-slate-800">Profil Dasar</h2>
+              <p className="text-xs text-slate-500 mt-1">Data ini menjadi konteks awal sebelum skill dan pengalaman dibandingkan dengan katalog role.</p>
+            </div>
+
             {/* Pendidikan Terakhir */}
             <div className="space-y-2">
-              <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+              <label htmlFor="education-level" className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
                 <IconSchool size={18} className="text-slate-600" />
                 <span>Pendidikan Terakhir <span className="text-red-500">*</span></span>
               </label>
               <div className="relative">
                 <select 
+                  id="education-level"
                   required 
                   value={formData.pendidikan_terakhir}
                   onChange={(e) => setFormData({...formData, pendidikan_terakhir: e.target.value})}
@@ -518,6 +609,11 @@ const AnalisisPage = () => {
                   </svg>
                 </div>
               </div>
+            </div>
+
+            <div className="border-b border-slate-100 pb-3 pt-2">
+              <h2 className="text-base font-bold text-slate-800">Skill & Pengalaman</h2>
+              <p className="text-xs text-slate-500 mt-1">Tambahkan skill utama, levelnya, dan pengalaman nyata yang mendukung klaim tersebut.</p>
             </div>
 
             {/* Skill */}
@@ -557,12 +653,37 @@ const AnalisisPage = () => {
             />
 
             {/* Pengalaman */}
-            <div className="space-y-2 pt-2">
-              <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+            <div className="space-y-4 pt-2">
+              <label htmlFor="experience-text" className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
                 <IconBriefcase size={18} className="text-slate-600" />
                 <span>Riwayat Pengalaman Kerja / Proyek <span className="text-red-500">*</span></span>
               </label>
+              <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="experience-years" className="block text-xs font-semibold text-slate-600">
+                    Total Tahun Pengalaman
+                  </label>
+                  <input
+                    id="experience-years"
+                    type="number"
+                    min="0"
+                    max="60"
+                    step="0.1"
+                    value={formData.experience_years}
+                    onChange={(e) => setFormData({ ...formData, experience_years: e.target.value })}
+                    placeholder="Contoh: 1.5"
+                    className="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm shadow-sm placeholder:text-slate-400"
+                  />
+                </div>
+                <div className="bg-sky-50 border border-sky-100 rounded-xl p-4 text-[12px] text-slate-600 leading-relaxed flex items-start gap-2">
+                  <IconInfoCircle size={18} className="text-[#004A7C] shrink-0 mt-0.5" />
+                  <p>
+                    Angka tahun dipakai sebagai durasi utama. Narasi pengalaman tetap dibaca sebagai konteks proyek, role, dan skill pendukung.
+                  </p>
+                </div>
+              </div>
               <textarea 
+                id="experience-text"
                 required
                 value={formData.pengalaman_text}
                 onChange={(e) => setFormData({...formData, pengalaman_text: e.target.value})}
@@ -570,19 +691,20 @@ const AnalisisPage = () => {
                 className="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none min-h-[120px] text-sm resize-y shadow-sm placeholder:text-slate-400"
               />
               <div className="bg-sky-50 border border-sky-100 rounded-xl p-3 text-[12px] text-slate-600 leading-relaxed">
-                💡 <span className="font-semibold text-[#004A7C]">Petunjuk Input:</span> Tuliskan total durasi waktu beserta deskripsi singkat pengalaman Anda. Sistem AI kami akan otomatis mendeteksi total tahun masa kerja.
+                <span className="font-semibold text-[#004A7C]">Petunjuk Input:</span> Jika angka tahun dikosongkan, sistem akan mencoba membaca durasi dari narasi pengalaman.
               </div>
             </div>
 
             {/* Sertifikasi */}
             <div className="space-y-3">
-              <label className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+              <label htmlFor="certification-input" className="block text-sm font-semibold text-slate-800 flex items-center gap-1.5">
                 <IconCertificate size={18} className="text-slate-600" />
                 <span>Sertifikasi</span>
               </label>
               <div className="flex gap-2">
                 <div className="relative flex-grow">
                   <input 
+                    id="certification-input"
                     type="text"
                     placeholder="Contoh: AWS Certified"
                     value={certInput}
@@ -590,24 +712,30 @@ const AnalisisPage = () => {
                     className="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#004A7C] outline-none text-sm"
                   />
                 </div>
-                <button 
+                <Button
                   type="button"
                   onClick={() => { if(certInput.trim()) { setFormData({...formData, sertifikasi: [...formData.sertifikasi, certInput.trim()]}); setCertInput(""); } }}
-                  className="px-5 bg-[#004A7C] text-white rounded-xl hover:bg-[#00365d] transition-all flex items-center justify-center"
+                  className="rounded-xl px-5"
+                  aria-label="Tambah sertifikasi"
                 >
                   <IconPlus size={24} />
-                </button>
+                </Button>
               </div>
               <div className="flex flex-wrap gap-2">
                 {formData.sertifikasi.map((cert, idx) => (
                   <span key={idx} className="flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-lg text-[11px] font-bold border border-amber-100">
                     <IconCertificate size={14} /> {cert}
-                    <button type="button" onClick={() => setFormData({...formData, sertifikasi: formData.sertifikasi.filter((_, i) => i !== idx)})}>
+                    <button type="button" aria-label={`Hapus sertifikasi ${cert}`} onClick={() => setFormData({...formData, sertifikasi: formData.sertifikasi.filter((_, i) => i !== idx)})}>
                       <IconX size={14} />
                     </button>
                   </span>
                 ))}
               </div>
+            </div>
+
+            <div className="border-b border-slate-100 pb-3 pt-2">
+              <h2 className="text-base font-bold text-slate-800">Preferensi Analisis</h2>
+              <p className="text-xs text-slate-500 mt-1">Pilih target role atau lokasi jika Anda ingin analisis diarahkan ke kebutuhan tertentu.</p>
             </div>
 
             {/* Role & Lokasi */}
@@ -633,25 +761,58 @@ const AnalisisPage = () => {
               />
             </div>
 
-            {/* Submit Button */}
-            <div className="flex flex-row gap-4 pt-10">
-              <button 
-                type="button" 
-                onClick={() => navigate('/')}
-                className="flex-1 py-4 rounded-full border-2 border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-all text-sm active:scale-95"
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <IconBolt size={18} className="text-[#004A7C]" />
+                  <h3 className="text-sm font-bold text-slate-800">Ringkasan GenAI</h3>
+                </div>
+                <p className="text-[12px] text-slate-500 leading-relaxed">
+                  Aktifkan jika ingin hasil analisis menyertakan ringkasan naratif tambahan saat layanan tersedia.
+                </p>
+              </div>
+              <button
+                type="button"
+                aria-pressed={formData.use_genai}
+                onClick={() => setFormData({ ...formData, use_genai: !formData.use_genai })}
+                className={`relative h-8 w-14 rounded-full border transition-colors shrink-0 ${
+                  formData.use_genai ? 'bg-[#004A7C] border-[#004A7C]' : 'bg-slate-100 border-slate-300'
+                }`}
               >
-                Batal
-              </button>
-              <button 
-                type="submit" 
-                disabled={loading}
-                className="flex-1 py-4 rounded-full bg-[#004A7C] text-white font-bold flex items-center justify-center gap-2 hover:bg-[#00365d] transition-all shadow-lg text-sm active:scale-95 disabled:bg-slate-400"
-              >
-                {loading ? "Proses..." : <><IconBolt size={20} /> Mulai Analisis</>}
+                <span
+                  className={`absolute left-0 top-1 h-6 w-6 rounded-full bg-white shadow transition-transform ${
+                    formData.use_genai ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
               </button>
             </div>
+
+            {/* Submit Button */}
+            <div className="flex flex-col sm:flex-row gap-4 pt-10">
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                fullWidth
+                onClick={() => navigate('/')}
+                className="flex-1"
+              >
+                Batal
+              </Button>
+              <Button
+                type="submit"
+                size="lg"
+                fullWidth
+                disabled={loading}
+                loading={loading}
+                icon={IconBolt}
+                className="flex-1"
+              >
+                Mulai Analisis
+              </Button>
+            </div>
           </form>
-        </div>
+        </Card>
       </main>
       <Footer/>
     </div>

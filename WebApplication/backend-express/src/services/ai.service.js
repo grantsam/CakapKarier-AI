@@ -33,7 +33,7 @@ const formatAiErrorMessage = (payload, fallback) => {
 
 const mapAiStatusToAppError = (statusCode, payload) => {
   if (statusCode === 422 || statusCode === 400) {
-    return new AppError(formatAiErrorMessage(payload, 'Payload analisis tidak valid'), 400);
+    return new AppError('Input analisis tidak valid. Periksa kembali profil, skill, dan pengalaman Anda.', 400);
   }
 
   if (statusCode === 503) {

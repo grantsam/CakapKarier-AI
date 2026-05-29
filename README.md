@@ -63,6 +63,42 @@ Gunakan mode ini selama fase awal sampai ritme tim stabil.
 - Jangan tunggu koordinasi tambahan.
 - Fokus ke deliverable, bukan proses.
 
+## Dokumentasi Deployment & Readiness
+
+- Panduan Deployment: `docs/architecture/DEPLOYMENT_VERCEL_AZURE.md`
+- Checklist Kesiapan Produksi (Capstone): `docs/architecture/PRODUCTION_READINESS_CAPSTONE.md`
+
+## Quick Demo Setup
+
+Jalankan service untuk demo lokal dalam urutan berikut:
+
+1. **AIEngine** (`http://127.0.0.1:8001`)
+   ```bash
+   cd AIEngine
+   python -m pip install -r requirements.txt
+   python tests/integration/smoke_inference.py
+   uvicorn career_match.app:app --app-dir services/career-match/src --host 127.0.0.1 --port 8001
+   ```
+
+2. **Backend Express** (`http://localhost:3000`)
+   ```bash
+   cd WebApplication/backend-express
+   npm install
+   npm test
+   npm start
+   ```
+
+3. **Frontend React** (`http://localhost:5173`)
+   ```bash
+   cd WebApplication/frontend-react
+   npm install
+   npm run build
+   npm run dev
+   ```
+
+Salin setiap `.env.example` menjadi `.env` lokal masing-masing service sebelum menjalankan aplikasi.
+Jangan commit file `.env` berisi secret nyata. Jika API key atau password pernah masuk git, rotasi credential tersebut.
+
 ## Catatan Implementasi
 - Gunakan `kebab-case` untuk folder baru.
 - Simpan dokumentasi di satu tempat yang mudah dicari.

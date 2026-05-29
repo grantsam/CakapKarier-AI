@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import helmet from 'helmet';
 import { config } from './config/index.js';
 import db from './database/db.js';
 import analysisRoutes from './routes/analysis.routes.js';
@@ -11,19 +12,39 @@ import { openApiSpec, swaggerUiHtml } from './docs/openapi.js';
 
 const app = express();
 
-app.use(cors());
+if (config.trustProxy) {
+  app.set('trust proxy', 1);
+}
+
+app.use(helmet({
+  contentSecurityPolicy: config.apiDocs.enabled ? false : undefined,
+  hsts: config.nodeEnv === 'production' ? undefined : false,
+}));
+
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || config.cors.allowedOrigins.includes('*') || config.cors.allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new AppError('Origin tidak diizinkan oleh konfigurasi CORS', 403));
+  },
+  methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: config.request.jsonLimit }));
 
 // API documentation for frontend integration
-app.get('/api-docs.json', (req, res) => {
-  res.json(openApiSpec);
-});
+if (config.apiDocs.enabled) {
+  app.get('/api-docs.json', (req, res) => {
+    res.json(openApiSpec);
+  });
 
-app.get(['/api-docs', '/api-docs/'], (req, res) => {
-  res.type('html').send(swaggerUiHtml);
-});
+  app.get(['/api-docs', '/api-docs/'], (req, res) => {
+    res.type('html').send(swaggerUiHtml);
+  });
+}
 
 // Routes
 app.get('/', (req, res) => {
@@ -50,7 +71,7 @@ app.get('/health', async (req, res, next) => {
 
 // Route not found handler
 app.use((req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  next(new AppError('Route tidak ditemukan', 404));
 });
 
 // Global Error Handler

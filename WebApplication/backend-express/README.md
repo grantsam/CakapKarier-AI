@@ -4,10 +4,30 @@ Backend API utama untuk CakapKarier-AI.
 
 ## Lokasi
 - Kode sumber: `src/`
-- Route/API: `src/api/`
-- Modul bisnis: `src/modules/`
-- Helper bersama: `src/shared/`
-- Test: `tests/`
+- Route/API: `src/routes/`
+- Controller: `src/controllers/`
+- Modul bisnis: `src/services/`
+- Repository database: `src/repositories/`
+- Middleware: `src/middleware/`
+- Helper bersama: `src/utils/`
+- Test: `test/`
+
+## Script
+
+```bash
+npm run dev            # development server dengan node --watch
+npm start              # jalankan server
+npm run lint           # syntax check semua file src/**/*.js
+npm test               # node:test unit checks
+npm run audit:security # audit dependency tingkat high+
+```
+
+## Baseline hardening
+- Middleware `helmet` aktif untuk security headers dasar.
+- Rate limit menggunakan `express-rate-limit` pada route sensitif.
+- JWT secret wajib minimal 32 karakter.
+- Set `API_DOCS_ENABLED=false` di production kecuali dokumentasi publik memang dibutuhkan.
+- Gunakan `TRUST_PROXY=true` hanya jika aplikasi benar-benar berada di belakang reverse proxy yang terpercaya.
 
 ## Integrasi AI Career Match
 
@@ -25,12 +45,20 @@ Environment yang dibutuhkan:
 
 ```env
 JWT_SECRET=change_this_to_a_random_secret_at_least_32_chars
-JWT_EXPIRES_IN=90d
+JWT_EXPIRES_IN=1h
+TRUST_PROXY=false
+API_DOCS_ENABLED=true
+DEBUG_ERRORS=false
+JSON_BODY_LIMIT=256kb
+CORS_ORIGINS=http://localhost:5173
+DB_SSL=false
+DB_SSL_REJECT_UNAUTHORIZED=true
+DB_SSL_CA=
 AI_CAREER_MATCH_URL=http://127.0.0.1:8001
 AI_REQUEST_TIMEOUT_MS=30000
 ```
 
-Backend akan gagal start jika `JWT_SECRET` kosong, kurang dari 32 karakter, atau `JWT_EXPIRES_IN` belum diisi.
+Backend akan gagal start jika konfigurasi wajib seperti `JWT_SECRET`, `JWT_EXPIRES_IN`, atau koneksi database belum lengkap. Di production, set `API_DOCS_ENABLED=false` kecuali dokumentasi API memang ingin dibuka. Gunakan `DEBUG_ERRORS=true` hanya untuk debugging lokal. Jika `DB_SSL=true`, verifikasi sertifikat aktif secara default; `DB_SSL_REJECT_UNAUTHORIZED=false` hanya fallback sementara untuk provider database yang belum menyediakan CA.
 
 ## Reset Password
 
@@ -54,7 +82,7 @@ SMTP_FROM="CakapKarier AI <no-reply@your-verified-domain.com>"
 PASSWORD_RESET_TOKEN_EXPIRES_MINUTES=30
 ```
 
-Token reset password disimpan sebagai hash, berlaku sekali pakai, dan default kedaluwarsa dalam 30 menit.
+Token reset password disimpan sebagai hash, berlaku sekali pakai, dan default kedaluwarsa dalam 30 menit. Endpoint auth untuk login, signup, forgot password, dan reset password dilindungi rate limit untuk mengurangi abuse.
 
 ## Kontrak Output AIEngine 1.4.1
 

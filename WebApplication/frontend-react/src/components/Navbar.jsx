@@ -1,114 +1,168 @@
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { IconArrowRight, IconLogout, IconMenu2, IconX } from '@tabler/icons-react';
 import logoImage from '../assets/logo_cakapkarierai.png';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { clearAuth, isAuthenticated, subscribeAuthChange } from '../utils/auth';
+import Button from './ui/Button';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
+  const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated());
 
   useEffect(() => {
-    const checkLogin = () => {
-      setIsLoggedIn(localStorage.getItem('isLoggedIn') === 'true');
-    };
-    window.addEventListener('storage', checkLogin);
-    return () => window.removeEventListener('storage', checkLogin);
+    return subscribeAuthChange(setIsLoggedIn);
   }, []);
 
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
+
   const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn');
-    setIsLoggedIn(false);
+    clearAuth();
     setIsOpen(false);
     navigate('/');
   };
 
   const handleNavClick = (path) => {
     if (!isLoggedIn && path !== '/') {
-      navigate('/signup');
+      navigate('/signin', { state: { message: 'Silakan masuk untuk mengakses halaman ini.' } });
     } else {
       navigate(path);
     }
     setIsOpen(false);
   };
 
-  const getMenuClass = (path) => {
-    let isActive = false;
-
-    if (path === '/') {
-      isActive = location.pathname === '/';
-    } else {
-      isActive = location.pathname.startsWith(path);
-    }
-
-    return `px-5 py-2 rounded-full cursor-pointer transition-all duration-300 font-semibold text-sm
-      ${isActive 
-        ? 'bg-[#004A7C] text-white shadow-md scale-105' 
-        : 'text-slate-700 hover:text-[#004A7C] hover:bg-white/50'}`;
+  const isMenuActive = (path) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
   };
 
-  return (
-    <header className="fixed top-0 left-0 w-full p-4 z-[100] flex justify-center font-poppins">
-      <nav 
-        className="w-full max-w-6xl flex justify-between items-center px-6 py-2.5 rounded-full shadow-xl border border-white/40 backdrop-blur-2xl relative"
-        style={{ background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(224, 242, 254, 0.7) 100%)' }}
-      >
-        {/* Logo Section */}
-        <div className="flex items-center gap-2 cursor-pointer z-[101]" onClick={() => navigate('/')}>
-          <img src={logoImage} alt="Logo" className="h-7 w-auto" />
-        </div>
+  const menuItems = [
+    { label: 'Beranda', path: '/' },
+    { label: 'Analisis', path: '/analisis' },
+    { label: 'Riwayat', path: '/riwayat' },
+    { label: 'Profil', path: '/profil' },
+  ];
 
-        {/* Hamburger Mobile */}
-        <button 
-          className="lg:hidden p-2 text-[#004A7C] z-[101]"
+  const getMenuClass = (path) => {
+    const isActive = isMenuActive(path);
+
+    return `relative px-5 py-2.5 rounded-full cursor-pointer transition-all duration-300 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-[#004A7C]/30
+      ${isActive
+        ? 'bg-[#004A7C] text-white shadow-md'
+        : 'text-slate-700 hover:text-[#004A7C] hover:bg-white/70'}`;
+  };
+
+  const renderMenuItem = (item) => (
+    <motion.li
+      key={item.path}
+      whileHover={{ y: -1 }}
+      whileTap={{ scale: 0.96 }}
+      onClick={() => handleNavClick(item.path)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          handleNavClick(item.path);
+        }
+      }}
+      tabIndex={0}
+      className={getMenuClass(item.path)}
+    >
+      {item.label}
+    </motion.li>
+  );
+
+  return (
+    <header className="fixed top-0 left-0 w-full p-3 sm:p-4 z-[100] flex justify-center font-poppins">
+      <nav
+        className="w-full max-w-6xl flex justify-between items-center px-4 sm:px-6 py-2.5 rounded-full shadow-xl border border-white/40 backdrop-blur-2xl relative"
+        style={{ background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(224, 242, 254, 0.82) 100%)' }}
+        aria-label="Navigasi utama"
+      >
+        <motion.button
+          type="button"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.96 }}
+          className="flex items-center gap-2 cursor-pointer z-[101] focus:outline-none focus:ring-2 focus:ring-[#004A7C]/30 rounded-full"
+          onClick={() => navigate('/')}
+          aria-label="Ke halaman beranda"
+        >
+          <img src={logoImage} alt="Logo CakapKarier AI" className="h-7 w-auto" />
+        </motion.button>
+
+        <button
+          type="button"
+          className="lg:hidden p-2 text-[#004A7C] z-[101] rounded-full hover:bg-white/70 transition-colors focus:outline-none focus:ring-2 focus:ring-[#004A7C]/30"
           onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'}
+          aria-expanded={isOpen}
+          aria-controls="mobile-nav-menu"
         >
           {isOpen ? <IconX size={28} /> : <IconMenu2 size={28} />}
         </button>
 
-        {/* Menu Navigasi */}
-        <ul className={`
-          fixed lg:static top-[80px] left-4 right-4 lg:top-auto lg:left-auto lg:right-auto
-          flex flex-col lg:flex-row gap-4 lg:gap-2 items-center
-          bg-white/95 lg:bg-transparent p-8 lg:p-0 rounded-[2rem] lg:rounded-none shadow-2xl lg:shadow-none
-          transition-all duration-500 ease-in-out z-[100]
-          ${isOpen ? 'translate-y-0 opacity-100' : '-translate-y-[150%] lg:translate-y-0 opacity-0 lg:opacity-100 pointer-events-none lg:pointer-events-auto'}
-        `}>
-          <li onClick={() => handleNavClick('/')} className={getMenuClass('/')}>Beranda</li>
-          
-          {/* Menu yang diproteksi */}
-          <li onClick={() => handleNavClick('/analisis')} className={getMenuClass('/analisis')}>Analisis</li>
-          <li onClick={() => handleNavClick('/riwayat')} className={getMenuClass('/riwayat')}>Riwayat</li>
-          <li onClick={() => handleNavClick('/profil')} className={getMenuClass('/profil')}>Profil</li>
-
-          {/* Tombol Keluar */}
-          {isLoggedIn && (
-            <button 
-              onClick={handleLogout}
-              className="lg:hidden w-full mt-4 bg-red-50 text-red-600 px-6 py-3 rounded-full text-sm font-bold flex justify-center items-center gap-2"
-            >
-              Keluar <IconLogout size={18} />
-            </button>
-          )}
+        <ul className="hidden lg:flex flex-row gap-2 items-center">
+          {menuItems.map(renderMenuItem)}
         </ul>
 
-        {/* Desktop Action Button */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.ul
+              id="mobile-nav-menu"
+              initial={{ opacity: 0, y: -18, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -14, scale: 0.98 }}
+              transition={{ duration: 0.24, ease: 'easeOut' }}
+              className="fixed top-[76px] left-3 right-3 flex flex-col gap-3 items-stretch bg-white/95 p-5 rounded-[1.75rem] shadow-2xl border border-slate-100 lg:hidden z-[100]"
+            >
+              {menuItems.map((item) => (
+                <li key={item.path}>
+                  <button
+                    type="button"
+                    onClick={() => handleNavClick(item.path)}
+                    className={`${getMenuClass(item.path)} w-full text-center`}
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+
+              {isLoggedIn && (
+                <li className="pt-2">
+                  <Button
+                    onClick={handleLogout}
+                    variant="danger"
+                    fullWidth
+                    className="justify-center"
+                  >
+                    Keluar <IconLogout size={18} />
+                  </Button>
+                </li>
+              )}
+            </motion.ul>
+          )}
+        </AnimatePresence>
+
         <div className="hidden lg:block">
           {isLoggedIn ? (
-            <button 
+            <Button
               onClick={handleLogout}
-              className="bg-[#004A7C] text-white px-6 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-[#00365d] transition-all shadow-lg active:scale-95 group"
+              icon={IconLogout}
+              className="group"
             >
-              Keluar <IconLogout size={18} className="group-hover:translate-x-1 transition-transform" />
-            </button>
+              Keluar
+            </Button>
           ) : (
-            <button 
+            <Button
               onClick={() => navigate('/signup')}
-              className="bg-[#004A7C] text-white px-6 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-[#00365d] transition-all shadow-lg active:scale-95 group"
+              icon={IconArrowRight}
+              className="group"
             >
-              Daftar Sekarang <IconArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </button>
+              Daftar Sekarang
+            </Button>
           )}
         </div>
       </nav>

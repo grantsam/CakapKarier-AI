@@ -32,7 +32,7 @@ Service juga menyediakan adapter `/predict/web` untuk kebutuhan integrasi `WebAp
 | Kode inference sederhana | Selesai | `services/career-match/src/career_match/inference.py` |
 | FastAPI REST API | Selesai | `services/career-match/src/career_match/app.py` |
 | Custom training loop `tf.GradientTape` | Selesai | `pipelines/train_model.py` |
-| Generative AI optional summary | Selesai | Ollama/OpenAI-compatible API di `services/career-match/src/career_match/genai.py` |
+| Generative AI optional summary | Selesai | Gemini/OpenAI-compatible API di `services/career-match/src/career_match/genai.py` |
 | TensorBoard log | Selesai | `models/registry/career-match/v1/tensorboard/` |
 | Classification report | Selesai | `models/registry/career-match/v1/classification_report.txt` |
 | Confusion matrix visual | Selesai | `models/registry/career-match/v1/confusion_matrix.png` |
@@ -58,6 +58,13 @@ Catatan data: dataset utama sekarang memakai final clean dataset dari tim Data S
 - Data dictionary: `data/processed/career-match-v1/data_dictionary.md`
 
 ### Cara Menjalankan
+
+> Catatan keamanan: simpan API key hanya di file `.env` lokal. Jangan commit `.env` yang berisi `GENAI_API_KEY` atau credential nyata lain. Jika key pernah terekspos, rotasi key tersebut sebelum demo/deploy.
+
+> Catatan demo: fitur ringkasan GenAI bersifat opsional. Service `/predict/web` tetap harus bisa berjalan walau `GENAI_API_KEY` kosong, selama `use_genai=false`.
+
+> Catatan deployment capstone: model registry pada `models/registry/career-match/v1/` harus tersedia di environment target karena inference bergantung pada artefak tersebut.
+
 
 Install dependency:
 
@@ -90,19 +97,15 @@ REST API:
 uvicorn career_match.app:app --app-dir services/career-match/src --host 127.0.0.1 --port 8001
 ```
 
-GenAI lokal dengan Ollama:
-
-```bash
-ollama pull llama3.1
-ollama serve
-```
+GenAI dengan Gemini API:
 
 PowerShell:
 
 ```powershell
-$env:GENAI_PROVIDER="ollama"
-$env:GENAI_API_URL="http://localhost:11434/v1/chat/completions"
-$env:GENAI_MODEL="llama3.1"
+$env:GENAI_PROVIDER="gemini"
+$env:GENAI_API_URL="https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+$env:GENAI_MODEL="gemini-2.5-flash-lite"
+$env:GENAI_API_KEY="<google-ai-studio-api-key>"
 ```
 
 Cek status GenAI:

@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Footer from '../components/landing/Footer';
 import { IconUserCircle } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import { ProfileSkeleton } from '../components/ui/Skeleton';
+import { clearAuth, getAuthToken, isTokenUsable } from '../utils/auth';
 
 const EditProfilPage = () => {
   const navigate = useNavigate();
@@ -32,8 +35,8 @@ const EditProfilPage = () => {
 
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
+        const token = getAuthToken();
+        if (!isTokenUsable(token)) {
           navigate('/signin');
           return;
         }
@@ -60,10 +63,10 @@ const EditProfilPage = () => {
         });
 
       } catch (error) {
-        if (axios.isCancel(error)) return;
+        if (error.name === 'CanceledError') return;
         console.error("Gagal mengambil data profil:", error);
         if (error.response?.status === 401 || error.response?.status === 403) {
-          localStorage.removeItem('token');
+          clearAuth();
           navigate('/signin');
         }
       } finally {
@@ -111,7 +114,7 @@ const EditProfilPage = () => {
     setSuccessMessage('');
 
     try {
-      const token = localStorage.getItem('token');
+      const token = getAuthToken();
       await api.put('/user/profile', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -142,12 +145,9 @@ const EditProfilPage = () => {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col justify-between font-poppins">
         <Navbar />
-        <div className="flex-grow flex items-center justify-center">
-          <div className="text-center space-y-2">
-            <div className="w-8 h-8 border-4 border-[#004A7C] border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="text-[#004A7C] text-sm font-medium">Memuat data...</p>
-          </div>
-        </div>
+        <main className="flex-grow pt-28 pb-16 px-6">
+          <ProfileSkeleton />
+        </main>
         <Footer />
       </div>
     );
@@ -159,7 +159,7 @@ const EditProfilPage = () => {
 
       <main className="flex-grow pt-28 pb-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <form onSubmit={handleSave} className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+          <Card as="form" onSubmit={handleSave} className="rounded-[2rem] overflow-hidden">
             
             {/* Bagian Header yang diperbaiki menggunakan initialData */}
             <div className="bg-[#E0F2FE]/40 p-8 flex items-center gap-5 border-b border-slate-100">
@@ -247,24 +247,28 @@ const EditProfilPage = () => {
 
               {/* Group Button */}
               <div className="flex flex-col md:flex-row gap-4 pt-4">
-                <button 
-                  type="button" 
+                <Button
+                  type="button"
                   onClick={() => navigate('/profil')}
                   disabled={saving}
-                  className="flex-1 py-3.5 rounded-full border border-[#004A7C] text-[#004A7C] font-semibold hover:bg-slate-50 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  variant="outline"
+                  fullWidth
+                  className="flex-1"
                 >
                   Batal
-                </button>
-                <button 
-                  type="submit" 
+                </Button>
+                <Button
+                  type="submit"
                   disabled={saving}
-                  className={`flex-1 py-3.5 rounded-full ${saving ? 'bg-slate-400 cursor-not-allowed' : 'bg-[#004A7C] hover:bg-[#00365d] active:scale-95'} text-white font-semibold transition-all shadow-md text-sm`}
+                  loading={saving}
+                  fullWidth
+                  className="flex-1"
                 >
-                  {saving ? 'Menyimpan...' : 'Simpan Perubahan'}
-                </button>
+                  Simpan Perubahan
+                </Button>
               </div>
             </div>
-          </form>
+          </Card>
         </div>
       </main>
 

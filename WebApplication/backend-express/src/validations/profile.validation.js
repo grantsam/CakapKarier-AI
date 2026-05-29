@@ -1,10 +1,17 @@
 import { z } from 'zod';
+import { normalizeEmail, normalizeOptionalText } from '../utils/normalize.js';
+
+const optionalProfileText = z
+  .string()
+  .transform(normalizeOptionalText)
+  .optional()
+  .nullable();
 
 export const updateProfileSchema = z.object({
   body: z.object({
-    nama: z.string().min(3, 'Nama minimal 3 karakter'),
-    email: z.string().email('Format email tidak valid'),
-    nomor_telepon: z.string().optional().nullable(),
-    bio: z.string().optional().nullable(),
+    nama: z.string().trim().min(3, 'Nama minimal 3 karakter'),
+    email: z.string().trim().email('Format email tidak valid').transform(normalizeEmail),
+    nomor_telepon: optionalProfileText,
+    bio: optionalProfileText,
   }),
 });

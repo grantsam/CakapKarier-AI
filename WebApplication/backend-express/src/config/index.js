@@ -39,16 +39,40 @@ const parseBooleanEnv = (key, fallback = false) => {
   return rawValue.toLowerCase() === 'true';
 };
 
+const parseCsvEnv = (key, fallback = '') => {
+  const rawValue = process.env[key] || fallback;
+  return rawValue
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+};
+
+const defaultApiDocsEnabled = (process.env.NODE_ENV || 'development') !== 'production';
+
 export const config = {
-  port: process.env.PORT || 3000,
+  port: parsePositiveIntegerEnv('PORT', '3000'),
   nodeEnv: process.env.NODE_ENV || 'development',
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
+  trustProxy: parseBooleanEnv('TRUST_PROXY', false),
+  cors: {
+    allowedOrigins: parseCsvEnv('CORS_ORIGINS', process.env.FRONTEND_URL || 'http://localhost:5173'),
+  },
+  apiDocs: {
+    enabled: parseBooleanEnv('API_DOCS_ENABLED', defaultApiDocsEnabled),
+  },
+  debugErrors: parseBooleanEnv('DEBUG_ERRORS', false),
+  request: {
+    jsonLimit: process.env.JSON_BODY_LIMIT || '256kb',
+  },
   db: {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    name: process.env.DB_NAME,
+    host: requireEnv('DB_HOST'),
+    port: parsePositiveIntegerEnv('DB_PORT', '5432'),
+    user: requireEnv('DB_USER'),
+    password: requireEnv('DB_PASSWORD'),
+    name: requireEnv('DB_NAME'),
+    ssl: parseBooleanEnv('DB_SSL', false),
+    sslRejectUnauthorized: parseBooleanEnv('DB_SSL_REJECT_UNAUTHORIZED', true),
+    sslCa: process.env.DB_SSL_CA || '',
   },
   jwt: {
     secret: requireStrongJwtSecret(),

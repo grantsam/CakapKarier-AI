@@ -1,10 +1,16 @@
 from __future__ import annotations
 
-from fastapi import FastAPI, HTTPException
+from pathlib import Path
 
-from .genai import genai_health, generate_summary
+from fastapi import FastAPI, HTTPException
+from dotenv import load_dotenv
+
+from .genai import genai_health, generate_summary_result
 from .inference import CareerMatchService
 from .schemas import CandidateProfile, HealthResponse, PredictionResponse, WebAnalysisRequest
+
+AIENGINE_ROOT = Path(__file__).resolve().parents[4]
+load_dotenv(AIENGINE_ROOT / ".env")
 
 app = FastAPI(title="CakapKarier AI Career Match API", version="1.4.1")
 _service: CareerMatchService | None = None
@@ -49,7 +55,7 @@ def predict(profile: CandidateProfile) -> PredictionResponse:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
 
     if profile.use_genai:
-        prediction["ai_summary"] = generate_summary(profile.model_dump(), prediction)
+        prediction.update(generate_summary_result(profile.model_dump(), prediction))
 
     return PredictionResponse(**prediction)
 
@@ -73,6 +79,6 @@ def predict_web(profile: WebAnalysisRequest) -> PredictionResponse:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
 
     if profile.use_genai:
-        prediction["ai_summary"] = generate_summary(profile.model_dump(), prediction)
+        prediction.update(generate_summary_result(profile.model_dump(), prediction))
 
     return PredictionResponse(**prediction)
