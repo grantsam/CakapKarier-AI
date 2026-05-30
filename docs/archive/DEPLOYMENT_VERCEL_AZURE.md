@@ -1,4 +1,6 @@
-# Deployment Guide: Frontend Vercel + Backend & AIEngine Azure
+# [DEPRECATED] Deployment Guide: Frontend Vercel + Backend & AIEngine Azure
+
+> **DEPRECATED**: Dokumen ini menjelaskan arsitektur lama menggunakan Azure App Service. Gunakan `docs/architecture/DEPLOYMENT_AZURE_VM.md` sebagai panduan deployment utama.
 
 Panduan ini menjelaskan deployment CakapKarier-AI untuk kebutuhan capstone/demo production-ready:
 

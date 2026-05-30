@@ -12,6 +12,8 @@ DEFAULT_GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/opena
 DEFAULT_GEMINI_MODEL = "gemini-2.5-flash-lite"
 DEFAULT_TIMEOUT_SECONDS = 8.0
 DEFAULT_MAX_RETRIES = 1
+DEFAULT_SUMMARY_TEMPERATURE = 0.2
+DEFAULT_SUMMARY_MAX_TOKENS = 220
 
 
 def deterministic_summary(prediction: dict[str, Any]) -> str:
@@ -30,15 +32,20 @@ def genai_config() -> dict[str, Any]:
     if provider == "ollama":
         api_url = os.getenv("GENAI_API_URL", DEFAULT_OLLAMA_API_URL)
         api_key = os.getenv("GENAI_API_KEY", "")
-        model = os.getenv("GENAI_MODEL", DEFAULT_OLLAMA_MODEL)
+        models = [os.getenv("GENAI_MODEL", DEFAULT_OLLAMA_MODEL)]
     elif provider == "gemini":
         api_url = os.getenv("GENAI_API_URL", DEFAULT_GEMINI_API_URL)
         api_key = os.getenv("GENAI_API_KEY", "")
-        model = os.getenv("GENAI_MODEL", DEFAULT_GEMINI_MODEL)
+        models = [os.getenv("GENAI_MODEL", DEFAULT_GEMINI_MODEL)]
     else:
         api_url = os.getenv("GENAI_API_URL", "")
         api_key = os.getenv("GENAI_API_KEY", "")
-        model = os.getenv("GENAI_MODEL", "")
+        # Parsing fallback models list from GENAI_MODELS or GENAI_MODEL
+        env_models = os.getenv("GENAI_MODELS", "")
+        if not env_models:
+            env_models = os.getenv("GENAI_MODEL", "")
+
+        models = [m.strip() for m in env_models.split(",") if m.strip()]
 
     try:
         timeout_seconds = float(os.getenv("GENAI_TIMEOUT_SECONDS", str(DEFAULT_TIMEOUT_SECONDS)))
@@ -54,7 +61,7 @@ def genai_config() -> dict[str, Any]:
         "provider": provider,
         "api_url": api_url,
         "api_key_configured": bool(api_key),
-        "model": model,
+        "models": models,
         "timeout_seconds": timeout_seconds,
         "max_retries": max(0, max_retries),
     }
@@ -62,8 +69,8 @@ def genai_config() -> dict[str, Any]:
 
 def genai_health() -> dict[str, Any]:
     config = genai_config()
-    if not config["api_url"] or not config["model"]:
-        return {**config, "available": False, "error": "CONFIG_MISSING: GENAI_API_URL or GENAI_MODEL is empty"}
+    if not config["api_url"] or not config["models"]:
+        return {**config, "available": False, "error": "CONFIG_MISSING: GENAI_API_URL or GENAI_MODELS is empty"}
     if config["provider"] == "gemini" and not config["api_key_configured"]:
         return {**config, "available": False, "error": "CONFIG_MISSING: GENAI_API_KEY is required for Gemini"}
 
@@ -71,7 +78,7 @@ def genai_health() -> dict[str, Any]:
         config["api_url"],
         data=json.dumps(
             {
-                "model": config["model"],
+                "model": config["models"][0],
                 "messages": [{"role": "user", "content": "Balas satu kata: ok"}],
                 "temperature": 0,
                 "max_tokens": 5,
@@ -85,6 +92,14 @@ def genai_health() -> dict[str, Any]:
             data = json.loads(response.read().decode("utf-8"))
         content = str(data["choices"][0]["message"]["content"]).strip()
         return {**config, "available": True, "sample": content}
+    except urllib.error.HTTPError as exc:
+        error_body = exc.read().decode("utf-8", errors="replace") if exc.fp else ""
+        return {
+            **config,
+            "available": False,
+            "error": f"HTTPError {exc.code}: {exc.reason}",
+            "details": error_body,
+        }
     except Exception as exc:  # noqa: BLE001 - health must never crash the API.
         return {**config, "available": False, "error": f"{type(exc).__name__}: {exc}"}
 
@@ -119,13 +134,14 @@ def _provider_metadata(
     *,
     source: str,
     available: bool,
+    model_used: str | None = None,
     error: Exception | None = None,
     error_type: str | None = None,
 ) -> dict[str, Any]:
     metadata: dict[str, Any] = {
         "ai_summary_source": source,
         "genai_provider": config.get("provider"),
-        "genai_model": config.get("model"),
+        "genai_model": model_used or (config.get("models")[0] if config.get("models") else None),
         "genai_available": available,
     }
     if error_type:
@@ -148,66 +164,92 @@ def _fallback_result(
 
 
 def generate_summary_result(profile: dict[str, Any], prediction: dict[str, Any]) -> dict[str, Any]:
-    """Calls a configured OpenAI-compatible GenAI API and returns summary metadata."""
+    """Calls configured OpenAI-compatible GenAI APIs and returns summary metadata."""
 
     config = genai_config()
     api_url = config["api_url"]
-    model = config["model"]
+    models = config["models"]
     api_key = os.getenv("GENAI_API_KEY", "")
-    if not api_url or not model:
+    if not api_url or not models:
         return _fallback_result(config, prediction, error_type="CONFIG_MISSING")
-    if config["provider"] == "gemini" and not api_key:
+    if config["provider"] in {"gemini", "openrouter"} and not api_key:
         return _fallback_result(config, prediction, error_type="CONFIG_MISSING")
 
     prompt = {
-        "candidate_profile": profile,
+        "candidate_profile": {
+            "skills": profile.get("skills", []),
+            "experience_years": profile.get("experience_years"),
+            "education_level": profile.get("education_level"),
+            "certifications": profile.get("certifications", []),
+            "interests": profile.get("interests", []),
+            "target_role": profile.get("target_role"),
+            "preferred_location": profile.get("preferred_location"),
+        },
         "prediction": {
             "predicted_role": prediction.get("predicted_role"),
             "readiness_score": prediction.get("readiness_score"),
             "skill_gap": prediction.get("skill_gap", []),
             "recommendations": prediction.get("recommendations", []),
+            "top_matches": prediction.get("top_matches", [])[:3],
+            "roadmap": prediction.get("roadmap", [])[:3],
+            "skill_gap_analysis": prediction.get("skill_gap_analysis", {}),
         },
-        "instruction": "Tulis ringkasan karier Bahasa Indonesia maksimal 3 kalimat, konkret, tanpa klaim berlebihan.",
+        "instruction": (
+            "Tulis ringkasan karier dalam Bahasa Indonesia yang ringkas, konkret, dan bermanfaat. "
+            "Maksimal 4 kalimat dengan struktur berikut: "
+            "(1) Kecocokan kandidat dengan role yang paling sesuai beserta skor kesiapan. "
+            "(2) Kekuatan utama kandidat berdasarkan skill, pengalaman, atau sertifikasi. "
+            "(3) 1-2 gap paling penting yang perlu ditingkatkan segera. "
+            "(4) Saran prioritas paling praktis dan realistis untuk langkah berikutnya. "
+            "Jangan berlebihan, jangan generik, jangan bullet point, jangan mengulang data mentah."
+        ),
     }
-    payload = {
-        "model": model,
+    base_payload = {
         "messages": [
             {
                 "role": "system",
                 "content": (
                     "Anda adalah career readiness assistant untuk aplikasi CakapKarier AI. "
-                    "Jawab dalam Bahasa Indonesia, ringkas, konkret, dan tidak berlebihan."
+                    "Berikan ringkasan karier dalam Bahasa Indonesia yang singkat, profesional, "
+                    "konkret, dan relevan dengan data kandidat. "
+                    "Fokus pada kecocokan role, kekuatan utama, gap prioritas, "
+                    "dan langkah pengembangan paling praktis. "
+                    "Hindari klaim berlebihan, motivasi kosong, dan kalimat generik."
                 ),
             },
             {"role": "user", "content": json.dumps(prompt, ensure_ascii=False)},
         ],
-        "temperature": 0.2,
-        "max_tokens": 180,
+        "temperature": DEFAULT_SUMMARY_TEMPERATURE,
+        "max_tokens": DEFAULT_SUMMARY_MAX_TOKENS,
     }
-    request = urllib.request.Request(
-        api_url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers=_request_headers(api_key),
-        method="POST",
-    )
 
     last_error: Exception | None = None
-    for attempt in range(config["max_retries"] + 1):
-        try:
-            with urllib.request.urlopen(request, timeout=config["timeout_seconds"]) as response:
-                data = json.loads(response.read().decode("utf-8"))
-            content = str(data["choices"][0]["message"]["content"]).strip()
-            if content:
-                return {
-                    "ai_summary": content,
-                    **_provider_metadata(config, source="provider", available=True),
-                }
-            return _fallback_result(config, prediction)
-        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, KeyError, IndexError, TypeError) as exc:
-            last_error = exc
-            if attempt < config["max_retries"] and _is_retryable(exc):
-                continue
-            break
+    for model in models:
+        payload = {**base_payload, "model": model}
+        request = urllib.request.Request(
+            api_url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers=_request_headers(api_key),
+            method="POST",
+        )
+
+        for attempt in range(config["max_retries"] + 1):
+            try:
+                with urllib.request.urlopen(request, timeout=config["timeout_seconds"]) as response:
+                    data = json.loads(response.read().decode("utf-8"))
+                content = str(data["choices"][0]["message"]["content"]).strip()
+                if content:
+                    return {
+                        "ai_summary": content,
+                        **_provider_metadata(config, source="provider", available=True, model_used=model),
+                    }
+                last_error = ValueError("empty provider response")
+                break
+            except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, KeyError, IndexError, TypeError) as exc:
+                last_error = exc
+                if attempt < config["max_retries"] and _is_retryable(exc):
+                    continue
+                break
 
     return _fallback_result(config, prediction, last_error)
 
