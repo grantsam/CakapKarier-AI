@@ -1,4 +1,6 @@
-# Audit UI/UX Result Analisis & History (Mei 2026)
+# [ARCHIVED] Audit UI/UX Result Analisis & History (Mei 2026)
+
+> **ARCHIVED**: Catatan konteks sesi lama untuk audit UI/UX, bukan panduan deployment.
 
 **Tanggal Audit:** 2026-05-29  
 **Area:** `AnalisisResultPage.jsx`, `HistoryPage.jsx`  
