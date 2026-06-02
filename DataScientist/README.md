@@ -17,7 +17,7 @@ Area kerja Data Science untuk proyek CakapKarier.AI
   - `all_data_final.csv`: Dataset gabungan final yang sudah bersih dan dibaca oleh dashboard.
 - `streamlit/`: Direktori penyusunan skrip aplikasi dashboard interaktif.
 
-## Artefak Data Science Terkait
+## Artefak Data Science 
 * **Final Clean Dataset:** `notebooks/all_data_final.csv`
 * **Data Dictionary:** `docs/data_dictionary.csv`
 * **Business Questions:** `docs/business_questions.md`
