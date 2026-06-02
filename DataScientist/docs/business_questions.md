@@ -30,4 +30,6 @@ Solusi utama yang dikembangkan:
 
 Catatan data dan label:
 
-Dataset final sudah melalui gathering, assessing, cleaning, transforming, feature engineering awal, merging, EDA, dan export final dataset oleh tim Data Science. Dataset saat ini berisi data lowongan, bukan histori kandidat berlabel. Karena itu, model MVP memakai weak/synthetic supervision untuk membentuk pasangan kandidat-lowongan dengan label `match` dan `not_match`.
+* **Kondisi Dataset:** Dataset final yang dihasilkan oleh tim Data Science merupakan data pasif bursa lowongan kerja (*supply-side* perusahaan) dan **tidak berisi riwayat atau data profil kandidat/pelamar nyata berlabel**.
+* **Strategi Pengembangan Model MVP:** Mengingat keterbatasan ketiadaan label historis pelamar, pemodelan sistem pencocokan (*matching system*) pada tahap MVP ini dikembangkan menggunakan pendekatan **Weak/Synthetic Supervision**. 
+* **Mekanisme Labeling:** Sistem mensintesis profil pasangan kandidat-lowongan secara terprogram berdasarkan kedekatan fitur tekstual kualifikasi, lalu membentuk label biner buatan (`match` dan `not_match`) sebagai basis data latih awal bagi model pembelajaran mesin (*machine learning*).
