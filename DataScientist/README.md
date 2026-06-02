@@ -7,7 +7,7 @@ Area kerja Data Science untuk proyek CakapKarier.AI
 - Eksperimen, pembersihan data, dan evaluasi model.
 - Dokumentasi data dictionary dan business questions.
 
-## Struktur Penting (Sesuai image_b5b03c.png)
+## Struktur Penting 
 - `data/`: Berisi file bursa kerja mentah hasil scraping dari Glints dan LinkedIn.
 - `docs/`: Dokumentasi acuan bisnis dan metadata.
   - `business_questions.md`: Daftar pertanyaan bisnis terukur hasil sinkronisasi dashboard.
