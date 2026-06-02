@@ -223,7 +223,13 @@ def chart_layout(h=300, bottom=10, left=0):
 
 @st.cache_data
 def load():
-    df = pd.read_csv("all_data_final.csv")
+    import os
+    # Mengambil letak folder 'streamlit' tempat file ini berada
+    current_dir = os.path.dirname(__file__)
+    # Naik 1 level ke folder 'DataScientist', lalu masuk ke 'notebooks/all_data_final.csv'
+    csv_path = os.path.join(current_dir, "..", "notebooks", "all_data_final.csv")
+    
+    df = pd.read_csv(csv_path)
     df['job_category'] = df['job_title'].apply(categorize_job)
     
     df['province'] = df['province'].astype(str).str.strip()
