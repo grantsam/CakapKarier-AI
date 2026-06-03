@@ -99,6 +99,11 @@ class PredictionResponse(BaseModel):
     recommendations: list[str]
     tips: list[str]
     ai_summary: str | None = None
+    ai_summary_source: str | None = None
+    genai_provider: str | None = None
+    genai_model: str | None = None
+    genai_available: bool | None = None
+    genai_error_type: str | None = None
 
 
 class HealthResponse(BaseModel):

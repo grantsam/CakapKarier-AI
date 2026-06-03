@@ -1,6 +1,6 @@
 {
   "service": "career-match",
-  "version": "1.4.2",
+  "version": "1.4.1",
   "endpoints": {
     "health": "GET /health",
     "genai_health": "GET /genai/health",
@@ -85,7 +85,12 @@
     "roadmap": "array<{phase:string,items:array<string>}>",
     "recommendations": "array<string>",
     "tips": "array<string>",
-    "ai_summary": "string|null"
+    "ai_summary": "string|null",
+    "ai_summary_source": "provider|deterministic_fallback|null",
+    "genai_provider": "string|null",
+    "genai_model": "string|null",
+    "genai_available": "boolean|null",
+    "genai_error_type": "string|null"
   },
   "model_contract": {
     "input_tensors": {
@@ -110,8 +115,9 @@
     "provider_default": "gemini",
     "api_style": "OpenAI-compatible Chat Completions",
     "default_url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
-    "default_model": "gemini-2.5-flash",
+    "default_model": "gemini-2.5-flash-lite",
     "output_field": "ai_summary",
-    "fallback": "deterministic_summary when Gemini API is unavailable"
+    "metadata_fields": ["ai_summary_source", "genai_provider", "genai_model", "genai_available", "genai_error_type"],
+    "fallback": "deterministic_summary when Gemini/provider is unavailable"
   }
 }

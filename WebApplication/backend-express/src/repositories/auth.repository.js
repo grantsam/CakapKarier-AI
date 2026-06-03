@@ -14,7 +14,7 @@ export const createUser = async (nama, email, password) => {
 };
 
 export const findUserByEmail = async (email) => {
-  const query = 'SELECT * FROM users WHERE email = $1';
+  const query = 'SELECT * FROM users WHERE LOWER(email) = LOWER($1)';
   const result = await db.query(query, [email]);
   return result.rows[0];
 };
@@ -57,7 +57,8 @@ export const findValidPasswordResetToken = async (tokenHash, client = null) => {
     WHERE token_hash = $1
       AND used_at IS NULL
       AND expires_at > NOW()
-    LIMIT 1;
+    LIMIT 1
+    FOR UPDATE;
   `;
   const result = await getExecutor(client).query(query, [tokenHash]);
   return result.rows[0];

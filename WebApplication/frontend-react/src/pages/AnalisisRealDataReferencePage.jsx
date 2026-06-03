@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Footer from '../components/landing/Footer';
+import api from '../utils/api';
 import {
   IconBolt,
   IconChartBar,
@@ -17,16 +17,18 @@ const initialForm = {
   experience_years: 1,
   experience_text: '1 tahun project machine learning untuk klasifikasi data dan dashboard analitik.',
   certifications: 'TensorFlow Developer',
-  target_role: 'ae',
+  target_role: 'ai engineer',
   top_k: 5,
 };
 
 const roleLabels = {
   '': 'Rekomendasi AI',
-  fe: 'Front-End Developer',
-  be: 'Back-End Developer',
-  ds: 'Data Scientist',
-  ae: 'AI Engineer',
+  'front end developer': 'Front-End Developer',
+  'back end developer': 'Back-End Developer',
+  'data scientist': 'Data Scientist',
+  'data analyst': 'Data Analyst',
+  'ai engineer': 'AI Engineer',
+  'machine learning engineer': 'Machine Learning Engineer',
 };
 
 const AnalisisRealDataReferencePage = () => {
@@ -54,12 +56,7 @@ const AnalisisRealDataReferencePage = () => {
     setErrorMessage('');
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:3000/api/analysis/career-match', form, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.post('/analysis/career-match', form);
       setResult(response.data.data);
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'Analisis gagal diproses');

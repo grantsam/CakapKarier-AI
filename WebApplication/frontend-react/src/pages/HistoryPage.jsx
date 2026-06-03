@@ -1,8 +1,14 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/landing/Footer';
 import api from '../utils/api';
+import { getTargetRoleLabel } from '../utils/careerLabels';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import { HistorySkeleton } from '../components/ui/Skeleton';
+import { staggerContainer, fadeInUp } from '../utils/motion';
 import {
   IconAlertCircle,
   IconArrowRight,
@@ -71,7 +77,7 @@ const getScoreDeltaInsight = (scoreDelta, totalAnalysis) => {
 const getRoleDisplay = (item) => {
   const targetRole = item.target_role || item.result?.target_role;
   if (targetRole) {
-    return { label: 'Target', title: targetRole };
+    return { label: 'Target', title: getTargetRoleLabel(targetRole) };
   }
 
   const predictedRole = item.predicted_role || item.result?.predicted_role;
@@ -90,7 +96,7 @@ const HistoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState('');
-  
+
   const fetchHistory = useCallback(async ({ offset = 0, append = false } = {}) => {
     if (append) setLoadingMore(true);
     else setLoading(true);
@@ -112,8 +118,7 @@ const HistoryPage = () => {
       });
     } catch (err) {
       if (err.response?.status === 401) {
-        alert('Sesi Anda berakhir. Silakan login kembali.');
-        navigate('/signin');
+        navigate('/signin', { state: { message: 'Sesi Anda berakhir. Silakan masuk kembali.' } });
         return;
       }
       setError(err.response?.data?.message || 'Gagal memuat riwayat analisis.');
@@ -124,16 +129,11 @@ const HistoryPage = () => {
   }, [navigate]);
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      fetchHistory();
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
+    fetchHistory();
   }, [fetchHistory]);
 
   const handleDetailClick = (item) => {
     const uuidValid = item.analysis_id || item.result?.id || item.result?.analysis_id || item.id;
-    
     navigate(`/riwayat/${uuidValid}`);
   };
 
@@ -171,11 +171,11 @@ const HistoryPage = () => {
           <div className="space-y-6">
             <div className="flex items-center gap-2">
               <IconBolt className="text-[#004A7C]" size={22} />
-              <h2 className="font-bold text-slate-800 text-lg">Ringkasan Perkembangan</h2>
+              <h2 className="font-semibold text-slate-800 text-lg">Ringkasan Perkembangan</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-md relative overflow-hidden">
+              <Card className="p-6 relative overflow-hidden">
                 <h3 className="text-slate-600 font-medium text-sm flex items-center gap-2 mb-4">
                   <IconTrendingUp size={18} className="text-[#004A7C]" /> Perubahan Skor
                 </h3>
@@ -185,10 +185,10 @@ const HistoryPage = () => {
                   </span>
                   {scoreDelta !== null && <span className="text-slate-400 font-medium text-sm">poin</span>}
                 </div>
-                <p className="text-[10px] text-slate-400 mt-2 font-regular">{scoreDeltaInsight}</p>
-              </div>
+                <p className="text-[10px] text-slate-400 mt-2 font-normal">{scoreDeltaInsight}</p>
+              </Card>
 
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-md">
+              <Card className="p-6">
                 <h3 className="text-slate-600 font-medium text-sm flex items-center gap-2 mb-4">
                   <IconClipboardCheck size={18} className="text-[#004A7C]" /> Total Analisis
                 </h3>
@@ -198,10 +198,10 @@ const HistoryPage = () => {
                   </span>
                   {toFiniteNumber(totalAnalysis) !== null && <span className="text-slate-400 font-medium text-sm">kali</span>}
                 </div>
-                <p className="text-[10px] text-slate-400 mt-2 font-regular">Sesi analisis tersimpan</p>
-              </div>
+                <p className="text-[10px] text-slate-400 mt-2 font-normal">Sesi analisis tersimpan</p>
+              </Card>
 
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-md">
+              <Card className="p-6">
                 <h3 className="text-slate-600 font-medium text-sm flex items-center gap-2 mb-4">
                   <IconStars size={18} className="text-[#004A7C]" /> Skill Sesi Terbaru
                 </h3>
@@ -211,32 +211,34 @@ const HistoryPage = () => {
                   </span>
                   {toFiniteNumber(latestSkillCount) !== null && <span className="text-slate-400 font-medium text-sm">skill</span>}
                 </div>
-                <p className="text-[10px] text-slate-400 mt-2 font-regular">
+                <p className="text-[10px] text-slate-400 mt-2 font-normal">
                   {masteredSkillDelta !== null
                     ? `${masteredSkillDelta > 0 ? '+' : ''}${masteredSkillDelta} skill dibanding analisis sebelumnya`
                     : 'Terdeteksi di analisis terbaru'}
                 </p>
-              </div>
+              </Card>
             </div>
 
             {latestItem && (
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-md flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <Card variant="default" className="bg-[#004A7C] p-5 border-[#004A7C] text-white flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Analisis terbaru</p>
-                  <h3 className="font-bold text-slate-800 text-base mt-1 break-words">
-                    {latestRoleDisplay?.label}: <span className="text-[#004A7C]">{latestRoleDisplay?.title}</span>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-white/60">Analisis terbaru</p>
+                  <h3 className="font-semibold text-white text-base mt-1 break-words">
+                    {latestRoleDisplay?.label}: <span className="text-white">{latestRoleDisplay?.title}</span>
                   </h3>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-white/70 mt-1">
                     Buka detail untuk melihat gap utama dan roadmap dari hasil terbaru.
                   </p>
                 </div>
-                <button
+                <Button
                   onClick={() => handleDetailClick(latestItem)}
-                  className="motion-cue px-4 py-2.5 bg-[#004A7C] text-white rounded-full font-bold text-xs hover:bg-[#00365d] transition-all shrink-0 flex items-center justify-center gap-2"
+                  variant="secondary"
+                  size="sm"
+                  className="shrink-0"
                 >
                   Lihat Analisis Terbaru <IconArrowRight size={16} />
-                </button>
-              </div>
+                </Button>
+              </Card>
             )}
           </div>
 
@@ -246,13 +248,14 @@ const HistoryPage = () => {
                 <IconAlertCircle size={18} />
                 <span>{error}</span>
               </div>
-              <button
-                type="button"
+              <Button
+                variant="danger"
+                size="sm"
                 onClick={() => fetchHistory()}
-                className="motion-cue px-4 py-2 rounded-xl bg-white text-red-600 border border-red-100 font-bold text-xs hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+                className="bg-white border-red-100 hover:bg-red-50"
               >
                 <IconRefresh size={14} /> Coba Lagi
-              </button>
+              </Button>
             </div>
           )}
 
@@ -261,89 +264,111 @@ const HistoryPage = () => {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <IconHistory className="text-[#004A7C]" size={22} />
-                  <h2 className="font-bold text-slate-800 text-lg">Daftar Riwayat</h2>
+                  <h2 className="font-semibold text-slate-800 text-lg">Daftar Riwayat</h2>
                 </div>
                 <p className="text-xs text-slate-400 font-medium">
-                    Menampilkan {historyItems.length} dari {formatMetric(totalAnalysis)} analisis
+                  Menampilkan {historyItems.length} dari {formatMetric(totalAnalysis)} analisis
                 </p>
               </div>
             )}
+
             {loading ? (
-              <div className="bg-white rounded-[1.5rem] border border-slate-200 shadow-sm p-8 text-sm text-slate-500 text-center">
-                Memuat riwayat analisis...
-              </div>
+              <HistorySkeleton count={3} />
             ) : historyItems.length > 0 ? (
-              historyItems.map((item) => (
-                <div key={item.id} className="bg-white rounded-[1.5rem] border border-slate-200 shadow-sm overflow-hidden p-6 relative group transition-all hover:border-[#004A7C]">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div className="space-y-3">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <div>
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{getRoleDisplay(item).label}</p>
-                          <h3 className="font-bold text-slate-800 text-md">
-                            {getRoleDisplay(item).title}
-                          </h3>
+              <motion.div
+                variants={staggerContainer}
+                initial="initial"
+                animate="animate"
+                className="space-y-4"
+              >
+                {historyItems.map((item) => (
+                  <motion.div key={item.id} variants={fadeInUp}>
+                    <Card
+                      interactive
+                      onClick={() => handleDetailClick(item)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          handleDetailClick(item);
+                        }
+                      }}
+                      tabIndex={0}
+                      className="p-6 relative group focus:outline-none focus:ring-2 focus:ring-[#004A7C]/30"
+                    >
+                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div className="space-y-3">
+                          <div className="flex flex-wrap items-center gap-3">
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">{getRoleDisplay(item).label}</p>
+                              <h3 className="font-semibold text-slate-800 text-md">
+                                {getRoleDisplay(item).title}
+                              </h3>
+                            </div>
+                            {item.readiness_status && (
+                              <span className={`px-4 py-0.5 rounded-full text-[10px] font-medium border ${getStatusStyle(item.readiness_status)}`}>
+                                {item.readiness_status}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex flex-wrap gap-6 items-center">
+                            <div className="flex items-center gap-1.5 text-slate-400 font-medium text-[11px]">
+                              <IconCalendar size={14} /> {formatDate(item.created_at)}
+                            </div>
+                            <div className="flex items-center gap-1.5 text-slate-400 font-medium text-[11px]">
+                              <IconCircleCheck size={14} /> {formatMetric(item.mastered_skill_count ?? item.result?.mastered_skill_count, ' skill dikuasai')}
+                            </div>
+                            <div className="flex items-center gap-1.5 text-slate-400 font-medium text-[11px]">
+                              <IconBolt size={14} /> {formatMetric(item.skill_gap_count ?? item.result?.skill_gap_count, ' skill gap')}
+                            </div>
+                          </div>
+                          <p className="text-[11px] text-slate-400">Buka detail untuk melihat gap utama dari analisis ini.</p>
                         </div>
-                        {item.readiness_status && (
-                          <span className={`px-4 py-0.5 rounded-full text-[10px] font-medium border ${getStatusStyle(item.readiness_status)}`}>
-                            {item.readiness_status}
-                          </span>
-                        )}
+
+                        <div className="md:text-right">
+                          <div className="text-4xl font-extrabold text-[#004A7C]">
+                            {formatRoundedMetric(item.readiness_score ?? item.result?.readiness_score)}
+                          </div>
+                          <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Skor Kesiapan</div>
+                        </div>
                       </div>
 
-                      <div className="flex flex-wrap gap-6 items-center">
-                        <div className="flex items-center gap-1.5 text-slate-400 font-medium text-[11px]">
-                          <IconCalendar size={14} /> {formatDate(item.created_at)}
-                        </div>
-                        <div className="flex items-center gap-1.5 text-slate-400 font-medium text-[11px]">
-                          <IconCircleCheck size={14} /> {formatMetric(item.mastered_skill_count ?? item.result?.mastered_skill_count, ' skill dikuasai')}
-                        </div>
-                        <div className="flex items-center gap-1.5 text-slate-400 font-medium text-[11px]">
-                          <IconBolt size={14} /> {formatMetric(item.skill_gap_count ?? item.result?.skill_gap_count, ' skill gap')}
-                        </div>
+                      <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between gap-3 text-[#004A7C] font-semibold text-xs">
+                        <span>Lihat detail analisis</span>
+                        <IconArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                       </div>
-                      <p className="text-[11px] text-slate-400">Buka detail untuk melihat gap utama dari analisis ini.</p>
-                    </div>
-
-                    <div className="md:text-right">
-                      <div className="text-4xl font-bold text-[#004A7C]">
-                        {formatRoundedMetric(item.readiness_score ?? item.result?.readiness_score)}
-                      </div>
-                      <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Skor Kesiapan</div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => handleDetailClick(item)}
-                    className="motion-cue w-full mt-6 bg-[#004A7C] text-white py-2.5 rounded-full font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#00365d] transition-all active:scale-[0.98]"
-                  >
-                    Lihat Detail <IconArrowRight size={16} />
-                  </button>
-                </div>
-              ))
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
             ) : (
-              <div className="bg-white rounded-[1.5rem] border border-slate-200 shadow-sm p-8 text-center space-y-3">
-                <IconClipboardCheck className="mx-auto text-slate-300" size={42} />
-                <h3 className="font-bold text-slate-700">Belum Ada Riwayat</h3>
-                <p className="text-sm text-slate-500">Riwayat akan muncul setelah Anda menjalankan analisis karier.</p>
-                <button
+              <Card className="p-12 text-center space-y-4">
+                <IconClipboardCheck className="mx-auto text-slate-300" size={56} />
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-slate-700 text-lg">Belum Ada Riwayat</h3>
+                  <p className="text-sm text-slate-500 max-w-xs mx-auto">Riwayat akan muncul setelah Anda menjalankan analisis karier.</p>
+                </div>
+                <Button
                   onClick={() => navigate('/analisis')}
-                  className="motion-cue px-5 py-2.5 bg-[#004A7C] text-white rounded-full font-medium text-sm hover:bg-[#00365d] transition-all flex items-center justify-center gap-2 mx-auto"
+                  className="mx-auto"
                 >
                   Mulai Analisis <IconArrowRight size={16} />
-                </button>
-              </div>
+                </Button>
+              </Card>
             )}
           </div>
 
           {!loading && pagination.has_next && (
-            <button
+            <Button
+              variant="outline"
+              fullWidth
               onClick={() => fetchHistory({ offset: pagination.offset + pagination.limit, append: true })}
               disabled={loadingMore}
-              className="motion-cue w-full py-3 rounded-xl border border-slate-200 bg-white text-[#004A7C] font-bold text-sm hover:bg-slate-50 disabled:text-slate-400 flex items-center justify-center gap-2"
+              loading={loadingMore}
+              icon={!loadingMore ? IconChevronDown : null}
             >
-              {loadingMore ? 'Memuat...' : 'Muat Riwayat Lainnya'} {!loadingMore && <IconChevronDown size={16} />}
-            </button>
+              Muat Riwayat Lainnya
+            </Button>
           )}
         </div>
       </main>

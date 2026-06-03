@@ -1,69 +1,89 @@
 # CakapKarier-AI
 
-Monorepo untuk sistem rekomendasi karier dan readiness score berbasis AI.
+Monorepo untuk sistem rekomendasi karier dan analisis readiness score berbasis kecerdasan buatan.
 
-## Tujuan
-- Menyatukan pekerjaan Data Scientist, AI Engineer, Backend Engineer, dan Frontend Engineer dalam struktur yang jelas.
-- Mengurangi konflik antar tim lewat ownership, kontrak integrasi, dan dokumentasi singkat.
-- Mempercepat onboarding anggota tim baru.
-- Tim bergerak independen sesuai kebutuhan area masing-masing, tanpa alur approval berlapis.
+---
 
-## Struktur Ringkas
+## 🛠️ Sistem Arsitektur & Teknologi Utama
+
+Sistem ini dibangun menggunakan arsitektur **microservices-oriented monorepo** yang memisahkan ranah data science, inference engine, dan web platform secara modular.
 
 ```text
 CakapKarier-AI/
-|- ResearchData/        # Data Science
-|- AIEngine/            # AI Engineer
-|- WebApplication/
-|  |- backend-express/  # Backend API
-|  `- frontend-react/   # Frontend UI
-|- infrastructure/      # Deployment and database
-|- docs/                # One place for team guidance
+├── ResearchData/         # Data Science & Exploratory Data Analysis (EDA)
+├── AIEngine/             # AI Inference Service (FastAPI & TensorFlow Functional API)
+└── WebApplication/       
+    ├── backend-express/  # Core Web API (Node.js/Express, PostgreSQL, JWT Auth)
+    └── frontend-react/   # Client Application (React, Vite, TailwindCSS)
 ```
 
-## Ownership dan Governance
-- Owner review otomatis diatur melalui `.github/CODEOWNERS`.
-- Panduan kerja lintas tim ada di `docs/team-guides/TEAM_OPERATING_MODEL.md`.
-- Semua aturan inti kerja ada di satu dokumen supaya mudah diikuti.
+### Stack Teknologi Aktif:
+*   **Frontend**: React (Vite), TailwindCSS, Axios
+*   **Backend**: Node.js, Express, PostgreSQL (node-postgres), Helmet, JWT
+*   **AI Engine**: Python 3.12, FastAPI, TensorFlow (Functional API), Uvicorn, OpenRouter API
+*   **DevOps & Infrastruktur**: Nginx (Reverse Proxy), PM2 (Process Manager), Azure Virtual Machines, Vercel
 
-## Workflow Singkat
-1. Ambil task kecil.
-2. Kerjakan langsung di area yang kamu pegang.
-3. Kalau menyentuh area bersama, buat PR singkat.
-4. Minta review seperlunya.
-5. Merge dan lanjut task berikutnya.
+---
 
-## Mode Tim Pemula (Rekomendasi Default)
-Gunakan mode ini selama fase awal sampai ritme tim stabil.
+## 🎯 Fokus & Struktur Tata Kelola Monorepo
 
-1. Branching sederhana:
-- `main` untuk kode stabil.
-- `feature/<nama-tugas>` untuk semua pekerjaan harian.
-- Hindari branch tambahan kecuali benar-benar perlu.
+Struktur repositori ini dirancang khusus untuk memenuhi standar tata kelola proyek tingkat capstone:
 
-2. PR kecil dan cepat:
-- Target 1 PR = 1 tujuan kecil.
-- Jika terlalu besar, pecah saja.
+1.  **Modularitas Kode (Separation of Concerns)**: Setiap komponen (Data Science, AI Engine, Backend, Frontend) diisolasi dalam direktori khusus demi menghindari konflik dependensi.
+2.  **Integrasi Lintas Tim**: Menjamin keselarasan kontrak data lewat spesifikasi skema JSON yang terdokumentasi di `docs/architecture/CAREER_MATCH_DATA_FLOW_CONTRACT.md`.
+3.  **Onboarding Efisien**: Memudahkan asisten, penguji, atau pengembang baru untuk memahami seluruh siklus hidup aplikasi (end-to-end data flow) langsung dalam satu tempat.
 
-3. Review ramah pemula:
-- Minimal 1 reviewer bila menyentuh area bersama.
-- Fokus review pada bug dan kejelasan perubahan.
-- Hindari komentar yang terlalu abstrak; berikan contoh perbaikan langsung.
+---
 
-4. Aturan merge:
-- Hindari push langsung ke `main`.
-- Merge lewat PR kalau menyentuh area bersama atau kontrak.
+## ☁️ Panduan Deployment & Verifikasi (Production-Ready)
 
-5. Wajib update dokumentasi jika mengubah kontrak:
-- Kontrak data berubah -> update dokumen di area `ResearchData/` dan `AIEngine/shared/schemas/`.
-- Kontrak API berubah -> update dokumen backend dan informasikan ke frontend di deskripsi PR.
+Arsitektur produksi sistem menggunakan topologi **Vercel + Single Azure VM (Standard_B2s)** untuk efisiensi biaya dan optimasi performa backend:
 
-6. Kalau perubahan hanya lokal dan tidak memengaruhi tim lain:
-- Kerjakan langsung di area tugasmu.
-- Jangan tunggu koordinasi tambahan.
-- Fokus ke deliverable, bukan proses.
+*   📘 **[Panduan Deployment Aktual (Azure VM)](docs/architecture/DEPLOYMENT_AZURE_VM.md)** — **(Gunakan Dokumen Ini)**
+*   🚦 **[Checklist Kesiapan Produksi (Capstone)](docs/architecture/PRODUCTION_READINESS_CAPSTONE.md)**
+*   🗄️ **[Arsip Konteks & Dokumentasi Lama](docs/archive/)**
 
-## Catatan Implementasi
-- Gunakan `kebab-case` untuk folder baru.
-- Simpan dokumentasi di satu tempat yang mudah dicari.
-- Jika ada perubahan kontrak data/API, update dokumen dan catat di PR.
+---
+
+## ⚡ Setup Pengembangan Lokal (Quick Start)
+
+Untuk menjalankan seluruh lingkungan pengembangan di laptop lokal secara aman, ikuti urutan berikut:
+
+### 1. AI Engine (FastAPI) — `Port 8001`
+*Pastikan file `.env` di direktori `AIEngine/` telah dikonfigurasi.*
+```bash
+cd AIEngine
+python -m venv venv
+source venv/bin/activate # Di Windows: .\venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn career_match.app:app --app-dir services/career-match/src --host 127.0.0.1 --port 8001
+```
+
+### 2. Backend Express API — `Port 3000`
+*Pastikan telah mengonfigurasi `.env` pada direktori `backend-express` beserta koneksi database PostgreSQL.*
+```bash
+cd WebApplication/backend-express
+npm install
+npm run dev
+```
+
+### 3. Frontend React (Vite) — `Port 5173`
+*Pastikan `VITE_API_BASE_URL` mengarah ke backend API port lokal (`http://localhost:3000/api`).*
+```bash
+cd WebApplication/frontend-react
+npm install
+npm run dev
+```
+
+---
+
+## 👥 Alur Kerja Kolaboratif (Workflow)
+
+Branching model disederhanakan untuk mempercepat integrasi selama fase demo:
+
+*   **Branch `main`**: Hanya menyimpan kode stabil yang siap digunakan untuk demo/produksi.
+*   **Branch `feature/<nama-fitur>`**: Branch harian untuk pengembangan fitur atau perbaikan bug secara terisolasi.
+*   **Review & Merge**: Modifikasi yang memengaruhi area tim lain (kontrak API/skema model AI) **wajib** melalui Pull Request dan minimal satu tahap *code review* demi menjaga integritas sistem.
+
+---
+*CakapKarier-AI — Capstone Project & Production Sandbox Environment (2026)*

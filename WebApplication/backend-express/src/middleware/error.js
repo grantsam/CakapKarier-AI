@@ -1,3 +1,4 @@
+import { config } from '../config/index.js';
 import AppError from '../utils/AppError.js';
 
 const mapDatabaseError = (err) => {
@@ -22,28 +23,43 @@ const mapDatabaseError = (err) => {
   return err;
 };
 
+const logServerError = (error, req) => {
+  if (error.statusCode < 500 && error.isOperational) return;
+
+  console.error({
+    timestamp: new Date().toISOString(),
+    method: req.method,
+    path: req.path,
+    statusCode: error.statusCode,
+    name: error.name,
+    message: error.message,
+    stack: error.stack,
+  });
+};
+
 const globalErrorHandler = (err, req, res, next) => {
   const error = mapDatabaseError(err);
 
   error.statusCode = error.statusCode || 500;
   error.status = error.status || 'error';
 
-  if (process.env.NODE_ENV === 'development') {
-    res.status(error.statusCode).json({
+  logServerError(error, req);
+
+  if (config.nodeEnv === 'development' && config.debugErrors) {
+    return res.status(error.statusCode).json({
       success: false,
       status: error.status,
       message: error.message,
       stack: error.stack,
       error
     });
-  } else {
-    // Production: Jangan bocorkan stack trace
-    res.status(error.statusCode).json({
-      success: false,
-      status: error.status,
-      message: error.isOperational ? error.message : 'Something went very wrong!'
-    });
   }
+
+  return res.status(error.statusCode).json({
+    success: false,
+    status: error.status,
+    message: error.isOperational ? error.message : 'Terjadi gangguan pada server. Silakan coba lagi nanti.'
+  });
 };
 
 export default globalErrorHandler;

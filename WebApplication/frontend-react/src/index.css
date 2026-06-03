@@ -20,12 +20,12 @@
       opacity 160ms ease;
   }
 
-  button:hover:not(:disabled) {
+  button:hover:not(:disabled):not([aria-label]):not([aria-pressed]) {
     transform: translateY(-1px);
     box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
   }
 
-  button:active:not(:disabled) {
+  button:active:not(:disabled):not([aria-label]):not([aria-pressed]) {
     transform: translateY(0) scale(0.98);
     box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
   }

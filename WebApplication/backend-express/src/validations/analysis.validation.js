@@ -1,6 +1,19 @@
 import { z } from 'zod';
 
 const optionalText = z.string().trim().optional().nullable();
+const allowedTargetRoles = [
+  '',
+  'fe',
+  'be',
+  'ds',
+  'ae',
+  'front end developer',
+  'back end developer',
+  'data scientist',
+  'data analyst',
+  'ai engineer',
+  'machine learning engineer',
+];
 const optionalProfileNumber = z.preprocess(
   (value) => (value === '' || value === null ? undefined : value),
   z.coerce.number().min(0).max(60).optional(),
@@ -8,7 +21,7 @@ const optionalProfileNumber = z.preprocess(
 const stringArrayOrText = z.union([z.array(z.string().trim().min(1)), z.string().trim()]).optional();
 const skillObject = z.object({
   name: z.string().trim().min(1),
-  level: z.string().trim().optional(),
+  level: z.enum(['Basic', 'Intermediate', 'Advanced']).optional(),
 });
 
 const experienceSchema = z.object({
@@ -41,7 +54,7 @@ export const careerMatchAnalysisSchema = z.object({
       certifications: stringArrayOrText,
       sertifikasi: stringArrayOrText,
       experiences: z.array(experienceSchema).optional(),
-      target_role: z.enum(['', 'fe', 'be', 'ds', 'ae']).optional(),
+      target_role: z.enum(allowedTargetRoles).optional(),
       preferred_location: optionalText,
       top_k: z.coerce.number().int().min(1).max(20).optional().default(5),
       use_genai: z.boolean().optional().default(false),

@@ -5,7 +5,7 @@ FastAPI microservice untuk melayani model CakapKarier AI.
 ## Endpoint
 
 - `GET /health`: cek model dan katalog lowongan.
-- `GET /genai/health`: cek koneksi GenAI provider (Gemini API).
+- `GET /genai/health`: cek koneksi GenAI provider, default Gemini API.
 - `POST /predict`: prediksi role terbaik, readiness score, skill gap, dan rekomendasi.
 - `POST /predict/web`: adapter untuk form `WebApplication` halaman analisis.
 
@@ -65,17 +65,26 @@ uvicorn career_match.app:app --app-dir services/career-match/src --host 127.0.0.
 
 ## GenAI Summary dengan Gemini
 
-Fitur `use_genai=true` sudah diarahkan untuk memakai Gemini API melalui OpenAI-compatible Chat Completions endpoint.
+Fitur `use_genai=true` diarahkan untuk memakai Gemini API melalui OpenAI-compatible Chat Completions API. Jika provider tidak tersedia, service otomatis memakai ringkasan deterministik sehingga inference tetap berjalan.
 
 Konfigurasi PowerShell:
 
 ```powershell
-$env:GENAI_API_KEY="YOUR_GEMINI_API_KEY"
+$env:GENAI_PROVIDER="gemini"
 $env:GENAI_API_URL="https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
-$env:GENAI_MODEL="gemini-2.5-flash"
+$env:GENAI_MODEL="gemini-2.5-flash-lite"
+$env:GENAI_API_KEY="<google-ai-studio-api-key>"
 $env:GENAI_TIMEOUT_SECONDS="8"
-$env:GENAI_TEMPERATURE="0.2"
-$env:GENAI_MAX_TOKENS="180"
+$env:GENAI_MAX_RETRIES="1"
+```
+
+Untuk local/offline development, Ollama tetap bisa dipakai:
+
+```powershell
+$env:GENAI_PROVIDER="ollama"
+$env:GENAI_API_URL="http://localhost:11434/v1/chat/completions"
+$env:GENAI_MODEL="llama3.1"
+$env:GENAI_API_KEY=""
 ```
 
 Cek koneksi:
@@ -98,4 +107,12 @@ Contoh request dengan GenAI aktif:
 }
 ```
 
-Jika koneksi Gemini tersedia, response akan berisi `ai_summary` dari model cloud. Jika API key belum diset, limit tercapai, atau request timeout, service otomatis memakai ringkasan deterministik sehingga inference tetap berjalan.
+Jika Gemini berjalan, response akan berisi `ai_summary` dengan metadata seperti `ai_summary_source`, `genai_provider`, dan `genai_model`. Jika Gemini gagal atau API key belum tersedia, `ai_summary_source` menjadi `deterministic_fallback`.
+
+Provider OpenAI-compatible lain tetap bisa dipakai dengan environment:
+
+```bash
+GENAI_API_URL=https://provider.example/v1/chat/completions
+GENAI_API_KEY=...
+GENAI_MODEL=...
+```

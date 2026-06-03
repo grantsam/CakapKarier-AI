@@ -1,14 +1,20 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import authBg from '../assets/signup-in.jpg'; 
 import logoImage from '../assets/logo_cakapkarierai.png';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
+import { setAuthToken } from '../utils/auth';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [formMessage, setFormMessage] = useState(location.state?.message || '');
+  const [successMessage, setSuccessMessage] = useState(location.state?.success || '');
 
   const [formData, setFormData] = useState({
     email: '',
@@ -20,6 +26,7 @@ const SignIn = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    setFormMessage('');
     if (errors[name]) {
       setErrors({ ...errors, [name]: '' });
     }
@@ -48,6 +55,8 @@ const SignIn = () => {
     e.preventDefault();
     if (!validateForm()) return;
     setLoading(true);
+    setFormMessage('');
+    setSuccessMessage('');
     try {
       const response = await api.post('/auth/login', {
         email: formData.email,
@@ -57,16 +66,14 @@ const SignIn = () => {
       const token = response.data?.token || response.data?.data?.token;
 
       if (token) {
-        localStorage.setItem('token', token);
-        localStorage.setItem('isLoggedIn', 'true');
-        alert("Selamat datang kembali!");
+        setAuthToken(token);
         navigate('/profil'); 
       } else {
-        alert("Token tidak ditemukan dalam respon server.");
+        setFormMessage("Login berhasil, tetapi token tidak ditemukan dalam respons server.");
       }
     } catch (error) {
       const serverMessage = error.response?.data?.message || "Email atau kata sandi salah";
-      alert(serverMessage);
+      setFormMessage(serverMessage);
     } finally {
       setLoading(false);
     }
@@ -74,7 +81,7 @@ const SignIn = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6 font-poppins">
-      <div className="bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex overflow-hidden max-w-5xl w-full h-full max-h-[600px]">
+      <Card className="rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex overflow-hidden max-w-5xl w-full h-full max-h-[600px]">
         
         <div className="hidden md:block w-1/2 relative">
           <img src={authBg} alt="Auth Background" className="h-full w-full object-cover" />
@@ -88,10 +95,24 @@ const SignIn = () => {
           <h2 className="text-3xl font-bold text-[#004A7C] mb-1 tracking-tight">Masuk</h2>
           <p className="text-slate-500 mb-8 text-sm font-medium">Selamat datang kembali</p>
 
+          {(formMessage || successMessage) && (
+            <div
+              role="status"
+              className={`mb-5 rounded-xl border px-4 py-3 text-sm ${
+                formMessage
+                  ? 'border-amber-200 bg-amber-50 text-amber-800'
+                  : 'border-teal-200 bg-teal-50 text-teal-700'
+              }`}
+            >
+              {formMessage || successMessage}
+            </div>
+          )}
+
           <form onSubmit={handleSignIn} className="space-y-5" noValidate>
             <div>
-              <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Email</label>
+              <label htmlFor="signin-email" className="block text-[13px] font-medium text-slate-700 mb-1.5">Email</label>
               <input 
+                id="signin-email"
                 name="email"
                 type="email" 
                 placeholder="nama@email.com" 
@@ -103,12 +124,13 @@ const SignIn = () => {
             </div>
 
             <div>
-              <label className="block text-[13px] font-medium text-slate-700 mb-1.5">Kata Sandi</label>
+              <label htmlFor="signin-password" className="block text-[13px] font-medium text-slate-700 mb-1.5">Kata Sandi</label>
               <div className="relative">
                 <input 
+                  id="signin-password"
                   name="password"
                   type={showPassword ? "text" : "password"} 
-                  placeholder="••••••••" 
+                  placeholder="Minimal 8 karakter" 
                   value={formData.password}
                   onChange={handleChange}
                   className={`w-full px-4 py-3.5 rounded-xl border ${errors.password ? 'border-red-500' : 'border-slate-200'} focus:border-[#004A7C] focus:ring-1 focus:ring-[#004A7C] outline-none transition-all text-sm pr-10`} 
@@ -117,6 +139,7 @@ const SignIn = () => {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#004A7C]"
+                  aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
                 >
                   {showPassword ? <IconEye size={18} /> : <IconEyeOff size={18} />}
                 </button>
@@ -131,20 +154,21 @@ const SignIn = () => {
               <Link to="/forget-password" className="hover:underline cursor-pointer">Lupa kata sandi</Link>
             </div>
 
-            <button 
+            <Button
               type="submit"
-              disabled={loading}
-              className={`w-full ${loading ? 'bg-slate-400' : 'bg-[#004A7C]'} text-white py-3.5 rounded-full font-medium text-md mt-2 hover:bg-[#00365d] transition-all shadow-md active:scale-95`}
+              fullWidth
+              loading={loading}
+              className="mt-2"
             >
-              {loading ? 'Menghubungkan...' : 'Masuk'}
-            </button>
+              Masuk
+            </Button>
           </form>
 
           <p className="text-center mt-10 text-slate-600 text-[13px] font-medium">
             Belum punya akun? <Link to="/signup" className="text-[#004A7C] font-medium hover:underline">Daftar sekarang</Link>
           </p>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

@@ -75,7 +75,7 @@ const ForgetPassword = () => {
         </form>
 
         <p className="text-center mt-10 text-slate-600 text-[13px] font-medium">
-          Kembali <Link to="/signin" className="text-[#004A7C] font-reguler hover:underline">Masuk</Link>
+          Kembali <Link to="/signin" className="text-[#004A7C] font-normal hover:underline">Masuk</Link>
         </p>
       </div>
     </div>

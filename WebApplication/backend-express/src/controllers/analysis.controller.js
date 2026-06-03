@@ -31,9 +31,23 @@ export const createCareerMatchAnalysis = async (req, res, next) => {
   try {
     const evidenceProfile = buildCareerEvidenceProfile(req.body);
     const result = await aiService.predictCareerMatch(evidenceProfile.aiPayload);
+    const interpretation = evidenceProfile.inputInterpretation;
     const enrichedResult = {
       ...result,
-      input_interpretation: evidenceProfile.inputInterpretation,
+      analysis_metadata: {
+        frontend_contract_version: interpretation.frontend_contract_version,
+        genai_requested: interpretation.genai_requested,
+        genai_provider: result.genai_provider || null,
+        genai_model: result.genai_model || null,
+        genai_available: result.genai_available ?? null,
+        ai_summary_source: result.ai_summary_source || null,
+        genai_error_type: result.genai_error_type || null,
+        target_role_original: interpretation.target_role_original,
+        target_role_normalized: interpretation.target_role_normalized,
+        target_role_label: interpretation.target_role_label,
+        skill_levels_count: interpretation.skill_levels?.length || 0,
+      },
+      input_interpretation: interpretation,
     };
     const savedAnalysis = await analysisRepository.createCareerAnalysisResult({
       userId: req.user.id,
