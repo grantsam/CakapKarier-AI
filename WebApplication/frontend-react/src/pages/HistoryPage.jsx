@@ -226,7 +226,7 @@ const HistoryPage = () => {
                   <h3 className="font-semibold text-slate-800 text-base mt-1 break-words">
                     {latestRoleDisplay?.label}: <span className="text-[#004A7C]">{latestRoleDisplay?.title}</span>
                   </h3>
-                  <p className="text-xs text-white/70 mt-1">
+                  <p className="text-xs text-slate-400 mt-1">
                     Buka detail untuk melihat gap utama dan roadmap dari hasil terbaru.
                   </p>
                 </div>
