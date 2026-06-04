@@ -222,9 +222,9 @@ const HistoryPage = () => {
             {latestItem && (
               <Card variant="default" className="bg-[#004A7C] p-5 border-[#004A7C] text-white flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-white/60">Analisis terbaru</p>
-                  <h3 className="font-semibold text-white text-base mt-1 break-words">
-                    {latestRoleDisplay?.label}: <span className="text-white">{latestRoleDisplay?.title}</span>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Analisis terbaru</p>
+                  <h3 className="font-semibold text-slate-800 text-base mt-1 break-words">
+                    {latestRoleDisplay?.label}: <span className="text-[#004A7C]">{latestRoleDisplay?.title}</span>
                   </h3>
                   <p className="text-xs text-white/70 mt-1">
                     Buka detail untuk melihat gap utama dan roadmap dari hasil terbaru.
