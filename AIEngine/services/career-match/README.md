@@ -116,3 +116,14 @@ GENAI_API_URL=https://provider.example/v1/chat/completions
 GENAI_API_KEY=...
 GENAI_MODEL=...
 ```
+
+## Recent Improvements
+
+### v1.1
+
+- Added Gemini AI integration through OpenAI-compatible API.
+- Added `/genai/health` endpoint for provider monitoring.
+- Improved skill gap analysis output.
+- Added personalized roadmap recommendations.
+- Added deterministic fallback summary when AI provider is unavailable.
+- Improved web form compatibility through `/predict/web`.
