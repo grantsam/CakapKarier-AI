@@ -59,9 +59,11 @@ export const createCareerMatchAnalysis = async (req, res, next) => {
       responsePayload: enrichedResult,
     });
 
-    res.status(200).json({
+    res.status(201).json({
       status: 'success',
       data: {
+        id: savedAnalysis.id,
+        created_at: savedAnalysis.created_at,
         analysis_id: savedAnalysis.id,
         saved_at: savedAnalysis.created_at,
         ...enrichedResult,

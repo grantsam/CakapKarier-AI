@@ -1,0 +1,41 @@
+﻿erDiagram
+    users {
+        uuid id
+        varchar nama
+        varchar email
+        varchar password
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    profiles {
+        uuid id
+        uuid user_id
+        varchar nomor_telepon
+        text bio
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    career_analysis_results {
+        uuid id
+        uuid user_id
+        jsonb request_payload
+        jsonb response_payload
+        text predicted_role
+        text target_role
+        numeric readiness_score
+        varchar readiness_status
+        integer mastered_skill_count
+        integer skill_gap_count
+        timestamptz created_at
+    }
+    password_reset_tokens {
+        uuid id
+        uuid user_id
+        varchar token_hash
+        timestamptz expires_at
+        timestamptz used_at
+        timestamptz created_at
+    }
+    users ||--|| profiles : ""
+    users ||--o{ career_analysis_results : ""
+    users ||--o{ password_reset_tokens : ""

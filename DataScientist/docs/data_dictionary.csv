@@ -1,0 +1,20 @@
+Kolom,Tipe,Deskripsi,Contoh Nilai,Nilai Kosong
+web_scraper_order,string,ID unik hasil scraping dari web scraper,1779164489-1,Not Available
+web_scraper_start_url,string,URL halaman lowongan kerja yang di-scrape,https://glints.com/id/...,Not Available
+source,string (kategorikal),Platform asal data lowongan,Glints | LinkedIn,-
+source_encoded,integer (binary),"Encoding kolom source. 0 = Glints, 1 = LinkedIn",0 | 1,-
+job_title,string,Nama posisi/jabatan pada lowongan pekerjaan,Data Analyst | Software Engineer,-
+company,string,Nama perusahaan yang membuka lowongan,Pt Gojek Indonesia,-
+location,string,Lokasi lengkap lowongan (kota/kabupaten + provinsi),"Jakarta Selatan, Dki Jakarta",-
+province,string (kategorikal),Provinsi yang diekstrak dari kolom location,Dki Jakarta | Jawa Timur | Jawa Barat,Tidak Diketahui
+job_detail,string (teks panjang),URL detail atau ringkasan lowongan,https://glints.com/id/...,Not Available
+description,string (teks panjang),Deskripsi lengkap pekerjaan dan tanggung jawab,Bertanggung jawab dalam pengelolaan data...,Not Available
+requirements,string (teks panjang),"Persyaratan pendidikan, pengalaman, dan kualifikasi","Minimal Sarjana (S1), pengalaman 2 tahun...",Not Available
+job_benefits,string (teks panjang),Tunjangan dan benefit yang ditawarkan perusahaan,THR | Health Insurance | Work Insurance,Not Available
+skills,string (teks mentah),Skill mentah hasil scraping sebelum dibersihkan. Format tidak konsisten antar sumber.,"SkillsPythonSQL (Glints) | Python
+SQL (LinkedIn)",Not Available
+skills_clean,string (dipisah pipe |),"Skill yang sudah dibersihkan dan distandarisasi. Setiap skill dipisah dengan "" | """,Python | SQL | Machine Learning | Pandas,Not Available
+skills_count,integer,Jumlah skill yang tercantum pada lowongan,0 - 20+,0
+education,string (kategorikal),Jenjang pendidikan minimum yang dibutuhkan,Sarjana (S1) | Diploma (D1-D4) | SMA/SMK,Not Available
+education_encoded,integer (ordinal),"Ordinal encoding jenjang pendidikan. 0=Tdk diketahui, 1=SD, 2=SMP, 3=SMA/SMK, 4=Diploma, 5=Profesi, 6=S1, 7=S2",0 - 7,0
+is_duplicate_job,integer (binary flag),"Flag duplikat berdasarkan kombinasi job_title+company+location. 0=unik/pertama muncul, 1=duplikat",0 | 1,-

@@ -20,14 +20,14 @@
     "seniority_gap",
     "semantic_similarity"
   ],
-  "model_path": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\career_match_model.keras",
-  "saved_model_dir": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\saved_model",
-  "tensorboard_dir": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\tensorboard",
+  "model_path": "C:\\Grant code\\CakapKarier-AI\\AIEngine\\models\\registry\\career-match\\v1\\career_match_model.keras",
+  "saved_model_dir": "C:\\Grant code\\CakapKarier-AI\\AIEngine\\models\\registry\\career-match\\v1\\saved_model",
+  "tensorboard_dir": "C:\\Grant code\\CakapKarier-AI\\AIEngine\\models\\registry\\career-match\\v1\\tensorboard",
   "evaluation_artifacts": {
-    "classification_report_csv": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\classification_report.csv",
-    "classification_report_txt": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\classification_report.txt",
-    "confusion_matrix_png": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\confusion_matrix.png",
-    "test_predictions_csv": "C:\\DBS Foundation\\CakapKarier AI\\AIEngine\\models\\registry\\career-match\\v1\\test_predictions.csv"
+    "classification_report_csv": "C:\\Grant code\\CakapKarier-AI\\AIEngine\\models\\registry\\career-match\\v1\\classification_report.csv",
+    "classification_report_txt": "C:\\Grant code\\CakapKarier-AI\\AIEngine\\models\\registry\\career-match\\v1\\classification_report.txt",
+    "confusion_matrix_png": "C:\\Grant code\\CakapKarier-AI\\AIEngine\\models\\registry\\career-match\\v1\\confusion_matrix.png",
+    "test_predictions_csv": "C:\\Grant code\\CakapKarier-AI\\AIEngine\\models\\registry\\career-match\\v1\\test_predictions.csv"
   },
   "metrics": {
     "train": {
@@ -52,9 +52,9 @@
     "threshold_callback_reached_epoch": 5,
     "training_time": {
       "epochs_ran": 5,
-      "total_epoch_seconds": 188.636,
-      "mean_epoch_seconds": 37.727,
-      "last_epoch_seconds": 37.647
+      "total_epoch_seconds": 120.601,
+      "mean_epoch_seconds": 24.12,
+      "last_epoch_seconds": 24.632
     }
   }
 }

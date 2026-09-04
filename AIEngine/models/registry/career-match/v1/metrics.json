@@ -21,8 +21,8 @@
   "threshold_callback_reached_epoch": 5,
   "training_time": {
     "epochs_ran": 5,
-    "total_epoch_seconds": 188.636,
-    "mean_epoch_seconds": 37.727,
-    "last_epoch_seconds": 37.647
+    "total_epoch_seconds": 120.601,
+    "mean_epoch_seconds": 24.12,
+    "last_epoch_seconds": 24.632
   }
 }
